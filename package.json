@@ -1,0 +1,12 @@
+{
+  "name": "meta-theory-experiments",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Experiments and scripts for meta-theory repository",
+  "scripts": {
+    "capture-habr": "node experiments/capture-habr-full.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

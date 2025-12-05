@@ -13,45 +13,90 @@ async function captureArticle() {
   console.log('Launching browser...');
   const browser = await chromium.launch({
     headless: true,
+    args: [
+      '--disable-blink-features=AutomationControlled',
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+    ]
   });
 
   try {
     const context = await browser.newContext({
       viewport: { width: 1920, height: 1080 },
       userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      javaScriptEnabled: true,
+      ignoreHTTPSErrors: true,
     });
 
     const page = await context.newPage();
 
+    // Remove automation flags
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => false,
+      });
+    });
+
     console.log('Navigating to article...');
     await page.goto('https://habr.com/en/articles/658705/', {
-      waitUntil: 'networkidle',
+      waitUntil: 'domcontentloaded',
       timeout: 60000,
     });
 
     console.log('Waiting for main content to load...');
-    // Wait for the main article content - use a more specific selector
     await page.waitForSelector('article', { timeout: 30000 });
 
-    console.log('Waiting for images to load...');
-    // Wait for all images to load
-    await page.evaluate(() => {
-      return Promise.all(
-        Array.from(document.images)
-          .filter(img => !img.complete)
-          .map(img => new Promise(resolve => {
-            img.addEventListener('load', resolve);
-            img.addEventListener('error', resolve);
-          }))
-      );
+    // Wait a bit for initial content
+    console.log('Waiting for initial content rendering...');
+    await page.waitForTimeout(5000);
+
+    // Slow scroll to trigger all lazy loading with multiple passes
+    console.log('Performing slow scroll to trigger all lazy loading (pass 1)...');
+    await page.evaluate(async () => {
+      await new Promise((resolve) => {
+        let totalHeight = 0;
+        const distance = 50; // Smaller steps
+        const timer = setInterval(() => {
+          const scrollHeight = document.body.scrollHeight;
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+
+          if (totalHeight >= scrollHeight) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 50); // Slower scroll
+      });
     });
 
-    // Wait a bit more for any lazy-loaded content
-    console.log('Waiting for lazy-loaded content...');
+    // Wait for content to load after first scroll
     await page.waitForTimeout(3000);
 
-    // Scroll to bottom to trigger any lazy loading
-    console.log('Scrolling to trigger lazy loading...');
+    // Second pass - scroll back up slowly
+    console.log('Scrolling back up (pass 2)...');
+    await page.evaluate(async () => {
+      await new Promise((resolve) => {
+        let totalHeight = window.scrollY;
+        const distance = 50;
+        const timer = setInterval(() => {
+          window.scrollBy(0, -distance);
+          totalHeight -= distance;
+
+          if (totalHeight <= 0) {
+            clearInterval(timer);
+            window.scrollTo(0, 0);
+            resolve();
+          }
+        }, 50);
+      });
+    });
+
+    await page.waitForTimeout(2000);
+
+    // Third pass - scroll down again to ensure everything loads
+    console.log('Final scroll pass (pass 3)...');
     await page.evaluate(async () => {
       await new Promise((resolve) => {
         let totalHeight = 0;
@@ -63,7 +108,6 @@ async function captureArticle() {
 
           if (totalHeight >= scrollHeight) {
             clearInterval(timer);
-            // Scroll back to top
             window.scrollTo(0, 0);
             resolve();
           }
@@ -71,8 +115,27 @@ async function captureArticle() {
       });
     });
 
-    // Wait after scrolling
-    await page.waitForTimeout(2000);
+    // Final wait for all images to fully load
+    console.log('Waiting for all images to complete loading...');
+    await page.evaluate(() => {
+      return Promise.all(
+        Array.from(document.images)
+          .filter(img => !img.complete)
+          .map(img => new Promise(resolve => {
+            img.addEventListener('load', resolve);
+            img.addEventListener('error', resolve);
+            // Force reload if image isn't loading
+            if (!img.complete && img.src) {
+              const src = img.src;
+              img.src = '';
+              img.src = src;
+            }
+          }))
+      );
+    });
+
+    // Extra wait for any final rendering
+    await page.waitForTimeout(5000);
 
     console.log('Taking screenshot...');
     const screenshot = await page.screenshot({

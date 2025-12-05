@@ -1,0 +1,15 @@
+{
+  "name": "meta-theory",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "capture-article": "node scripts/capture_article.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.40.0"
+  },
+  "dependencies": {
+    "puppeteer": "^24.32.0"
+  }
+}

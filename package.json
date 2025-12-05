@@ -1,0 +1,24 @@
+{
+  "name": "gh-issue-solver-1764944228335",
+  "version": "1.0.0",
+  "description": "The links meta-theory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/link-foundation/meta-theory.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/link-foundation/meta-theory/issues"
+  },
+  "homepage": "https://github.com/link-foundation/meta-theory#readme",
+  "dependencies": {
+    "playwright": "^1.57.0"
+  }
+}

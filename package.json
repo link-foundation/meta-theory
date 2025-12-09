@@ -4,7 +4,10 @@
   "description": "The links meta-theory",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test:playwright && npm run test:puppeteer",
+    "test:playwright": "node scripts/verify-article-playwright.mjs",
+    "test:puppeteer": "node scripts/verify-article-puppeteer.mjs",
+    "test:verify": "npm run test:playwright"
   },
   "repository": {
     "type": "git",
@@ -20,5 +23,8 @@
   "homepage": "https://github.com/link-foundation/meta-theory#readme",
   "dependencies": {
     "playwright": "^1.57.0"
+  },
+  "devDependencies": {
+    "puppeteer": "^24.32.1"
   }
 }

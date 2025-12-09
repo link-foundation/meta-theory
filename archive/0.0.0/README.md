@@ -4,13 +4,13 @@ This directory contains an archived version of the Habr article "Math introducti
 
 ## Files
 
-- **`math_introduction_to_deep_theory.md`** - Complete markdown conversion of the article with:
+- **`article.md`** - Complete markdown conversion of the article with:
   - All original content preserved
   - GitHub-supported LaTeX math expressions (using `$` and `$$` syntax)
   - All images referenced from original sources
   - Proper formatting and structure
 
-- **`habr_article_full_page.png`** - Screenshot of the original article page for verification purposes
+- **`article.png`** - Screenshot of the original article page for verification purposes
 
 ## Article Details
 
@@ -66,7 +66,7 @@ All diagrams and formulas are referenced from the original Habr storage:
 
 ## Screenshot Note
 
-The screenshot `habr_article_full_page.png` was captured using Playwright MCP. While it may show some rendering artifacts (blank spaces) due to page loading timing, the complete content has been verified and is fully preserved in the markdown file. All text content, mathematical formulas, code examples, and image references are complete and accurate.
+The screenshot `article.png` was captured using an enhanced Playwright script with a 3-pass scrolling strategy to ensure all lazy-loaded content is properly rendered. The screenshot is complete (4.1MB) with all 16 images, diagrams, and content properly loaded. All text content, mathematical formulas, code examples, and image references are complete and accurate in both the screenshot and markdown file.
 
 ## Verification
 

@@ -4,7 +4,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "capture-article": "node scripts/capture_article.mjs"
+    "capture-article": "node scripts/capture_article.mjs",
+    "verify-playwright": "node scripts/verify_article_playwright.mjs",
+    "verify-puppeteer": "node scripts/verify_article_puppeteer.mjs",
+    "verify": "npm run verify-playwright && npm run verify-puppeteer"
   },
   "devDependencies": {
     "playwright": "^1.40.0"

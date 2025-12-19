@@ -70,6 +70,10 @@ function normalizeCode(text) {
 
 /**
  * Extract content from the web page
+ *
+ * IMPORTANT: We use `.article-formatted-body` to extract ONLY the main article content,
+ * excluding sidebar recommendations, comments, navigation, and ads.
+ * The article title is extracted separately from the first h1 in the article.
  */
 async function extractWebPageContent() {
   console.log('🌐 Loading web page:', ARTICLE_URL);
@@ -79,7 +83,7 @@ async function extractWebPageContent() {
 
   // Navigate to the page and wait for it to fully load
   await page.goto(ARTICLE_URL, {
-    waitUntil: 'domcontentloaded',
+    waitUntil: 'networkidle',
     timeout: 60000
   });
 
@@ -101,6 +105,7 @@ async function extractWebPageContent() {
   await page.waitForTimeout(2000);
 
   const content = {
+    title: '',
     headings: [],
     paragraphs: [],
     codeBlocks: [],
@@ -109,78 +114,48 @@ async function extractWebPageContent() {
     links: []
   };
 
-  // Extract headings ONLY from the main article body (not sidebar, navigation, ads, consent dialogs)
-  // Use article tag - the Habr page uses <article> for the main content
-  const headings = await page.$$eval('article h1, article h2, article h3, article h4', elements => {
-    const excludePatterns = [
-      /^Comments?\s+\d+$/i,
-      /^MOST READING$/i,
-      /^Editorial Digest$/i,
-      /consent/i,
-      /cookie/i,
-      /privacy/i,
-      /vendor/i,
-      /advertising/i,
-      /^Manage your data$/i
-    ];
+  // Extract article title (the main h1 in the article header)
+  const title = await page.$eval('article h1', el => el.innerText.trim()).catch(() => '');
+  content.title = title;
 
-    // Track ancestors to exclude headings inside consent dialogs, modals, or other non-content areas
+  // Extract headings ONLY from the main article body (.article-formatted-body)
+  // This excludes sidebar, navigation, ads, comments, and recommendation snippets
+  const headings = await page.$$eval('.article-formatted-body h2, .article-formatted-body h3, .article-formatted-body h4', elements => {
     return elements
-      .filter(el => {
-        // Check if element is inside a consent/dialog/modal container
-        // Be specific with class names to avoid false positives like "has-sidebar"
-        const excludeAncestor = el.closest('.consent-dialog, .cookie-consent, .privacy-dialog, .vendor-list, [role="dialog"], .modal, .most-reading, .digest, .tm-article-snippet');
-        return excludeAncestor === null;
-      })
       .map(el => ({
         level: el.tagName.toLowerCase(),
         text: el.innerText.trim()
       }))
-      .filter(h => {
-        if (h.text.length === 0) return false;
-        return !excludePatterns.some(pattern => pattern.test(h.text));
-      });
+      .filter(h => h.text.length > 0);
   });
   content.headings = headings;
 
-  // Extract paragraphs from article content (excluding comments section)
-  const paragraphs = await page.$$eval('article p', elements =>
-    elements
-      .filter(el => {
-        // Exclude paragraphs inside comments or aside areas
-        const excludeAncestor = el.closest('[class*="comment"], aside, .tm-article-comments');
-        return excludeAncestor === null;
-      })
-      .map(el => el.innerText.trim())
+  // Extract paragraphs from article body only
+  const paragraphs = await page.$$eval('.article-formatted-body p', elements =>
+    elements.map(el => el.innerText.trim())
   );
   content.paragraphs = paragraphs.filter(p => p.length > 10); // Filter out very short paragraphs
 
-  // Extract code blocks
-  const codeBlocks = await page.$$eval('article pre code, article pre', elements =>
+  // Extract code blocks from article body only
+  const codeBlocks = await page.$$eval('.article-formatted-body pre code, .article-formatted-body pre', elements =>
     elements.map(el => el.innerText.trim())
   );
   content.codeBlocks = codeBlocks.filter(c => c.length > 0);
 
-  // Extract formulas (math content)
-  const formulas = await page.$$eval('article .math, article [class*="formula"], article .katex, article mjx-container', elements =>
+  // Extract formulas (math content) from article body
+  const formulas = await page.$$eval('.article-formatted-body .math, .article-formatted-body [class*="formula"], .article-formatted-body .katex, .article-formatted-body mjx-container', elements =>
     elements.map(el => el.innerText.trim())
   );
   content.formulas = formulas.filter(f => f.length > 0);
 
-  // Extract list items (excluding comments section)
-  const listItems = await page.$$eval('article li', elements =>
-    elements
-      .filter(el => {
-        // Exclude list items inside comments or aside areas
-        const excludeAncestor = el.closest('[class*="comment"], aside, .tm-article-comments');
-        return excludeAncestor === null;
-      })
-      .map(el => el.innerText.trim())
+  // Extract list items from article body only
+  const listItems = await page.$$eval('.article-formatted-body li', elements =>
+    elements.map(el => el.innerText.trim())
   );
   content.listItems = listItems.filter(li => li.length > 0);
 
-  // Extract important links (excluding navigation)
-  const links = await page.$$eval('article a[href]', elements =>
+  // Extract important links from article body (excluding navigation)
+  const links = await page.$$eval('.article-formatted-body a[href]', elements =>
     elements.map(el => ({
       text: el.innerText.trim(),
       href: el.href
@@ -191,6 +166,7 @@ async function extractWebPageContent() {
   await browser.close();
 
   console.log('✅ Extracted content from web page:');
+  console.log(`   - Title: "${content.title}"`);
   console.log(`   - ${content.headings.length} headings`);
   console.log(`   - ${content.paragraphs.length} paragraphs`);
   console.log(`   - ${content.codeBlocks.length} code blocks`);
@@ -209,6 +185,7 @@ function verifyMarkdownContent(webContent, markdownText) {
 
   const normalizedMarkdown = normalizeText(markdownText);
   const missing = {
+    title: false,
     headings: [],
     paragraphs: [],
     codeBlocks: [],
@@ -219,8 +196,22 @@ function verifyMarkdownContent(webContent, markdownText) {
   let totalChecks = 0;
   let passedChecks = 0;
 
+  // Check title
+  console.log('📌 Checking article title...');
+  if (webContent.title) {
+    totalChecks++;
+    const normalizedTitle = normalizeText(webContent.title);
+    if (normalizedMarkdown.includes(normalizedTitle)) {
+      passedChecks++;
+      console.log(`   ✅ Title found: "${webContent.title}"`);
+    } else {
+      missing.title = true;
+      console.log(`   ❌ Missing title: "${webContent.title}"`);
+    }
+  }
+
   // Check headings
-  console.log('📌 Checking headings...');
+  console.log('\n📌 Checking headings...');
   for (const heading of webContent.headings) {
     totalChecks++;
     const normalized = normalizeText(heading.text);
@@ -311,8 +302,11 @@ function verifyMarkdownContent(webContent, markdownText) {
   console.log(`✅ Passed: ${passedChecks}/${totalChecks} checks (${(passedChecks/totalChecks*100).toFixed(1)}%)`);
   console.log(`❌ Failed: ${totalChecks - passedChecks}/${totalChecks} checks`);
 
+  if (missing.title) {
+    console.log(`\n⚠️  Missing article title`);
+  }
   if (missing.headings.length > 0) {
-    console.log(`\n⚠️  Missing ${missing.headings.length} headings`);
+    console.log(`⚠️  Missing ${missing.headings.length} headings`);
   }
   if (missing.paragraphs.length > 0) {
     console.log(`⚠️  Missing ${missing.paragraphs.length} paragraphs (from sample)`);
@@ -325,7 +319,7 @@ function verifyMarkdownContent(webContent, markdownText) {
   }
 
   const passRate = totalChecks > 0 ? passedChecks / totalChecks : 0;
-  const hasMissingContent = Object.values(missing).some(arr => arr.length > 0);
+  const hasMissingContent = missing.title || Object.values(missing).some(arr => Array.isArray(arr) && arr.length > 0);
 
   if (!hasMissingContent) {
     console.log('\n🎉 SUCCESS! All checked content from the web page exists in the markdown file.');

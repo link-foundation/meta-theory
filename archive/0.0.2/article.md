@@ -854,6 +854,10 @@ Using LaTeX:
 
 L \to L^2
 
+Which is rendered as SVG (clickable):
+
+$$L \to L^2$$
+
 ### References
 
 - Edgar F. Codd, IBM Research Laboratory, San Jose, California, June 1970, ["Relational Model of Data for Large Shared Data Banks.", paragraph 1.3., page 379](https://dl.acm.org/doi/abs/10.1145/362384.362685)

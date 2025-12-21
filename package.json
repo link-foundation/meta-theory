@@ -1,13 +1,21 @@
 {
-  "name": "gh-issue-solver-1764944228335",
+  "name": "meta-theory-experiments",
   "version": "1.0.0",
-  "description": "The links meta-theory",
-  "main": "index.js",
+  "type": "module",
+  "description": "Experiments and scripts for meta-theory repository",
   "scripts": {
     "test": "npm run test:playwright && npm run test:puppeteer",
     "test:playwright": "node scripts/verify-article-playwright.mjs",
     "test:puppeteer": "node scripts/verify-article-puppeteer.mjs",
-    "test:verify": "npm run test:playwright"
+    "test:verify": "npm run test:playwright",
+    "capture-article": "node scripts/capture_article.mjs",
+    "capture-habr": "node scripts/capture-habr-full.mjs",
+    "verify-playwright": "node scripts/verify_article_playwright.mjs",
+    "verify-puppeteer": "node scripts/verify_article_puppeteer.mjs",
+    "verify": "npm run verify-playwright && npm run verify-puppeteer",
+    "test:markdown": "node scripts/test-markdown-verification.mjs",
+    "test:markdown:playwright": "node scripts/test-markdown-verification-playwright.mjs",
+    "test:markdown:puppeteer": "node scripts/test-markdown-verification-puppeteer.mjs"
   },
   "repository": {
     "type": "git",
@@ -16,15 +24,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/link-foundation/meta-theory/issues"
   },
   "homepage": "https://github.com/link-foundation/meta-theory#readme",
   "dependencies": {
-    "playwright": "^1.57.0"
-  },
-  "devDependencies": {
+    "playwright": "^1.57.0",
     "puppeteer": "^24.32.1"
-  }
+  },
+  "devDependencies": {}
 }

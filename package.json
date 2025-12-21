@@ -1,0 +1,16 @@
+{
+  "name": "meta-theory-experiments",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Experiments and scripts for meta-theory repository",
+  "scripts": {
+    "capture-habr": "node experiments/capture-habr-full.mjs",
+    "test": "node scripts/test-markdown-verification.mjs",
+    "test:playwright": "node scripts/test-markdown-verification-playwright.mjs",
+    "test:puppeteer": "node scripts/test-markdown-verification-puppeteer.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0",
+    "puppeteer": "^24.15.0"
+  }
+}

@@ -36,6 +36,8 @@ A [relation](https://en.wikipedia.org/wiki/Relation_(database)) is defined as a 
 
 $$R \subseteq D_1 \times D_2 \times ... \times D_n [[1]](https://dl.acm.org/doi/abs/10.1145/362384.362685)$$
 
+![Figure 1](images/figure-1.png)
+
 **Figure 1.** A table is described by a [relation](https://en.wikipedia.org/wiki/Relation_(database)), which is represented as a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of [rows](https://en.wikipedia.org/wiki/Row_(database)), belonging to a [Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product).
 
 **Where:**
@@ -48,6 +50,8 @@ $$R \subseteq D_1 \times D_2 \times ... \times D_n [[1]](https://dl.acm.org/doi/
 [Rows](https://en.wikipedia.org/wiki/Row_(database)), or [elements](https://en.wikipedia.org/wiki/Element_(mathematics)) of the [relation](https://en.wikipedia.org/wiki/Relation_(database)), are represented as [n-tuples](https://en.wikipedia.org/wiki/Tuple).
 
 [Data](https://en.wikipedia.org/wiki/Data_(computer_science)) in the [relational model](https://en.wikipedia.org/wiki/Relational_model) is grouped into [relations](https://en.wikipedia.org/wiki/Relation_(database)). By using [n-tuples](https://en.wikipedia.org/wiki/Tuple) in this [model](https://en.wikipedia.org/wiki/Database_model), one can precisely represent any conceivable [data structure](https://en.wikipedia.org/wiki/Data_structure), if only we actually ever used [n-tuples](https://en.wikipedia.org/wiki/Tuple) for that. And are [n-tuples](https://en.wikipedia.org/wiki/Tuple) even necessary? For example, every [n-tuple](https://en.wikipedia.org/wiki/Tuple) can be represented as [nested ordered pairs](https://en.wikipedia.org/wiki/Tuple#Tuples_as_nested_ordered_pairs), which suggests that [ordered pairs](https://en.wikipedia.org/wiki/Ordered_pair) alone might be sufficient to represent any [data](https://en.wikipedia.org/wiki/Data_(computer_science)). Moreover, it's uncommon for [column](https://en.wikipedia.org/wiki/Table_(database)) values in [tables](https://en.wikipedia.org/wiki/Table_(database)) to be represented as [n-tuples](https://en.wikipedia.org/wiki/Tuple) (although, for instance, a [number](https://en.wikipedia.org/wiki/Number) can be [decomposed](https://en.wikipedia.org/wiki/Decomposition_(computer_science)) into an [n-tuple](https://en.wikipedia.org/wiki/Tuple) of [bits](https://en.wikipedia.org/wiki/Bit)). In some [SQL](https://en.wikipedia.org/wiki/SQL) [databases](https://en.wikipedia.org/wiki/Database), it is even forbidden to use more than a certain number of [columns](https://en.wikipedia.org/wiki/Table_(database)) in a [table](https://en.wikipedia.org/wiki/Table_(database)) (and, by extension, in its corresponding [n-tuple](https://en.wikipedia.org/wiki/Tuple)). Thus, the actual value is usually lower. Therefore, in these cases, there are no [true](https://en.wikipedia.org/wiki/Truth) [n-tuples](https://en.wikipedia.org/wiki/Tuple) — even in modern [relational](https://en.wikipedia.org/wiki/Relational_model) [databases](https://en.wikipedia.org/wiki/Database).
+
+![Figure 2](images/figure-2.png)
 
 **Figure 2.** Comparison of the [relational model](https://en.wikipedia.org/wiki/Relational_model) and the [associative model of data](http://iacis.org/iis/2009/P2009_1301.pdf) (the original [model](https://en.wikipedia.org/wiki/Data_model) proposed by [Simon Williams](https://www.linkedin.com/in/s1m0n) was simplified by us twice) [[3]](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf). In other words, representing all [data](https://en.wikipedia.org/wiki/Data_(computer_science)) in the [relational model](https://en.wikipedia.org/wiki/Relational_model) requires a multitude of [tables](https://en.wikipedia.org/wiki/Table_(database)) — one for each [data type](https://en.wikipedia.org/wiki/Data_type) — whereas in the [associative model](https://web.archive.org/web/20210814063207/https://en.wikipedia.org/wiki/Associative_model_of_data), it turned out that initially just two [tables](https://en.wikipedia.org/wiki/Table_(database)) were sufficient (`items` and `links`), and eventually just a single [table](https://en.wikipedia.org/wiki/Table_(database)) (`links`) of [triplet](https://en.wikipedia.org/wiki/Tuple)-links or [doublet](https://en.wikipedia.org/wiki/Ordered_pair)-links was enough.
 
@@ -65,6 +69,8 @@ Where:
 - E is a set of [ordered pairs](https://en.wikipedia.org/wiki/Ordered_pair) (2-[tuples](https://en.wikipedia.org/wiki/Tuple)) of [vertices](https://en.wikipedia.org/wiki/Vertex_(graph_theory)), referred to as arcs, directed [edges](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#edge) (sometimes simply [edges](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#edge)), arrows, or directed [lines segments](https://en.wikipedia.org/wiki/Line_segment).
 
 In the directed graph model, data is represented by two separate [sets](https://en.wikipedia.org/wiki/Set_(mathematics)): [nodes](https://en.wikipedia.org/wiki/Vertex_(graph_theory)) and [edges](https://en.wikipedia.org/wiki/Glossary_of_graph_theory#edge). This [model](https://en.wikipedia.org/wiki/Data_model) can be used to represent almost all [data structures](https://en.wikipedia.org/wiki/Data_structure), except perhaps [sequences](https://en.wikipedia.org/wiki/Sequence) ([n-tuples](https://en.wikipedia.org/wiki/Tuple)). Sometimes, chains of vertices are used to represent sequences. Although this method works, it invariably leads to data duplication, and deduplication in such cases is either complicated or unfeasible. Furthermore, sequences in graphs might be represented by decomposing the [sequence into nested sets](https://en.wikipedia.org/wiki/Tuple#Tuples_as_nested_sets), but in our view, this is not a practical approach. It appears that we are not alone in this belief, which may explain why we have not encountered examples of others employing such method.
+
+![Figure 3](images/figure-3.png)
 
 **Figure 3.** Comparison of the graph theory and the links theory. A vertex is equivalent to [a self-referential link](https://linksplatform.github.io/itself.html) — a link that begins and ends in itself. A directed edge is represented as a directed doublet-links, while an undirected edge is represented as a pair of directed doublet-links in both opposite directions. In other words, while graph theory requires two types of entities — vertices and edges — in the links theory only links (which most closely resemble edges) are necessary.
 
@@ -99,7 +105,11 @@ In this example, the set contains only references to links, namely 1 and 2. In o
 
 To obtain all possible values of a link, [the Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) of with itself is used, i.e., L × L.
 
+![Figure 4](images/figure-4.png)
+
 **Figure 4.** A matrix representing the Cartesian product of the set {1, 2} with itself. Here we see that links with two references to links can have only 4 possible values.
+
+![Figure 5](images/figure-5.png)
 
 **Figure 5.** A table of rows containing all possible variants of link values for a network with two links; these variants are obtained using the Cartesian product of {1, 2} with itself.
 
@@ -117,7 +127,11 @@ Where:
 
 $$\lambda = { (1, 1, 1), (2, 2, 2), (3, 1, 2) }$$
 
+![Figure 6](images/figure-6.png)
+
 **Figure 6. A network of three links.** The representation of the duplet‑links network resembles a graph, but we refer to this visualization as a network of links. The first and second links have a similar structure — that is, both begin from themselves and end in themselves. As a result, instead of the traditional depiction of a vertex as a point in graph theory, we get a graphical representation of a closed self‑referential arrow that resembles an infinity symbol.
+
+![Figure 7](images/figure-7.png)
 
 **Figure 7.** This is a graphical representation of the Cartesian product in the form of a matrix, which displays all possible link values. The links that define a specific network are highlighted in orange. In other words, out of 9 possible link value variants, only 3 links are selected, corresponding to the size of the set **L**.
 
@@ -158,7 +172,11 @@ $$L \times L \times L = {$$
 }
 ```
 
+![Figure 8](images/figure-8.png)
+
 **Figure 8.** A three-dimensional cube-matrix that represents all possible values of a triplet-link. Such a cube is obtained by recursively taking the Cartesian product of the set {1, 2} with itself, i.e., { 1, 2 } × { 1, 2 } × { 1, 2 }.
+
+![Figure 9](images/figure-9.png)
 
 **Figure 9.** A table of all possible variants of triplet-link values that can be obtained by taking the Cartesian product of the set { 1, 2 } with itself recursively, i.e., { 1, 2 } × { 1, 2 } × { 1, 2 }. **Note:** The first reference can be interpreted as the beginning, the second as the type, and the third as the end; the user determines how to interpret the components of the reference vector in accordance with the task at hand.
 
@@ -174,6 +192,8 @@ Where:
 Example of a function specifying a particular triplet links network:
 
 $$\lambda = { (1, 1, 1, 1), (2, 2, 3, 4), (3, 3, 1, 2), (4, 4, 2, 3) }$$
+
+![Figure 10](images/figure-10.jpg)
 
 **Figure 10.** An associative triplet network represented as a colored directed graph. In this associative network, there are 4 triplet-links corresponding to the function defined above. The nodes correspond to links, and the edge colors correspond to references to links as shown in Figure 9 (red – from, blue – type, green – to).
 
@@ -830,11 +850,17 @@ Now you can get the sense of how associative theory works using our [CLI demo to
 
 In this demo we build up on links notation to create a dialect that is able to describe single universal operation - substitution. As with unification of data types, it is also possible to unify creation, read, update and deletion into single substitution operation. That is similar to the only operation from [Markov algorithm](https://en.wikipedia.org/wiki/Markov_algorithm), which is proven to be [Turing-complete](https://en.wikipedia.org/wiki/Turing_completeness#:~:text=13%20External%20links-,Non%2Dmathematical%20usage,purpose%20computer%20or%20computer%20language.).
 
+![Figure 11](images/figure-11.png)
+
 **Figure 11.** In this image you can see creation of two links `(1: 1 1)` and `(2: 2 2);` update of first link to `(1: 1 2)`; update/substitution using variables to swap sources and targets of each link; and a deletion of all links using `(* *)` pattern.
 
 ### Visual demos
 
+![Figure 12](images/figure-12.png)
+
 **Figure 12.** Link blueprint designer build on top of a configurable spline: [konard.github.io/links-visuals/blueprint.html](http://konard.github.io/links-visuals/blueprint.html) (move control points of spline that represents the link)
+
+![Figure 13](images/figure-13.jpg)
 
 **Figure 13.** [H-tree](https://en.wikipedia.org/wiki/H_tree) like fractal build using links represented by straight arrows: [konard.github.io/links-visuals/H-fractal.html](https://konard.github.io/links-visuals/H-fractal.html) (click at any place to iterate the fractal)
 

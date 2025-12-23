@@ -6,6 +6,9 @@ This directory contains the archived version of "The Links Theory 0.0.2" article
 
 - **article.md** - Complete markdown reproduction of the article with GitHub-compatible math formulas
 - **article.png** - Full-page screenshot of the original web article (1920×37510px, 7.5MB)
+- **images/** - Directory containing all 13 figure images from the article:
+  - `figure-1.png` through `figure-13.jpg` - All figures referenced in the article
+  - `metadata.json` - Metadata about downloaded images (figure number, filename, caption)
 
 ## Verification
 
@@ -65,30 +68,36 @@ The automated tests:
 ================================================================================
 🌐 Loading web page: https://habr.com/en/articles/895896
 ✅ Extracted content from web page:
-   - 35 headings
-   - 0 paragraphs
-   - 7 code blocks
+   - Title: "The Links Theory 0.0.2"
+   - 33 headings
+   - 108 paragraphs
+   - 14 code blocks
    - 0 formulas
-   - 0 list items
-   - 0 links
+   - 25 list items
+   - 148 links
 
 📖 Reading markdown file: ./archive/0.0.2/article.md
-✅ Loaded markdown file (56698 characters, 867 lines)
+✅ Loaded markdown file (57202 characters, 897 lines)
 
 🔍 Verifying markdown content...
 
+📌 Checking article title...
+   ✅ Title found: "The Links Theory 0.0.2"
+
 📌 Checking headings...
-📄 Checking sample paragraphs...
+📄 Checking sample paragraphs (first 5 and last 5)...
 💻 Checking code blocks...
-📋 Checking sample list items...
+📋 Checking sample list items (first 10)...
+🖼️ Checking figure images...
+   ✅ All 13 figure images found in markdown
 
 ================================================================================
 📊 VERIFICATION RESULTS
 ================================================================================
-✅ Passed: 37/42 checks (88.1%)
-❌ Failed: 5/42 checks
+✅ Passed: 69/69 checks (100.0%)
+❌ Failed: 0/69 checks
 
-✅ PASS! Main content is verified (pass rate >= 85%).
+🎉 SUCCESS! All checked content from the web page exists in the markdown file.
 ```
 
 ## Math Formula Conversion

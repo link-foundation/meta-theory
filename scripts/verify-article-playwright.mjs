@@ -305,6 +305,21 @@ function verifyMarkdownContent(webContent, markdownText) {
     }
   }
 
+  // Check for figure images
+  console.log('\n🖼️ Checking figure images...');
+  const figurePattern = /!\[Figure \d+\]\(images\/figure-\d+\.(png|jpg)\)/g;
+  const figureMatches = markdownText.match(figurePattern) || [];
+  const expectedFigures = 13; // We know there are 13 figures
+
+  totalChecks++;
+  if (figureMatches.length >= expectedFigures) {
+    passedChecks++;
+    console.log(`   ✅ All ${figureMatches.length} figure images found in markdown`);
+  } else {
+    console.log(`   ❌ Missing figure images: found ${figureMatches.length}/${expectedFigures}`);
+    missing.images = expectedFigures - figureMatches.length;
+  }
+
   // Final report
   console.log('\n' + '='.repeat(80));
   console.log('📊 VERIFICATION RESULTS');
@@ -327,9 +342,12 @@ function verifyMarkdownContent(webContent, markdownText) {
   if (missing.listItems.length > 0) {
     console.log(`⚠️  Missing ${missing.listItems.length} list items (from sample)`);
   }
+  if (missing.images) {
+    console.log(`⚠️  Missing ${missing.images} figure images`);
+  }
 
   const passRate = totalChecks > 0 ? passedChecks / totalChecks : 0;
-  const hasMissingContent = missing.title || Object.values(missing).some(arr => Array.isArray(arr) && arr.length > 0);
+  const hasMissingContent = missing.title || missing.images || Object.values(missing).some(arr => Array.isArray(arr) && arr.length > 0);
 
   if (!hasMissingContent) {
     console.log('\n🎉 SUCCESS! All checked content from the web page exists in the markdown file.');

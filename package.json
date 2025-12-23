@@ -4,7 +4,8 @@
   "type": "module",
   "description": "Experiments and scripts for meta-theory repository",
   "scripts": {
-    "test": "npm run test:playwright && npm run test:puppeteer",
+    "test": "npm run test:math && npm run test:playwright && npm run test:puppeteer",
+    "test:math": "node scripts/verify-math-conversion.mjs",
     "test:playwright": "node scripts/verify-article-playwright.mjs",
     "test:puppeteer": "node scripts/verify-article-puppeteer.mjs",
     "test:verify": "npm run test:playwright",

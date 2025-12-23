@@ -34,7 +34,7 @@ This overall lack of flexibility, adaptability, and universality motivated us to
 
 A [relation](https://en.wikipedia.org/wiki/Relation_(database)) is defined as a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of [n-tuples](https://en.wikipedia.org/wiki/Tuple):
 
-$$R \subseteq D_1 \times D_2 \times ... \times D_n [[1]](https://dl.acm.org/doi/abs/10.1145/362384.362685)$$
+$$R \subseteq D_1 \times D_2 \times ... \times D_n$$ [[1]](https://dl.acm.org/doi/abs/10.1145/362384.362685)
 
 ![Figure 1](images/figure-1.png)
 
@@ -89,11 +89,11 @@ A doublet-link is represented by a duplet (2-tuple or [ordered pair](https://en.
 ```
 L = { 1 , 2 }
 
-$$L \times L = {$$
- (1, 1),
- (1, 2),
- (2, 1),
- (2, 2),
+L × L = {
+  (1, 1),
+  (1, 2),
+  (2, 1),
+  (2, 2),
 }
 ```
 
@@ -153,22 +153,22 @@ A triplet-link is represented by a triplet (3-tuple) of references to links.
 ```
 L = { 1 , 2 }
 
-$$L \times L = {$$
- (1, 1),
- (1, 2),
- (2, 1),
- (2, 2),
+L × L = {
+  (1, 1),
+  (1, 2),
+  (2, 1),
+  (2, 2),
 }
 
-$$L \times L \times L = {$$
- (1, 1, 1),
- (1, 1, 2),
- (1, 2, 1),
- (1, 2, 2),
- (2, 1, 1),
- (2, 1, 2),
- (2, 2, 1),
- (2, 2, 2),
+L × L × L = {
+  (1, 1, 1),
+  (1, 1, 2),
+  (1, 2, 1),
+  (1, 2, 2),
+  (2, 1, 1),
+  (2, 1, 2),
+  (2, 2, 1),
+  (2, 2, 2),
 }
 ```
 
@@ -266,11 +266,11 @@ A link possesses an asymmetrical recursive (fractal) structure, which can be sim
 
 A **reference to a vector** is a unique identifier or ordinal number, which is associated with a specific vector representing a sequence of references to other vectors.
 
-$$Set of references to vectors: L \subseteq \mathbb{N}_0$$
+**Set of references to vectors:** $L \subseteq \mathbb{N}_0$
 
 A **vector of references** is a vector consisting of zero or more references to vectors, where the number of references corresponds to the number of elements in the vector.
 
-$$Set of all vectors of references of length n: V^n \subseteq L^n$$
+**Set of all vectors of references of length n:** $V^n \subseteq L^n$
 
 The Cartesian power Lⁿ always produces a vector of length n, since all its components are of the same type L.
 In other words, Lⁿ represents the set of all possible n-element vectors (essentially n‑tuples), in which every element belongs to the set L.
@@ -296,7 +296,7 @@ An empty vector (vector of length zero) is represented by the empty tuple, denot
 
 **Associative network of nested ordered pairs:**
 
-$$\lambda: L \to NP, where NP = {(\emptyset,\emptyset) | (l, np), l \in L, np \in NP}$$
+$$\lambda: L \to NP$$, where $NP = \{(\emptyset,\emptyset) | (l, np), l \in L, np \in NP\}$
 
 NP is the set of nested ordered pairs consisting of empty pairs and pairs containing one or more elements. In this way, a vector of length n can be represented as nested ordered pairs.
 
@@ -323,19 +323,19 @@ Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
 
-$$(* Set of vector references: L \subseteq \mathbb{N}_0 *)$$
+(* Set of vector references: L ⊆ ℕ₀ *)
 Definition L := nat.
 
 (* Default value for L: zero *)
 Definition LDefault : L := 0.
 
-$$(* Set of vectors of references of length n \in \mathbb{N}_0: Vn \subseteq L^n *)$$
+(* Set of vectors of references of length n ∈ ℕ₀: Vn ⊆ Lⁿ *)
 Definition Vn (n : nat) := t L n.
 
 (* Default value for Vn *)
 Definition VnDefault (n : nat) : Vn n := Vector.const LDefault n.
 
-$$(* Set of all associations: A = L \times Vn *)$$
+(* Set of all associations: A = L × Vn *)
 Definition A (n : nat) := prod L (Vn n).
 
 (* Associative network of vectors of length n (or n-dimensional associative network) from the family of functions {anetvⁿ : L → Vn} *)
@@ -347,7 +347,7 @@ Definition ANetVl (n : nat) := list (Vn n).
 (* Nested ordered pairs *)
 Definition NP := list L.
 
-$$(* Associative network of nested ordered pairs: anetl : L \to NP *)$$
+(* Associative network of nested ordered pairs: anetl : L → NP *)
 Definition ANetLf := L -> NP.
 
 (* Associative network of nested ordered pairs as a sequence of nested ordered pairs *)
@@ -359,7 +359,7 @@ Definition D := prod L L.
 (* Default value for D: a pair of two LDefault values, used to denote an empty duplet *)
 Definition DDefault : D := (LDefault, LDefault).
 
-$$(* Associative network of duplets (or two-dimensional associative network): anetd : L \to L^2 *)$$
+(* Associative network of duplets (or two-dimensional associative network): anetd : L → L² *)
 Definition ANetDf := L -> D.
 
 (* Associative network of duplets (or two-dimensional associative network) as a sequence of duplets *)
@@ -460,7 +460,7 @@ Definition ANetDlToNP (anet: ANetDl) : NP := ANetDl_readNP anet 0.
 
 (*
  Now everything is ready for converting the associative network of nested ordered pairs anetl : L → NP
-$$into the associative network of duplets anetd : L \to L^2.$$
+ into the associative network of duplets anetd : L → L².
 
  This conversion can be done in different ways: either preserving the original references to vectors
  or with reindexing. Reindexing can be omitted if one writes an additional function for the duplet associative network
@@ -507,8 +507,8 @@ Definition ANetVlToANetDl {n : nat} (anetv: ANetVl n) : ANetDl :=
  ANetLlToANetDl (ANetVlToANetLl anetv).
 
 (*
-$$Now everything is ready for converting the duplet associative network anetd : L \to L^2$$
-$$into the associative network of nested ordered pairs anetl : L \to NP.$$
+ Now everything is ready for converting the duplet associative network anetd : L → L²
+ into the associative network of nested ordered pairs anetl : L → NP.
 
  We will perform this conversion while preserving the original references to vectors.
  Reindexing can be omitted because there is the function ANetDl_offsetNP for the duplet associative network
@@ -608,9 +608,9 @@ Qed.
 (*
  The Wrapping and Recovery Theorem for the Associative Network of Vectors:
 
-$$Let an associative network of vectors of length n be given, denoted as anetv^n : L \to V^n.$$
+ Let an associative network of vectors of length n be given, denoted as anetvⁿ : L → Vⁿ.
  Define an operation that maps this network to the associative network of nested ordered pairs anetl : L → NP,
-$$where NP = {(\emptyset,\emptyset) | (l, np), l \in L, np \in NP}.$$
+ where NP = {(∅,∅) | (l, np), l ∈ L, np ∈ NP}.
  Then define the inverse mapping from the associative network of nested ordered pairs back to the associative network of vectors of length n.
 
  The theorem states:
@@ -620,7 +620,7 @@ $$where NP = {(\emptyset,\emptyset) | (l, np), l \in L, np \in NP}.$$
  recovers the original network anetvⁿ.
  In other words:
 
-$$∀ anetv^n : L \to V^n, inverse(forward(anetv^n)) = anetv^n.$$
+ ∀ anetvⁿ : L → Vⁿ, inverse(forward(anetvⁿ)) = anetvⁿ.
 *)
 Theorem anetf_equiv_after_transforms : forall {n: nat} (anet: ANetVf n),
  ANetVf_equiv anet (fun id => match NPToVnOption n ((ANetVfToANetLf anet) id) with

@@ -138,3 +138,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 scripts/article_content.json
+
+# Playwright MCP working directory
+.playwright-mcp/

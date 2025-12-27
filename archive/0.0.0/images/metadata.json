@@ -1,0 +1,68 @@
+[
+  {
+    "index": 1,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/e14/9f9/8f3/e149f98f3b6773bbc4fa667104020e7c.png",
+    "altText": "Relational algebra formula",
+    "localPath": "images/image-01.png"
+  },
+  {
+    "index": 2,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/e7d/349/b43/e7d349b4358c0a124b2d0075c4a0355f.png",
+    "altText": "Directed graph formula",
+    "localPath": "images/image-02.png"
+  },
+  {
+    "index": 3,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/60a/13f/c94/60a13fc94c4fa7b32b18bf2c4ab0ae3c.png",
+    "altText": "Doublets diagram 1",
+    "localPath": "images/image-05.png"
+  },
+  {
+    "index": 4,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/bb8/12f/732/bb812f732329e2e97d6df4cd21ad4f28.png",
+    "altText": "Doublets diagram 2",
+    "localPath": "images/image-06.png"
+  },
+  {
+    "index": 5,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/1be/448/d48/1be448d4841c0ff25fc2633932e2b29a.png",
+    "altText": "Doublets network formula",
+    "localPath": "images/image-07.png"
+  },
+  {
+    "index": 6,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/b0b/a17/ae1/b0ba17ae140fc76ab09305b281dc6115.png",
+    "altText": "Graph-like graphical representation of the doublets network",
+    "localPath": "images/image-10.png"
+  },
+  {
+    "index": 7,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/60d/a81/1de/60da811debf6a8c4e92eaf4647a8a72c.png",
+    "altText": "Cartesian product representation",
+    "localPath": "images/image-11.png"
+  },
+  {
+    "index": 8,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/ae7/43d/7e5/ae743d7e5bf15b35ccb13c6076e81b45.png",
+    "altText": "Triplets diagram 1",
+    "localPath": "images/image-12.png"
+  },
+  {
+    "index": 9,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/bc7/1eb/50e/bc71eb50e5cfd2e8f1a7ca08a25e8e92.png",
+    "altText": "Triplets diagram 2",
+    "localPath": "images/image-13.png"
+  },
+  {
+    "index": 10,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/ec2/1e5/10b/ec21e510bf143addc0ee0e0cd44d9c05.png",
+    "altText": "Triplets network formula",
+    "localPath": "images/image-14.png"
+  },
+  {
+    "index": 11,
+    "originalUrl": "https://habrastorage.org/getpro/habr/upload_files/47c/526/75d/47c52675d4a4114582be4eaebd967857.png",
+    "altText": "Graph-like graphical representation of the triplets network",
+    "localPath": "images/image-15.jpeg"
+  }
+]

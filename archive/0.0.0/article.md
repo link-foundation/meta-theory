@@ -22,7 +22,7 @@ A relation is defined as a set of n-tuples:
 
 $$R \subseteq S_1 \times S_2 \times \ldots \times S_n$$
 
-![Relational algebra formula](https://habrastorage.org/getpro/habr/upload_files/e14/9f9/8f3/e149f98f3b6773bbc4fa667104020e7c.png)
+![Relational algebra formula](images/image-01.png)
 
 Where:
 - **R** stands for relation (a table);
@@ -39,7 +39,7 @@ A directed graph **G** is defined as an ordered pair **G(V, E)**:
 
 $$G = (V, E)$$
 
-![Directed graph formula](https://habrastorage.org/getpro/habr/upload_files/e7d/349/b43/e7d349b4358c0a124b2d0075c4a0355f.png)
+![Directed graph formula](images/image-02.png)
 
 Where:
 - **V** is a set whose elements are called vertices, nodes, or points;
@@ -68,15 +68,15 @@ L × L = {
 }
 ```
 
-![Doublets diagram 1](https://habrastorage.org/getpro/habr/upload_files/60a/13f/c94/60a13fc94c4fa7b32b18bf2c4ab0ae3c.png)
+![Doublets diagram 1](images/image-03.png)
 
-![Doublets diagram 2](https://habrastorage.org/getpro/habr/upload_files/bb8/12f/732/bb812f732329e2e97d6df4cd21ad4f28.png)
+![Doublets diagram 2](images/image-04.png)
 
 Doublets network is defined as:
 
 $$\lambda: L \to L \times L$$
 
-![Doublets network formula](https://habrastorage.org/getpro/habr/upload_files/1be/448/d48/1be448d4841c0ff25fc2633932e2b29a.png)
+![Doublets network formula](images/image-05.png)
 
 Where:
 - **λ** stands for a function that defines a doublets network;
@@ -90,11 +90,11 @@ Example:
 3 → (1,2)
 ```
 
-![Graph-like graphical representation of the doublets network](https://habrastorage.org/getpro/habr/upload_files/b0b/a17/ae1/b0ba17ae140fc76ab09305b281dc6115.png)
+![Graph-like graphical representation of the doublets network](images/image-06.png)
 
 *Graph-like graphical representation of the doublets network.*
 
-![Cartesian product representation](https://habrastorage.org/getpro/habr/upload_files/60d/a81/1de/60da811debf6a8c4e92eaf4647a8a72c.png)
+![Cartesian product representation](images/image-07.png)
 
 *This is a graphical representation of Cartesian product, that represents link values. Link values with orange parentheses are selected by the λ function in the example.*
 
@@ -133,15 +133,15 @@ L × L × L = {
 }
 ```
 
-![Triplets diagram 1](https://habrastorage.org/getpro/habr/upload_files/ae7/43d/7e5/ae743d7e5bf15b35ccb13c6076e81b45.png)
+![Triplets diagram 1](images/image-08.png)
 
-![Triplets diagram 2](https://habrastorage.org/getpro/habr/upload_files/bc7/1eb/50e/bc71eb50e5cfd2e8f1a7ca08a25e8e92.png)
+![Triplets diagram 2](images/image-09.png)
 
 Triplets network is defined as:
 
 $$\lambda: L \to L \times L \times L$$
 
-![Triplets network formula](https://habrastorage.org/getpro/habr/upload_files/ec2/1e5/10b/ec21e510bf143addc0ee0e0cd44d9c05.png)
+![Triplets network formula](images/image-10.png)
 
 Where:
 - **λ** stands for a function that defines a triplets network;
@@ -155,7 +155,7 @@ Example:
 4 → (1,2,3)
 ```
 
-![Graph-like graphical representation of the triplets network](https://habrastorage.org/getpro/habr/upload_files/47c/526/75d/47c52675d4a4114582be4eaebd967857.png)
+![Graph-like graphical representation of the triplets network](images/image-11.png)
 
 *Graph-like graphical representation of the triplets network.*
 
@@ -171,7 +171,7 @@ Links network in general is defined as:
 
 $$\lambda: L \to L^n$$
 
-![Links network formula](https://habrastorage.org/getpro/habr/upload_files/180/9db/b8a/1809dbb8a1d746395d996028285ba2e0.png)
+![Links network formula](images/image-12.png)
 
 Where:
 - **λ** stands for a function that defines a links network;
@@ -185,7 +185,7 @@ Example:
 4 → (1,2,3,2,1)
 ```
 
-![Example with variable length n-tuples](https://habrastorage.org/getpro/habr/upload_files/e11/861/8bb/e118618bb15612246a9819712bb2f59f.png)
+![Example with variable length n-tuples](images/image-13.png)
 
 *This example uses variable length n-tuples for link values.*
 
@@ -193,7 +193,7 @@ Sequences are essentially equivalent in expressive power with relational model. 
 
 ## Conclusion
 
-![Comparison diagram](https://habrastorage.org/getpro/habr/upload_files/9e6/996/e91/9e6996e91427ea413da19955f40a7bd1.png)
+![Comparison diagram](images/image-14.png)
 
 Relation model can represent everything, including associative model. Graph model is particularly good at representing relationships and is not so much in representing sequences.
 
@@ -207,7 +207,7 @@ Graph model lakes an ability to directly create edge between edges by definition
 
 ## References
 
-![Edgar F. Codd reference](https://habrastorage.org/getpro/habr/upload_files/f0d/239/cc7/f0d239cc76db273e63dbb119b80c80b9.jpeg)
+![Edgar F. Codd reference](images/image-15.jpeg)
 
 "Relational Model of Data for Large Shared Data Banks.", paragraph 1.3., Edgar F. Codd, IBM Research Laboratory, San Jose, California, June 1970
 

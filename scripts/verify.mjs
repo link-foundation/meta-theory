@@ -332,21 +332,40 @@ function verifyMarkdownContent(article, webContent, markdownText, verbose = fals
     }
   }
 
-  // Check for figure images (only for articles with local images)
-  if (article.hasLocalImages && article.expectedFigures) {
-    if (verbose) console.log('\n🖼️ Checking figure images...');
-    const figurePattern = /!\[(?:Figure|Рис\.?|Рисунок)\s*\d+\]\(images\/figure-\d+\.(png|jpg)\)/gi;
-    const figureMatches = markdownText.match(figurePattern) || [];
+  // Check for local images
+  if (article.hasLocalImages) {
+    if (verbose) console.log('\n🖼️ Checking local images...');
 
-    totalChecks++;
-    if (figureMatches.length >= article.expectedFigures) {
-      passedChecks++;
-      if (verbose) console.log(`   ✅ All ${figureMatches.length} figure images found in markdown`);
-    } else {
-      missing.images = article.expectedFigures - figureMatches.length;
-      if (verbose) console.log(`   ❌ Missing figure images: found ${figureMatches.length}/${article.expectedFigures}`);
+    // Check for figure images (Figure X pattern) if expectedFigures is set
+    if (article.expectedFigures) {
+      const figurePattern = /!\[(?:Figure|Рис\.?|Рисунок)\s*\d+[^\]]*\]\(images\/figure-\d+\.(png|jpg)\)/gi;
+      const figureMatches = markdownText.match(figurePattern) || [];
+
+      totalChecks++;
+      if (figureMatches.length >= article.expectedFigures) {
+        passedChecks++;
+        if (verbose) console.log(`   ✅ All ${figureMatches.length} figure images found in markdown`);
+      } else {
+        missing.images = article.expectedFigures - figureMatches.length;
+        if (verbose) console.log(`   ❌ Missing figure images: found ${figureMatches.length}/${article.expectedFigures}`);
+      }
     }
-  } else if (!article.hasLocalImages) {
+
+    // Check for general local images (image-XX pattern) if expectedImages is set
+    if (article.expectedImages) {
+      const imagePattern = /!\[[^\]]*\]\(images\/image-\d+\.(png|jpg|jpeg)\)/gi;
+      const imageMatches = markdownText.match(imagePattern) || [];
+
+      totalChecks++;
+      if (imageMatches.length >= article.expectedImages) {
+        passedChecks++;
+        if (verbose) console.log(`   ✅ All ${imageMatches.length} local images found in markdown`);
+      } else {
+        missing.images = (missing.images || 0) + (article.expectedImages - imageMatches.length);
+        if (verbose) console.log(`   ❌ Missing local images: found ${imageMatches.length}/${article.expectedImages}`);
+      }
+    }
+  } else {
     // For articles with external images, check that images are referenced
     if (verbose) console.log('\n🖼️ Checking external image references...');
     const imagePattern = /!\[.*?\]\(https?:\/\/.*?\)/g;

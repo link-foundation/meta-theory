@@ -15,9 +15,9 @@ export const ARTICLES = {
     markdownFile: 'article.md',
     screenshotFile: 'article.png',
     imagesDir: 'images',
-    // Images in this article are stored on external habrastorage URLs
-    // They reference directly in markdown without local download
-    hasLocalImages: false
+    // Images downloaded locally for full offline availability
+    hasLocalImages: true,
+    expectedImages: 15
   },
   '0.0.1': {
     version: '0.0.1',
@@ -29,9 +29,9 @@ export const ARTICLES = {
     markdownFile: 'article.md',
     screenshotFile: 'article.png',
     imagesDir: 'images',
-    // Images in this article are stored on external habrastorage URLs
-    // They reference directly in markdown without local download
-    hasLocalImages: false
+    // Images downloaded locally for full offline availability
+    hasLocalImages: true,
+    expectedImages: 10
   },
   '0.0.2': {
     version: '0.0.2',

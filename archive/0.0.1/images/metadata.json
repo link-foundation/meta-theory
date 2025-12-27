@@ -1,0 +1,62 @@
+[
+  {
+    "index": 1,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/e8f/883/fef/e8f883fefd210cb011de4adc628c0880.png",
+    "altText": "Рис. 1. Таблица описывается отношением , которое представляется множеством строк , принадлежащих декартову произведению .",
+    "localPath": "images/image-01.png"
+  },
+  {
+    "index": 2,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/828/474/4c4/8284744c403ee753e00cc90e5b602dd7.png",
+    "altText": "Рис. 2. Сравнение реляционной модели и ассоциативной модели данных (изначальная модель Саймона Вильямса была упрощена дважды). Иными словами для представления всех данных в реляционной модели требуется множество таблиц под каждый тип данных, в ассоциативной модели как оказалось было достаточно сначала двух таблиц, а потом и вовсе одной таблицы триплетов или дуплетов.",
+    "localPath": "изначальная модель Саймона Вильямса была упрощена дважды"
+  },
+  {
+    "index": 3,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/f3d/070/5f3/f3d0705f38254a8eb157ca72cf53f288.png",
+    "altText": "Рис. 3. Сравнение теории графов и теории связей. Вершина эквивалентна замкнутой на себя связи, то есть связи которая в себе начинается и в себе заканчивается. Направленное ребро отображается в направленную связь-дуплет. А ненаправленное ребро отображается в пару направленных связей-дуплетов в обоих направлениях. То есть если в теории графов требуется два типа сущностей - вершины и рёбра, то в теории связей достаточно только связей (больше всего похожих на рёбра).",
+    "localPath": "больше всего похожих на рёбра"
+  },
+  {
+    "index": 4,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/f23/51b/fe4/f2351bfe4d41eb941faf542197d51163.png",
+    "altText": "alt text",
+    "localPath": "images/image-04.png"
+  },
+  {
+    "index": 5,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/752/178/3cd/7521783cd0938c6d1f98667963df7467.png",
+    "altText": "alt text",
+    "localPath": "images/image-05.png"
+  },
+  {
+    "index": 6,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/87a/8a4/914/87a8a49142aa21abf813634df99f478c.png",
+    "altText": "alt text",
+    "localPath": "images/image-06.png"
+  },
+  {
+    "index": 7,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/a45/b25/979/a45b25979018b0847a1cf3ae1e34df60.png",
+    "altText": "alt text",
+    "localPath": "images/image-07.png"
+  },
+  {
+    "index": 8,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/43c/8b1/b36/43c8b1b36ce92b6cf1cf2b402efd95d8.png",
+    "altText": "alt text",
+    "localPath": "images/image-08.png"
+  },
+  {
+    "index": 9,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/ca2/b5e/f9c/ca2b5ef9c0d0989a2ba8a8d4f097f184.png",
+    "altText": "alt text",
+    "localPath": "images/image-09.png"
+  },
+  {
+    "index": 10,
+    "originalUrl": "https://habrastorage.org/r/w1560/getpro/habr/upload_files/76c/672/576/76c6725766a17ea75ebed8e99abd070e.jpeg",
+    "altText": "alt text",
+    "localPath": "images/image-10.jpeg"
+  }
+]

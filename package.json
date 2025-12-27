@@ -4,19 +4,13 @@
   "type": "module",
   "description": "Experiments and scripts for meta-theory repository",
   "scripts": {
-    "test": "npm run test:math && npm run test:playwright && npm run test:puppeteer",
-    "test:math": "node scripts/verify-math-conversion.mjs",
-    "test:playwright": "node scripts/verify-article-playwright.mjs",
-    "test:puppeteer": "node scripts/verify-article-puppeteer.mjs",
-    "test:verify": "npm run test:playwright",
-    "capture-article": "node scripts/capture_article.mjs",
-    "capture-habr": "node scripts/capture-habr-full.mjs",
-    "verify-playwright": "node scripts/verify_article_playwright.mjs",
-    "verify-puppeteer": "node scripts/verify_article_puppeteer.mjs",
-    "verify": "npm run verify-playwright && npm run verify-puppeteer",
-    "test:markdown": "node scripts/test-markdown-verification.mjs",
-    "test:markdown:playwright": "node scripts/test-markdown-verification-playwright.mjs",
-    "test:markdown:puppeteer": "node scripts/test-markdown-verification-puppeteer.mjs"
+    "test": "node scripts/verify.mjs --all",
+    "verify": "node scripts/verify.mjs --all",
+    "verify:0.0.0": "node scripts/verify.mjs 0.0.0",
+    "verify:0.0.1": "node scripts/verify.mjs 0.0.1",
+    "verify:0.0.2": "node scripts/verify.mjs 0.0.2",
+    "download:images": "node scripts/download.mjs --all --images",
+    "download:screenshots": "node scripts/download.mjs --all --screenshot"
   },
   "repository": {
     "type": "git",

@@ -9,10 +9,14 @@
     "verify:0.0.0": "node scripts/verify.mjs 0.0.0",
     "verify:0.0.1": "node scripts/verify.mjs 0.0.1",
     "verify:0.0.2": "node scripts/verify.mjs 0.0.2",
+    "download:articles": "node scripts/download-article.mjs --all",
+    "download:article:0.0.0": "node scripts/download-article.mjs 0.0.0",
+    "download:article:0.0.1": "node scripts/download-article.mjs 0.0.1",
+    "download:article:0.0.2": "node scripts/download-article.mjs 0.0.2",
     "download:images": "node scripts/download.mjs --all --images",
     "download:screenshots": "node scripts/download.mjs --all --screenshot",
     "download:markdown-images": "node scripts/download-markdown-images.mjs --all",
-    "download:all": "npm run download:markdown-images && npm run download:screenshots"
+    "download:all": "npm run download:articles && npm run download:markdown-images && npm run download:screenshots"
   },
   "repository": {
     "type": "git",

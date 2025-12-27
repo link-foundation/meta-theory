@@ -9,7 +9,7 @@ export const ARTICLES = {
   '0.0.0': {
     version: '0.0.0',
     title: 'Math introduction to Deep Theory',
-    url: 'https://habr.com/en/articles/658705/',
+    url: 'https://habr.com/en/companies/deepfoundation/articles/658705/',
     language: 'en',
     archivePath: 'archive/0.0.0',
     markdownFile: 'article.md',
@@ -17,13 +17,13 @@ export const ARTICLES = {
     imagesDir: 'images',
     // Images downloaded locally for full offline availability
     hasLocalImages: true,
-    expectedImages: 15
+    expectedFigures: 12
   },
   '0.0.1': {
     version: '0.0.1',
     title: 'Глубокая Теория Связей 0.0.1',
     titleEnglish: 'Deep Theory of Links 0.0.1',
-    url: 'https://habr.com/ru/articles/804617/',
+    url: 'https://habr.com/ru/companies/deepfoundation/articles/804617/',
     language: 'ru',
     archivePath: 'archive/0.0.1',
     markdownFile: 'article.md',
@@ -31,7 +31,7 @@ export const ARTICLES = {
     imagesDir: 'images',
     // Images downloaded locally for full offline availability
     hasLocalImages: true,
-    expectedImages: 10
+    expectedFigures: 10
   },
   '0.0.2': {
     version: '0.0.2',

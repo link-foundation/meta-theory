@@ -103,9 +103,12 @@ async function extractWebPageContent(article, verbose = false) {
 
   // Navigate to the page and wait for it to fully load
   await page.goto(article.url, {
-    waitUntil: 'networkidle',
-    timeout: 60000
+    waitUntil: 'domcontentloaded',
+    timeout: 120000
   });
+
+  // Wait for article body to appear
+  await page.waitForSelector('.article-formatted-body', { timeout: 30000 });
 
   // Scroll through the page to trigger lazy loading
   await page.evaluate(async () => {

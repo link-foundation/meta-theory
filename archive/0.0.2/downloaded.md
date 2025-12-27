@@ -6,7 +6,7 @@ Last April 1st, as you might have guessed, we were joking. It’s time to fix th
 
 This article contains many letters, but it can be represented using just 4 symbols from [set theory](https://en.wikipedia.org/wiki/Set_theory):
 
-> $L \to L^2$
+$$L \to L^2$$
 
 Everything else follows from them.
 
@@ -39,17 +39,17 @@ A [relation](https://en.wikipedia.org/wiki/Relation_(database)) is defined as a 
 
 **Where:**
 
-- The [symbol](https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols) $\mathbf{R}$denotes a [relation](https://en.wikipedia.org/wiki/Relation_(mathematics)) ([table](https://en.wikipedia.org/wiki/Table_(database)));
+- The [symbol](https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols) $\mathbf{R}$ denotes a [relation](https://en.wikipedia.org/wiki/Relation_(mathematics)) ([table](https://en.wikipedia.org/wiki/Table_(database)));
 - The [symbol](https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols) $\subseteq$ indicates that the left side of the [expression](https://en.wikipedia.org/wiki/Expression_(mathematics)) is a [subset](https://en.wikipedia.org/wiki/Subset) of the right side;
 - The [symbol](https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols) $\times$ denotes the [Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) of two [sets](https://en.wikipedia.org/wiki/Set_(mathematics));
-- The [expression](https://en.wikipedia.org/wiki/Expression_(mathematics))$\mathbf{S_n}$represents the [domain](https://en.wikipedia.org/wiki/Data_domain), i.e., the [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of all possible [values](https://en.wikipedia.org/wiki/Value_(computer_science)) that each [cell](https://en.wikipedia.org/wiki/Table_(database)) in a [column](https://en.wikipedia.org/wiki/Table_(database)) can contain.
+- The [expression](https://en.wikipedia.org/wiki/Expression_(mathematics))$\mathbf{S_n}$ represents the [domain](https://en.wikipedia.org/wiki/Data_domain), i.e., the [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of all possible [values](https://en.wikipedia.org/wiki/Value_(computer_science)) that each [cell](https://en.wikipedia.org/wiki/Table_(database)) in a [column](https://en.wikipedia.org/wiki/Table_(database)) can contain.
 
 [Rows](https://en.wikipedia.org/wiki/Row_(database)), or [elements](https://en.wikipedia.org/wiki/Element_(mathematics)) of the [relation](https://en.wikipedia.org/wiki/Relation_(database)) $\mathbf{R}$, are represented as [n-tuples](https://en.wikipedia.org/wiki/Tuple).
 
 [Data](https://en.wikipedia.org/wiki/Data_(computer_science)) in the [relational model](https://en.wikipedia.org/wiki/Relational_model) is grouped into [relations](https://en.wikipedia.org/wiki/Relation_(database)). By using [n-tuples](https://en.wikipedia.org/wiki/Tuple) in this [model](https://en.wikipedia.org/wiki/Database_model), one can precisely represent any conceivable [data structure](https://en.wikipedia.org/wiki/Data_structure), if only we actually ever used [n-tuples](https://en.wikipedia.org/wiki/Tuple) for that. And are [n-tuples](https://en.wikipedia.org/wiki/Tuple) even necessary? For example, every [n-tuple](https://en.wikipedia.org/wiki/Tuple) can be represented as [nested ordered pairs](https://en.wikipedia.org/wiki/Tuple#Tuples_as_nested_ordered_pairs), which suggests that [ordered pairs](https://en.wikipedia.org/wiki/Ordered_pair) alone might be sufficient to represent any [data](https://en.wikipedia.org/wiki/Data_(computer_science)). Moreover, it’s uncommon for [column](https://en.wikipedia.org/wiki/Table_(database)) values in [tables](https://en.wikipedia.org/wiki/Table_(database)) to be represented as [n-tuples](https://en.wikipedia.org/wiki/Tuple) (although, for instance, a [number](https://en.wikipedia.org/wiki/Number) can be [decomposed](https://en.wikipedia.org/wiki/Decomposition_(computer_science)) into an [n-tuple](https://en.wikipedia.org/wiki/Tuple) of [bits](https://en.wikipedia.org/wiki/Bit)). In some [SQL](https://en.wikipedia.org/wiki/SQL) [databases](https://en.wikipedia.org/wiki/Database), it is even forbidden to use more than $\mathbf{32}$ [columns](https://en.wikipedia.org/wiki/Table_(database)) in a [table](https://en.wikipedia.org/wiki/Table_(database)) (and, by extension, in its corresponding [n-tuple](https://en.wikipedia.org/wiki/Tuple)). Thus, the actual value of $\mathbf{n}$ is usually lower than $\mathbf{32}$. Therefore, in these cases, there are no [true](https://en.wikipedia.org/wiki/Truth) [n-tuples](https://en.wikipedia.org/wiki/Tuple) — even in modern [relational](https://en.wikipedia.org/wiki/Relational_model) [databases](https://en.wikipedia.org/wiki/Database).
 
-![**Figure 2.** Comparison of the [relational model](https://en.wikipedia.org/wiki/Relational_model) and the [associative model of data](http://iacis.org/iis/2009/P2009_1301.pdf) (the original [model](https://en.wikipedia.org/wiki/Data_model) proposed by [Simon Williams](https://www.linkedin.com/in/s1m0n) was simplified by us twice) [[3]](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf). In other words, representing all [data](https://en.wikipedia.org/wiki/Data_(computer_science)) in the [relational model](https://en.wikipedia.org/wiki/Relational_model) requires a multitude of [tables](https://en.wikipedia.org/wiki/Table_(database)) — one for each [data type](https://en.wikipedia.org/wiki/Data_type) — whereas in the[ associative model](https://web.archive.org/web/20210814063207/https://en.wikipedia.org/wiki/Associative_model_of_data), it turned out that initially just two [tables](https://en.wikipedia.org/wiki/Table_(database)) were sufficient (`items` and `links`), and eventually just a single [table](https://en.wikipedia.org/wiki/Table_(database))  (`links`) of [triplet](https://en.wikipedia.org/wiki/Tuple)-links or [doublet](https://en.wikipedia.org/wiki/Ordered_pair)-links was enough.](images/figure-2.png)
-***Figure 2.** Comparison of the [relational model](https://en.wikipedia.org/wiki/Relational_model) and the [associative model of data](http://iacis.org/iis/2009/P2009_1301.pdf) (the original [model](https://en.wikipedia.org/wiki/Data_model) proposed by [Simon Williams](https://www.linkedin.com/in/s1m0n) was simplified by us twice) [[3]](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf). In other words, representing all [data](https://en.wikipedia.org/wiki/Data_(computer_science)) in the [relational model](https://en.wikipedia.org/wiki/Relational_model) requires a multitude of [tables](https://en.wikipedia.org/wiki/Table_(database)) — one for each [data type](https://en.wikipedia.org/wiki/Data_type) — whereas in the[ associative model](https://web.archive.org/web/20210814063207/https://en.wikipedia.org/wiki/Associative_model_of_data), it turned out that initially just two [tables](https://en.wikipedia.org/wiki/Table_(database)) were sufficient (`items` and `links`), and eventually just a single [table](https://en.wikipedia.org/wiki/Table_(database))  (`links`) of [triplet](https://en.wikipedia.org/wiki/Tuple)-links or [doublet](https://en.wikipedia.org/wiki/Ordered_pair)-links was enough.*
+![**Figure 2.** Comparison of the [relational model](https://en.wikipedia.org/wiki/Relational_model) and the [associative model of data](http://iacis.org/iis/2009/P2009_1301.pdf) (the original [model](https://en.wikipedia.org/wiki/Data_model) proposed by [Simon Williams](https://www.linkedin.com/in/s1m0n) was simplified by us twice) [[3]](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf). In other words, representing all [data](https://en.wikipedia.org/wiki/Data_(computer_science)) in the [relational model](https://en.wikipedia.org/wiki/Relational_model) requires a multitude of [tables](https://en.wikipedia.org/wiki/Table_(database)) — one for each [data type](https://en.wikipedia.org/wiki/Data_type) — whereas in the[ associative model](https://web.archive.org/web/20210814063207/https://en.wikipedia.org/wiki/Associative_model_of_data), it turned out that initially just two [tables](https://en.wikipedia.org/wiki/Table_(database)) were sufficient (`items` and `links`), and eventually just a single [table](https://en.wikipedia.org/wiki/Table_(database)) (`links`) of [triplet](https://en.wikipedia.org/wiki/Tuple)-links or [doublet](https://en.wikipedia.org/wiki/Ordered_pair)-links was enough.](images/figure-2.png)
+***Figure 2.** Comparison of the [relational model](https://en.wikipedia.org/wiki/Relational_model) and the [associative model of data](http://iacis.org/iis/2009/P2009_1301.pdf) (the original [model](https://en.wikipedia.org/wiki/Data_model) proposed by [Simon Williams](https://www.linkedin.com/in/s1m0n) was simplified by us twice) [[3]](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf). In other words, representing all [data](https://en.wikipedia.org/wiki/Data_(computer_science)) in the [relational model](https://en.wikipedia.org/wiki/Relational_model) requires a multitude of [tables](https://en.wikipedia.org/wiki/Table_(database)) — one for each [data type](https://en.wikipedia.org/wiki/Data_type) — whereas in the[ associative model](https://web.archive.org/web/20210814063207/https://en.wikipedia.org/wiki/Associative_model_of_data), it turned out that initially just two [tables](https://en.wikipedia.org/wiki/Table_(database)) were sufficient (`items` and `links`), and eventually just a single [table](https://en.wikipedia.org/wiki/Table_(database)) (`links`) of [triplet](https://en.wikipedia.org/wiki/Tuple)-links or [doublet](https://en.wikipedia.org/wiki/Ordered_pair)-links was enough.*
 
 ### Directed Graph
 
@@ -96,9 +96,9 @@ L × L = {
 
 - $L$ is the set of references (from the English word “Links” as in “References”).
 
-In this example, the set $L$ contains only $2$ references to links, namely $1$ and $2$. In other words, in a network of links built on such a set of references, there can be only $2$ links.
+In this example, the set $L $ contains only $2$ references to links, namely $1$ and $2$. In other words, in a network of links built on such a set of references, there can be only $2$ links.
 
-To obtain all possible values of a link, [the Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) of $L$ with itself is used, i.e.,$L \times L$.
+To obtain all possible values of a link, [the Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) of $L $ with itself is used, i.e.,$ L \times L$.
 
 ![**Figure 4.** A matrix representing the Cartesian product of the set {1, 2} with itself. Here we see that links with two references to links can have only 4 possible values.](images/figure-4.png)
 ***Figure 4.** A matrix representing the Cartesian product of the set {1, 2} with itself. Here we see that links with two references to links can have only 4 possible values.*
@@ -108,17 +108,19 @@ To obtain all possible values of a link, [the Cartesian product](https://en.wiki
 
 The **doublet-links network** is defined as:
 
-> $\mathbf{\lambda: L \to L \times L}$
+$$\mathbf{\lambda: L \to L \times L}$$
 
 Where:
 
-- $\to$denotes [a mapping (function)](https://en.wikipedia.org/wiki/Function_(mathematics));
-- $\mathbf{\lambda}$  represents the function that defines the duplet-links network;
+- $\to$ denotes [a mapping (function)](https://en.wikipedia.org/wiki/Function_(mathematics));
+- $\mathbf{\lambda}$ represents the function that defines the duplet-links network;
 - $\mathbf{L}$ denotes the set of references to links.
 
 **Example**:
 
-> $1 \to (1, 1)$$2 \to (2, 2)$$\mathbf{3 \to (1, 2)}$
+> $1 \to (1, 1)$
+
+$2 \to (2, 2)$$\mathbf{3 \to (1, 2)}$
 
 ![**Figure 6. A network of three links.** The representation of the duplet‑links network resembles a graph, but we refer to this visualization as a network of links. The first and second links have a similar structure — that is, both begin from themselves and end in themselves. As a result, instead of the traditional depiction of a vertex as a point in graph theory, we get a graphical representation of a closed self‑referential arrow that resembles an infinity symbol.](images/figure-6.png)
 ***Figure 6. A network of three links.** The representation of the duplet‑links network resembles a graph, but we refer to this visualization as a network of links. The first and second links have a similar structure — that is, both begin from themselves and end in themselves. As a result, instead of the traditional depiction of a vertex as a point in graph theory, we get a graphical representation of a closed self‑referential arrow that resembles an infinity symbol.*
@@ -171,7 +173,7 @@ L × L × L = {
 
 A **triplet links network** is defined as:
 
-> $\mathbf{\lambda : L \to L \times L \times L}$
+$$\mathbf{\lambda : L \to L \times L \times L}$$
 
 Where:
 
@@ -180,7 +182,11 @@ Where:
 
 Example of a function specifying a particular triplet links network:
 
-> $1 \to (1, 1, 1)$$2 \to (2, 2, 2)$$3 \to (3, 3, 3)$$\mathbf{4 \to (1, 2, 3)}$
+> $1 \to (1, 1, 1)$
+
+$2 \to (2, 2, 2)$$3 \to (3, 3, 3)$
+
+$\mathbf{4 \to (1, 2, 3)}$
 
 ![**Figure 10.** An associative triplet network represented as a colored directed graph. In this associative network, there are 4 triplet-links corresponding to the function defined above. The nodes correspond to links, and the edge colors correspond to references to links as shown in Figure 9 (red – from, blue – type, green – to).](images/figure-10.jpg)
 ***Figure 10.** An associative triplet network represented as a colored directed graph. In this associative network, there are 4 triplet-links corresponding to the function defined above. The nodes correspond to links, and the edge colors correspond to references to links as shown in Figure 9 (red – from, blue – type, green – to).*
@@ -199,7 +205,7 @@ A sequence of link references — also known as an [n-tuple](https://en.wikipedi
 
 In general, a links network is defined as:
 
-> $\mathbf{\lambda : L \rightarrow \underbrace{ L \times L \times \ldots \times L}_{n}}$
+$$\mathbf{\lambda : L \rightarrow \underbrace{ L \times L \times \ldots \times L}_{n}}$$
 
 Where:
 
@@ -208,7 +214,11 @@ Where:
 
 Example:
 
-> $1 \to (1)$$2 \to (2, 2)$$3 \to (3, 3, 3)$$\mathbf{4 \to (1, 2, 3, 2, 1)}$
+> $1 \to (1)$
+
+$2 \to (2, 2)$$3 \to (3, 3, 3)$
+
+$\mathbf{4 \to (1, 2, 3, 2, 1)}$
 
 In this example, n-tuples of variable lengths are used as link's values. 
 
@@ -216,7 +226,7 @@ Sequences (vectors) are, in essence, equivalent in expressive power to the relat
 
 ### Comparison summary
 
-The [relational data model](https://en.wikipedia.org/wiki/Relational_model) can represent everything — even [the associative model](https://web.archive.org/web/20210814063207/https://en.wikipedia.org/wiki/Associative_model_of_data), but to do so [well-ordering](https://en.wikipedia.org/wiki/Well-order) must be introduced, which usually comes in a form of separate ID column. As the relational data model is based on notion of [set](https://en.wikipedia.org/wiki/Set_(mathematics)) instead of a [sequence](https://en.wikipedia.org/wiki/Sequence).  In contrast, the graph model excels at representing relationships, but is less effective at representing unique deduplicated sequences.
+The [relational data model](https://en.wikipedia.org/wiki/Relational_model) can represent everything — even [the associative model](https://web.archive.org/web/20210814063207/https://en.wikipedia.org/wiki/Associative_model_of_data), but to do so [well-ordering](https://en.wikipedia.org/wiki/Well-order) must be introduced, which usually comes in a form of separate ID column. As the relational data model is based on notion of [set](https://en.wikipedia.org/wiki/Set_(mathematics)) instead of a [sequence](https://en.wikipedia.org/wiki/Sequence). In contrast, the graph model excels at representing relationships, but is less effective at representing unique deduplicated sequences.
 
 Although the relational model itself doesn’t require data to be split across several tables, traditional implementations typically adopt that approach with fixed schemas, which leads to fragmentation of related data and complicates the reconstruction of inherent relationships. In contrast, the associative model employs a unified links storage that achieves the highest possible degree of normalization. This design simplifies the one-to-one mapping of the business domain, thereby easing rapid requirement changes [[4]](https://www.researchgate.net/publication/255670856_A_COMPARISON_OF_THE_RELATIONAL_DATABASE_MODEL_AND_THE_ASSOCIATIVE_DATABASE_MODEL).
 
@@ -256,39 +266,39 @@ A **reference to a vector** is a unique identifier or ordinal number, which is
 
 Set of references to vectors:
 
-> $\mathbf{L ⊆ ℕ_0}$
+$$\mathbf{L ⊆ ℕ_0}$$
 
 A **vector of references** is a vector consisting of zero or more references to vectors, where the number of references corresponds to the number of elements in the vector.
 
 Set of all vectors of references of length $n ∈ ℕ_0$:
 
-> $\mathbf{V_n = L^n}$
+$$\mathbf{V_n = L^n}$$
 
-The Cartesian power $L^n$ always produces a vector of length $n$ , since all its components are of the same type $L$.
-In other words, $L^n$ represents the set of all possible n-element vectors (essentially n‑tuples), in which every element belongs to the set $L$.
+The Cartesian power $L^n $ always produces a vector of length $ n $ , since all its components are of the same type $ L$.
+In other words, $L^n $ represents the set of all possible n-element vectors (essentially n‑tuples), in which every element belongs to the set $ L$.
 
 An **association** is an ordered pair consisting of a reference to a vector and a vector of references. This structure serves as a mapping between references and vectors.
 
-> $\mathbf{A = L \times V_n}$
+$$\mathbf{A = L \times V_n}$$
 
-An **associative network** of vectors of length** n** (or an n-dimensional associative network) is defined by a family of functions $\{anetv^n\}$, where each function$anetv^n: L → V_n$ maps a reference $l ∈ L$ to a vector of references of length $n$, belonging to $V_n$, thereby identifying points in an n-dimensional space.
-$n$ in $anetv^n$ indicates that the function returns vectors containing $n$ references. Each n-dimensional associative network thus represents a sequence of points in n-dimensional space.
+An **associative network** of vectors of length** n** (or an n-dimensional associative network) is defined by a family of functions $\{anetv^n\}$, where each function $ anetv^n: L → V_n$ maps a reference $ l ∈ L $ to a vector of references of length $ n $, belonging to $ V_n$, thereby identifying points in an n-dimensional space.
+$n $ in $ anetv^n $ indicates that the function returns vectors containing $ n$ references. Each n-dimensional associative network thus represents a sequence of points in n-dimensional space.
 
 **Family of functions:**
 
-> $\mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}$
+$$\mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}$$
 
-Here, the union symbol $∪_f$ denotes the aggregation of all functions in the family $\{anetv^n\}$, and the symbol  $ ⊆$ indicates that these ordered pairs — viewed as functional binary relations —are a subset of the set $A$ of all associations.
+Here, the union symbol $∪_f $ denotes the aggregation of all functions in the family $\{anetv^n\}$, and the symbol  $ ⊆$ indicates that these ordered pairs — viewed as functional binary relations —are a subset of the set $ A$ of all associations.
 
 **Set of duplets (ordered pairs or 2-dimensional vectors) of references:**
 
-> $\mathbf{D = L^2}$
+$$\mathbf{D = L^2}$$
 
-This is the set of all duplets $(L, L)$, i.e., the second Cartesian power of $L$ .
+This is the set of all duplets $(L, L)$, i.e., the second Cartesian power of $ L$ .
 
 **Associative network of duplets (or a 2-dimensional associative network):**
 
-> $\mathbf{anetd: L → L^2}$
+$$\mathbf{anetd: L → L^2}$$
 
 Each associative network of duplets thus represents a sequence of points in a two‑dimensional space.
 
@@ -296,9 +306,9 @@ An empty vector (vector of length zero) is represented by the empty tuple, denot
 
 **Associative network of nested ordered pairs:**
 
-> $\mathbf{anetl: L → NP}\textbf{, where }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\} }$
+$$\mathbf{anetl: L → NP}\textbf{, where }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\} }$$
 
-$NP$ is the set of nested ordered pairs consisting of empty pairs and pairs containing one or more elements. In this way, a vector of length $n \in \mathbb{N}_0$ can be represented as nested ordered pairs.
+$NP $ is the set of nested ordered pairs consisting of empty pairs and pairs containing one or more elements. In this way, a vector of length $ n \in \mathbb{N}_0$ can be represented as nested ordered pairs.
 
 ### Projection of the links theory into type theory (coq) via set theory
 
@@ -389,10 +399,10 @@ Fixpoint NPToVnOption (n: nat) (p: NP) : option (Vn n) :=
   match n, p with
   | 0, List.nil => Some (Vector.nil nat)
   | S n', List.cons f p' => 
-      match NPToVnOption n' p' with
-      | None => None
-      | Some t => Some (Vector.cons nat f n' t)
-      end
+  match NPToVnOption n' p' with
+  | None => None
+  | Some t => Some (Vector.cons nat f n' t)
+  end
   | _, _ => None
   end.
 
@@ -406,9 +416,9 @@ Definition NPToVn (n: nat) (p: NP) : Vn n :=
 (* Function to convert ANetLf to ANetVf *)
 Definition ANetLfToANetVf { n: nat } (net: ANetLf) : ANetVf n :=
   fun id => match NPToVnOption n (net id) with
-            | Some t => t
-            | None => VnDefault n
-            end.
+  | Some t => t
+  | None => VnDefault n
+  end.
 
 (* Function to convert ANetLl to ANetVl *)
 Definition ANetLlToANetVl {n: nat} (net : ANetLl) : ANetVl n :=
@@ -434,10 +444,10 @@ Fixpoint ANetDl_behead (anet: ANetDl) (offset : nat) : ANetDl :=
   match offset with
   | 0 => anet
   | S n' =>
-    match anet with
-    | nil => nil
-    | cons h t => ANetDl_behead t n'
-    end
+  match anet with
+  | nil => nil
+  | cons h t => ANetDl_behead t n'
+  end
   end.
 
 (* Function to convert ANetDl to NP with indexing starting at the beginning of ANetDl from offset *)
@@ -445,10 +455,10 @@ Fixpoint ANetDlToNP_ (anet: ANetDl) (offset: nat) (index: nat): NP :=
   match anet with
   | nil => nil
   | cons (x, next_index) tail_anet =>
-    if offset =? index then
-      cons x (ANetDlToNP_ tail_anet (S offset) next_index)
-    else
-      ANetDlToNP_ tail_anet (S offset) index
+  if offset =? index then
+  cons x (ANetDlToNP_ tail_anet (S offset) next_index)
+  else
+  ANetDlToNP_ tail_anet (S offset) index
   end.
 
 (* Function to read NP from ANetDl by the duplet index *)
@@ -482,23 +492,23 @@ Definition ANetLlToANetDl (anetl: ANetLl) : ANetDl :=
   end.
 
 (* Function to find NP in the tail of ANetDl starting at offset by its ordinal number.
-   Returns the NP offset. *)
+  Returns the NP offset. *)
 Fixpoint ANetDl_offsetNP_ (anet: ANetDl) (offset: nat) (index: nat) : nat :=
   match anet with
   | nil => offset + (length anet)
   | cons (_, next_index) tail_anet =>
-    match index with
-    | O => offset
-    | S index' => 
-      if offset =? next_index then
-        ANetDl_offsetNP_ tail_anet (S offset) index'
-      else
-        ANetDl_offsetNP_ tail_anet (S offset) index
-    end
+  match index with
+  | O => offset
+  | S index' => 
+  if offset =? next_index then
+  ANetDl_offsetNP_ tail_anet (S offset) index'
+  else
+  ANetDl_offsetNP_ tail_anet (S offset) index
+  end
   end.
 
 (* Function to find NP in ANetDl by its ordinal number.
-   Returns the NP offset. *)
+  Returns the NP offset. *)
 Definition ANetDl_offsetNP (anet: ANetDl) (index: nat) : nat :=
   ANetDl_offsetNP_ anet 0 index.
 
@@ -520,10 +530,10 @@ Fixpoint ANetDl_beheadNP (anet: ANetDl) (offset: nat) : ANetDl :=
   match anet with
   | nil => nil
   | cons (_, next_index) tail_anet =>
-    if offset =? next_index then (* end of NP *)
-      tail_anet
-    else  (* NP not ended yet *)
-      ANetDl_beheadNP tail_anet (S offset)
+  if offset =? next_index then (* end of NP *)
+  tail_anet
+  else (* NP not ended yet *)
+  ANetDl_beheadNP tail_anet (S offset)
   end.
 
 (* Function to convert NP and ANetDl with an offset into ANetLl *)
@@ -531,10 +541,10 @@ Fixpoint ANetDlToANetLl_ (anetd: ANetDl) (np: NP) (offset: nat) : ANetLl :=
   match anetd with
   | nil => nil (* discard NP even if incomplete *)
   | cons (x, next_index) tail_anet =>
-    if offset =? next_index then (* end of NP, move to the next NP *)
-      cons (app np (cons x nil)) (ANetDlToANetLl_ tail_anet nil (S offset))
-    else  (* NP not finished yet, continue parsing the duplet network *)
-      ANetDlToANetLl_ tail_anet (app np (cons x nil)) (S offset)
+  if offset =? next_index then (* end of NP, move to the next NP *)
+  cons (app np (cons x nil)) (ANetDlToANetLl_ tail_anet nil (S offset))
+  else (* NP not finished yet, continue parsing the duplet network *)
+  ANetDlToANetLl_ tail_anet (app np (cons x nil)) (S offset)
   end.
 
 (* Function to convert ANetDl to ANetLl *)
@@ -546,17 +556,17 @@ Definition ANetDlToANetLl (anetd: ANetDl) : ANetLl :=
 
 ```
 (* The definition ANetVf_equiv introduces a predicate for the equivalence of two associative networks of vectors of length n,
-   anet1 and anet2 of type ANetVf.
+  anet1 and anet2 of type ANetVf.
 
-   This predicate describes the property of "equivalence" for such networks.
-   It asserts that anet1 and anet2 are considered "equivalent" if, for every reference id, the vector associated with id in anet1
-   exactly matches the vector associated with the same id in anet2.
+  This predicate describes the property of "equivalence" for such networks.
+  It asserts that anet1 and anet2 are considered "equivalent" if, for every reference id, the vector associated with id in anet1
+  exactly matches the vector associated with the same id in anet2.
 *)
 Definition ANetVf_equiv {n: nat} (anet1: ANetVf n) (anet2: ANetVf n) : Prop :=
   forall id, anet1 id = anet2 id.
 
 (* The definition ANetVl_equiv_Vl introduces a predicate for the equivalence of two associative networks of vectors of length n,
-   anet1 and anet2 of type ANetVl.
+  anet1 and anet2 of type ANetVl.
 *)
 Definition ANetVl_equiv_Vl {n: nat} (anet1: ANetVl n) (anet2: ANetVl n) : Prop :=
   anet1 = anet2.
@@ -583,20 +593,20 @@ Qed.
 
 (* Lemma on the mutual inversion of the functions NPToVnOption and VnToNP
 
-   H_inverse proves that every Vn vector can be converted losslessly to an NP
-   using VnToNP and then back to Vn using NPToVnOption.
+  H_inverse proves that every Vn vector can be converted losslessly to an NP
+  using VnToNP and then back to Vn using NPToVnOption.
 
-   Formally, forall n: nat, forall t: Vn n, NPToVnOption n (VnToNP t) = Some t states that
-   for every natural number n and each Vn vector of length n,
-   we can convert Vn to NP using VnToNP,
-   then convert the result back to Vn using NPToVnOption n,
-   and ultimately obtain the same Vn vector we started with.
+  Formally, forall n: nat, forall t: Vn n, NPToVnOption n (VnToNP t) = Some t states that
+  for every natural number n and each Vn vector of length n,
+  we can convert Vn to NP using VnToNP,
+  then convert the result back to Vn using NPToVnOption n,
+  and ultimately obtain the same Vn vector we started with.
 
-   This property is very important because it guarantees that these two functions
-   form an inverse pair on the set of convertible vectors Vn and NP.
-   When you apply both functions to values in this set, you end up with the original value.
-   This means that no information is lost during the transformations,
-   so you can freely convert between Vn and NP as required in implementations or proofs.
+  This property is very important because it guarantees that these two functions
+  form an inverse pair on the set of convertible vectors Vn and NP.
+  When you apply both functions to values in this set, you end up with the original value.
+  This means that no information is lost during the transformations,
+  so you can freely convert between Vn and NP as required in implementations or proofs.
 *)
 Lemma H_inverse: forall n: nat, forall t: Vn n, NPToVnOption n (VnToNP t) = Some t.
 Proof.
@@ -608,27 +618,27 @@ Qed.
 
 
 (*
-   The Wrapping and Recovery Theorem for the Associative Network of Vectors:
+  The Wrapping and Recovery Theorem for the Associative Network of Vectors:
 
-   Let an associative network of vectors of length n be given, denoted as anetvⁿ : L → Vⁿ.
-   Define an operation that maps this network to the associative network of nested ordered pairs anetl : L → NP,
-   where NP = {(∅,∅) | (l, np), l ∈ L, np ∈ NP}.
-   Then define the inverse mapping from the associative network of nested ordered pairs back to the associative network of vectors of length n.
+  Let an associative network of vectors of length n be given, denoted as anetvⁿ : L → Vⁿ.
+  Define an operation that maps this network to the associative network of nested ordered pairs anetl : L → NP,
+  where NP = {(∅,∅) | (l, np), l ∈ L, np ∈ NP}.
+  Then define the inverse mapping from the associative network of nested ordered pairs back to the associative network of vectors of length n.
 
-   The theorem states:
+  The theorem states:
 
-   For any associative network of vectors of length n, anetvⁿ, applying the transformation to the associative network
-   of nested ordered pairs and then the inverse transformation back to the associative network of vectors of length n
-   recovers the original network anetvⁿ.
-   In other words:
+  For any associative network of vectors of length n, anetvⁿ, applying the transformation to the associative network
+  of nested ordered pairs and then the inverse transformation back to the associative network of vectors of length n
+  recovers the original network anetvⁿ.
+  In other words:
 
-       ∀ anetvⁿ : L → Vⁿ, inverse(forward(anetvⁿ)) = anetvⁿ.
+  ∀ anetvⁿ : L → Vⁿ, inverse(forward(anetvⁿ)) = anetvⁿ.
 *)
 Theorem anetf_equiv_after_transforms : forall {n: nat} (anet: ANetVf n),
   ANetVf_equiv anet (fun id => match NPToVnOption n ((ANetVfToANetLf anet) id) with
-                            | Some t => t
-                            | None   => anet id
-                            end).
+  | Some t => t
+  | None => anet id
+  end).
 Proof.
   intros n net id.
   unfold ANetVfToANetLf.
@@ -640,15 +650,15 @@ Qed.
 
 (* Lemma on preservation of the length of NP lists in the duplet associative network *)
 Lemma NP_dim_preserved : forall (offset: nat) (np: NP), 
-    length np = length (NPToANetDl_ offset np).
+  length np = length (NPToANetDl_ offset np).
 Proof.
   intros offset np.
   generalize dependent offset. 
   induction np as [| n np' IHnp']; intros offset.
   - simpl. reflexivity.
   - destruct np' as [| m np'']; simpl; simpl in IHnp'.
-    + reflexivity.
-    + rewrite IHnp' with (offset := S offset). reflexivity.
+  + reflexivity.
+  + rewrite IHnp' with (offset := S offset). reflexivity.
 Qed.
 ```
 
@@ -680,9 +690,9 @@ Definition nestedPair0 := VnToNP exampleTuple0.
 Definition nestedPair1 := VnToNP exampleTuple1.
 Definition nestedPair4 := VnToNP exampleTuple4.
 
-Compute nestedPair0.  (* Expected result: { } *)
-Compute nestedPair1.  (* Expected result: {0} *)
-Compute nestedPair4.  (* Expected result: {3, 2, 1, 0} *)
+Compute nestedPair0. (* Expected result: { } *)
+Compute nestedPair1. (* Expected result: {0} *)
+Compute nestedPair4. (* Expected result: {3, 2, 1, 0} *)
 
 (* Computing the values of the converted function of the three-dimensional associative network *)
 Compute (ANetVfToANetLf complexExampleNet) 0. (* Expected result: {0, 0, 0} *)
@@ -708,12 +718,12 @@ Definition testTuplesNet : ANetVf 3 :=
   ANetLfToANetVf testPairsNet.
 
 (* Computing the values of the converted function of the associative network of nested ordered pairs *)
-Compute testTuplesNet 0.   (* Expected result: [5; 0; 8] *)
-Compute testTuplesNet 1.   (* Expected result: [7; 1; 2] *)
-Compute testTuplesNet 2.   (* Expected result: [2; 4; 5] *)
-Compute testTuplesNet 3.   (* Expected result: [3; 1; 5] *)
-Compute testTuplesNet 4.   (* Expected result: [4; 2; 1] *)
-Compute testTuplesNet 5.   (* Expected result: [0; 0; 0] *)
+Compute testTuplesNet 0. (* Expected result: [5; 0; 8] *)
+Compute testTuplesNet 1. (* Expected result: [7; 1; 2] *)
+Compute testTuplesNet 2. (* Expected result: [2; 4; 5] *)
+Compute testTuplesNet 3. (* Expected result: [3; 1; 5] *)
+Compute testTuplesNet 4. (* Expected result: [4; 2; 1] *)
+Compute testTuplesNet 5. (* Expected result: [0; 0; 0] *)
 
 (* Conversion of nested ordered pairs into the associative network of duplets *)
 Compute NPToANetDl { 121, 21, 1343 }.
@@ -756,17 +766,17 @@ Compute test_anetd.
 (* Converting the associative network of nested ordered pairs into the associative network of duplets and back into test_anetl *) 
 Compute ANetDlToANetLl test_anetd.
 (* Expected result:
-  {{121, 21, 1343}, {12, 23}, {34}, {121, 21, 1343}, {12, 23}, {34}}  *)
+  {{121, 21, 1343}, {12, 23}, {34}, {121, 21, 1343}, {12, 23}, {34}} *)
 
 (* Computing the offset of nested ordered pairs in the associative network of duplets by their ordinal number *)
-Compute ANetDl_offsetNP test_anetd 0.   (* Expected result: 0 *)
-Compute ANetDl_offsetNP test_anetd 1.   (* Expected result: 3 *)
-Compute ANetDl_offsetNP test_anetd 2.   (* Expected result: 5 *)
-Compute ANetDl_offsetNP test_anetd 3.   (* Expected result: 6 *)
-Compute ANetDl_offsetNP test_anetd 4.   (* Expected result: 9 *)
-Compute ANetDl_offsetNP test_anetd 5.   (* Expected result: 11 *)
-Compute ANetDl_offsetNP test_anetd 6.   (* Expected result: 12 *)
-Compute ANetDl_offsetNP test_anetd 7.   (* Expected result: 12 *)
+Compute ANetDl_offsetNP test_anetd 0. (* Expected result: 0 *)
+Compute ANetDl_offsetNP test_anetd 1. (* Expected result: 3 *)
+Compute ANetDl_offsetNP test_anetd 2. (* Expected result: 5 *)
+Compute ANetDl_offsetNP test_anetd 3. (* Expected result: 6 *)
+Compute ANetDl_offsetNP test_anetd 4. (* Expected result: 9 *)
+Compute ANetDl_offsetNP test_anetd 5. (* Expected result: 11 *)
+Compute ANetDl_offsetNP test_anetd 6. (* Expected result: 12 *)
+Compute ANetDl_offsetNP test_anetd 7. (* Expected result: 12 *)
 
 (* Defining a three-dimensional associative network as a sequence of vectors of length 3 *)
 Definition test_anetv : ANetVl 3 :=
@@ -783,7 +793,7 @@ Compute test_anetdl.
   (2, 7), (4, 8), (0, 8),
   (3, 10), (0, 11), (5, 11),
   (4, 13), (1, 14), (1, 14),
-  (0, 16), (0, 17), (0, 17)}  *)
+  (0, 16), (0, 17), (0, 17)} *)
 
 (* Converted three-dimensional associative network into the associative network of duplets via the associative network of nested ordered pairs and then back into a three-dimensional associative network *)
 Definition result_TuplesNet : ANetVl 3 :=
@@ -825,7 +835,7 @@ An entity, in its internal principle, is triune (threefold, consisting of three 
 
 In this article, we examined the mathematical foundations of relational algebra and graph theory, and presented the definitions of the links theory in terms of set theory and its projection into type theory. We also defined a set of functions and lemmas necessary for proving the possibility of an equivalent conversion from any vector/sequence into nested doublet-links and back. This means that only one formula is sufficient to represent any possible type of information:
 
-> $L \to L^2$
+$$L \to L^2$$
 
 Thus, this forms the basis for testing the hypothesis that any other data structure can be represented by doublet-links. In other words, doublet-links are sufficient to represent any tables, graphs, strings, arrays, lists, numbers, sound, images, videos, and much more.
 
@@ -882,7 +892,7 @@ Using LaTeX:
 
 Which is rendered as SVG (clickable):
 
-> $L \to L^2$
+$$L \to L^2$$
 
 ### References
 

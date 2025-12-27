@@ -70,7 +70,7 @@ Doublets network is defined as:
 
 Where:
 
-- **λ**  stands for a function that defines a doublets network;
+- **λ** stands for a function that defines a doublets network;
 - **L** stands for a set of links indices.
 
 Example:
@@ -87,7 +87,7 @@ Graph-like graphical representation of the doublets network.
 
 ![Figure 7](images/figure-7.png)
 
-This is a graphical representation of Cartesian product, that represents link values. Link values with orange parentheses are selected by the **λ**  function in the example.
+This is a graphical representation of Cartesian product, that represents link values. Link values with orange parentheses are selected by the **λ** function in the example.
 
 Data in doublets network is represented using doublets (2-tuples).
 
@@ -134,7 +134,7 @@ Triplets network is defined as:
 
 Where:
 
-- **λ**  stands for a function that defines a triplets network;
+- **λ** stands for a function that defines a triplets network;
 - **L** stands for a set of links indices.
 
 Example:
@@ -165,7 +165,7 @@ Links network in general is defined as:
 
 Where:
 
-- **λ**  stands for a function that defines a links network;
+- **λ** stands for a function that defines a links network;
 - **L** stands for a set of links indices.
 
 Example:

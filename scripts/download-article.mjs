@@ -8,12 +8,19 @@
  * - Title extraction
  * - Headings (h2, h3, h4)
  * - Paragraphs with inline links
- * - Code blocks with syntax highlighting
- * - Math formulas (LaTeX) - both block and inline
+ * - Code blocks with syntax highlighting (preserves newlines from <br> tags)
  * - Lists (ordered and unordered)
  * - Blockquotes
  * - Images and figures with captions
  * - Links preservation
+ *
+ * LIMITATIONS:
+ * - LaTeX/math formulas: Habr renders formulas as IMAGES, not as KaTeX/MathJax.
+ *   The original article.md files were created by intelligently reconstructing
+ *   LaTeX formulas from the visual content of these images. This script CANNOT
+ *   automatically recreate LaTeX formulas - they would need to be added manually.
+ * - The original articles in this repository contain manually-reconstructed
+ *   LaTeX formulas that match the formula images on the web page.
  *
  * Usage:
  *   node scripts/download-article.mjs [version]
@@ -232,7 +239,14 @@ async function extractArticleContent(article, verbose = false) {
       // Handle code blocks
       if (tag === 'pre') {
         const codeEl = node.querySelector('code');
-        const code = codeEl ? codeEl.textContent : node.textContent;
+        // Get innerHTML and convert <br> to newlines, then strip remaining HTML
+        let codeHTML = codeEl ? codeEl.innerHTML : node.innerHTML;
+        // Convert <br> and <br/> to newlines
+        let code = codeHTML.replace(/<br\s*\/?>/gi, '\n');
+        // Strip remaining HTML tags
+        const temp = document.createElement('div');
+        temp.innerHTML = code;
+        code = temp.textContent || temp.innerText;
         const language = codeEl?.className?.match(/language-(\w+)/)?.[1] || '';
         elements.push({
           type: 'code',
@@ -428,12 +442,14 @@ function contentToMarkdown(content, article) {
         const figNum = figureMatch ? figureMatch[1] : element.index;
         const ext = element.src.includes('.jpeg') || element.src.includes('.jpg') ? 'jpg' : 'png';
 
-        lines.push(`![Figure ${figNum}](images/figure-${figNum}.${ext})`);
-        lines.push('');
+        // Use alt text from caption if available
+        const altText = element.caption || `Figure ${figNum}`;
+        lines.push(`![${altText}](images/figure-${figNum}.${ext})`);
         if (element.caption) {
-          lines.push(`**${element.caption}**`);
-          lines.push('');
+          // Use italic for caption like the original articles
+          lines.push(`*${element.caption}*`);
         }
+        lines.push('');
         break;
 
       case 'image':

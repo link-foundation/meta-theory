@@ -48,7 +48,8 @@ function parseArgs() {
     version: null,
     all: false,
     dryRun: false,
-    verbose: false
+    verbose: false,
+    outputFile: 'article.md'  // Default output file, can be changed with --downloaded
   };
 
   for (const arg of args) {
@@ -58,6 +59,8 @@ function parseArgs() {
       options.dryRun = true;
     } else if (arg === '--verbose' || arg === '-v') {
       options.verbose = true;
+    } else if (arg === '--downloaded') {
+      options.outputFile = 'downloaded.md';
     } else if (!arg.startsWith('-')) {
       options.version = arg;
     }
@@ -506,7 +509,8 @@ function contentToMarkdown(content, article) {
  */
 async function downloadArticle(article, options) {
   const archivePath = join(ROOT_DIR, article.archivePath);
-  const markdownPath = join(archivePath, article.markdownFile);
+  const outputFileName = options.outputFile || article.markdownFile;
+  const markdownPath = join(archivePath, outputFileName);
 
   console.log(`\n📥 Downloading ${article.title} (${article.version})`);
   console.log('='.repeat(70));
@@ -560,13 +564,15 @@ async function main() {
 Usage: node scripts/download-article.mjs [version] [options]
 
 Options:
-  --all       Download all articles
-  --dry-run   Show what would be done without making changes
-  --verbose   Show detailed output
+  --all         Download all articles
+  --downloaded  Save as downloaded.md instead of article.md
+  --dry-run     Show what would be done without making changes
+  --verbose     Show detailed output
 
 Examples:
   node scripts/download-article.mjs 0.0.1
   node scripts/download-article.mjs --all
+  node scripts/download-article.mjs --all --downloaded
   node scripts/download-article.mjs 0.0.2 --dry-run
 `);
     process.exit(0);

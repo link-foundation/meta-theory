@@ -10,6 +10,7 @@
     "verify:0.0.1": "node scripts/verify.mjs 0.0.1",
     "verify:0.0.2": "node scripts/verify.mjs 0.0.2",
     "download:articles": "node scripts/download-article.mjs --all",
+    "download:articles:downloaded": "node scripts/download-article.mjs --all --downloaded",
     "download:article:0.0.0": "node scripts/download-article.mjs 0.0.0",
     "download:article:0.0.1": "node scripts/download-article.mjs 0.0.1",
     "download:article:0.0.2": "node scripts/download-article.mjs 0.0.2",

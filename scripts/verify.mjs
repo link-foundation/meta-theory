@@ -341,7 +341,10 @@ function verifyMarkdownContent(article, webContent, markdownText, verbose = fals
 
     // Check for figure images (Figure X pattern) if expectedFigures is set
     if (article.expectedFigures) {
-      const figurePattern = /!\[(?:Figure|Рис\.?|Рисунок)\s*\d+[^\]]*\]\(images\/figure-\d+\.(png|jpg)\)/gi;
+      // Pattern allows optional markdown formatting markers like ** around "Figure X"
+      // and handles alt text that may contain nested markdown links (which have brackets)
+      // Use [\s\S]*? to match any character (including newline) non-greedily
+      const figurePattern = /!\[(?:\*\*)?(?:Figure|Рис\.?|Рисунок)\s*\d+[\s\S]*?\]\(images\/figure-\d+\.(png|jpg)\)/gi;
       const figureMatches = markdownText.match(figurePattern) || [];
 
       totalChecks++;

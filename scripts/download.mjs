@@ -155,19 +155,22 @@ async function downloadImages(article) {
 
   // Download each figure image
   const downloadedImages = [];
+  let sequentialNum = 0;
   for (const figure of figures) {
-    if (!figure.figureNum) continue;
+    sequentialNum++;
+    // Use figure number from caption if available, otherwise use sequential number
+    const figNum = figure.figureNum || sequentialNum;
 
     const ext = figure.src.includes('.jpeg') || figure.src.includes('.jpg') ? 'jpg' : 'png';
-    const filename = `figure-${figure.figureNum}.${ext}`;
+    const filename = `figure-${figNum}.${ext}`;
     const filepath = join(imagesDir, filename);
 
-    console.log(`   Downloading Figure ${figure.figureNum}...`);
+    console.log(`   Downloading Figure ${figNum}...`);
 
     try {
       await downloadFile(figure.src, filepath);
       downloadedImages.push({
-        figureNum: figure.figureNum,
+        figureNum: figNum,
         filename,
         caption: figure.caption
       });

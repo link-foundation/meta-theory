@@ -13,14 +13,12 @@
  * - Blockquotes
  * - Images and figures with captions
  * - Links preservation
+ * - LaTeX math formulas (extracted from img.formula elements' `source` attribute)
  *
- * LIMITATIONS:
- * - LaTeX/math formulas: Habr renders formulas as IMAGES, not as KaTeX/MathJax.
- *   The original article.md files were created by intelligently reconstructing
- *   LaTeX formulas from the visual content of these images. This script CANNOT
- *   automatically recreate LaTeX formulas - they would need to be added manually.
- * - The original articles in this repository contain manually-reconstructed
- *   LaTeX formulas that match the formula images on the web page.
+ * FORMULA EXTRACTION:
+ * Habr renders formulas as SVG/PNG images with class "formula". The original LaTeX
+ * source code is stored in the `source` attribute of these img elements. This script
+ * automatically extracts and converts them to proper LaTeX markdown format ($...$).
  *
  * Usage:
  *   node scripts/download-article.mjs [version]
@@ -171,6 +169,21 @@ async function extractArticleContent(article, verbose = false) {
         return `^${node.textContent}`;
       }
 
+      // Handle formula images (Habr stores LaTeX in `source` attribute)
+      if (tag === 'img' && node.classList.contains('formula')) {
+        const source = node.getAttribute('source');
+        if (source) {
+          // Inline formula - wrap in single $
+          return `$${source}$`;
+        }
+        // Fallback to alt text
+        const alt = node.getAttribute('alt');
+        if (alt) {
+          return `$${alt}$`;
+        }
+        return '';
+      }
+
       // Handle math elements (KaTeX/MathJax)
       if (node.classList.contains('katex') || node.classList.contains('math') ||
           tag === 'mjx-container' || node.classList.contains('MathJax')) {
@@ -307,8 +320,21 @@ async function extractArticleContent(article, verbose = false) {
         return;
       }
 
-      // Handle standalone images
+      // Handle standalone images (but not formula images - those are inline)
       if (tag === 'img' && !node.closest('figure')) {
+        // Check if this is a formula image - handle as block formula if standalone
+        if (node.classList.contains('formula')) {
+          const source = node.getAttribute('source');
+          if (source) {
+            // Standalone formula - treat as block formula
+            elements.push({
+              type: 'math-block',
+              content: source
+            });
+            return;
+          }
+        }
+        // Regular image
         elements.push({
           type: 'image',
           src: node.src,

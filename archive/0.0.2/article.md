@@ -8,7 +8,7 @@ Last April 1st, as you might have guessed, we were joking. It's time to fix that
 
 This article contains many letters, but it can be represented using just 4 symbols from [set theory](https://en.wikipedia.org/wiki/Set_theory):
 
-$$L \to L^2$$
+> $$L \to L^2$$
 
 Everything else follows from them.
 
@@ -822,7 +822,7 @@ An entity, in its internal principle, is triune (threefold, consisting of three 
 
 In this article, we examined the mathematical foundations of relational algebra and graph theory, and presented the definitions of the links theory in terms of set theory and its projection into type theory. We also defined a set of functions and lemmas necessary for proving the possibility of an equivalent conversion from any vector/sequence into nested doublet-links and back. This means that only one formula is sufficient to represent any possible type of information:
 
-$$L \to L^2$$
+> $$L \to L^2$$
 
 Thus, this forms the basis for testing the hypothesis that any other data structure can be represented by doublet-links. In other words, doublet-links are sufficient to represent any tables, graphs, strings, arrays, lists, numbers, sound, images, videos, and much more.
 
@@ -874,15 +874,15 @@ If you have become a fan of the links theory, we invite you to spread this formu
 
 Using Unicode symbols:
 
-$$L \mapsto L^2$$
+> L ↦ L²
 
 Using LaTeX:
 
-L \to L^2
+> L \to L^2
 
 Which is rendered as SVG (clickable):
 
-$$L \to L^2$$
+> $$L \to L^2$$
 
 ### References
 

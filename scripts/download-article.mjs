@@ -281,10 +281,11 @@ async function extractArticleContent(article, verbose = false) {
         // Allow for some whitespace around the formula
         const formulaOnlyMatch = content.match(/^\s*\$([^$]+)\$\s*$/);
         if (formulaOnlyMatch) {
-          // This is a formula-only blockquote, treat as math block
+          // This is a formula-only blockquote, preserve as blockquote with block formula
+          // Output will be: > $$formula$$
           const formula = formulaOnlyMatch[1].trim();
           elements.push({
-            type: 'math-block',
+            type: 'blockquote-math',
             content: formula
           });
           return;
@@ -550,6 +551,12 @@ function contentToMarkdown(content, article) {
 
       case 'math-block':
         lines.push('$$' + element.content + '$$');
+        lines.push('');
+        break;
+
+      case 'blockquote-math':
+        // Formula in a blockquote - preserve blockquote formatting with block formula
+        lines.push('> $$' + element.content + '$$');
         lines.push('');
         break;
 

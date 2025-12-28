@@ -33,7 +33,8 @@ function parseArgs() {
   const options = {
     version: null,
     all: false,
-    verbose: false
+    verbose: false,
+    downloaded: false  // Verify downloaded.md instead of article.md
   };
 
   for (const arg of args) {
@@ -41,6 +42,8 @@ function parseArgs() {
       options.all = true;
     } else if (arg === '--verbose' || arg === '-v') {
       options.verbose = true;
+    } else if (arg === '--downloaded') {
+      options.downloaded = true;
     } else if (!arg.startsWith('-')) {
       options.version = arg;
     }
@@ -133,6 +136,7 @@ async function extractWebPageContent(article, verbose = false) {
     paragraphs: [],
     codeBlocks: [],
     formulas: [],
+    blockquoteFormulas: [],  // Formulas inside blockquotes
     listItems: [],
     links: [],
     figures: []
@@ -171,6 +175,34 @@ async function extractWebPageContent(article, verbose = false) {
   );
   content.formulas = formulas.filter(f => f.length > 0);
 
+  // Extract formulas inside blockquotes (important for correct formatting)
+  const blockquoteFormulas = await page.$$eval('.article-formatted-body blockquote', elements => {
+    const results = [];
+    for (const blockquote of elements) {
+      // Look for formula images inside blockquotes
+      const formulaImgs = blockquote.querySelectorAll('img.formula');
+      for (const img of formulaImgs) {
+        const source = img.getAttribute('source');
+        if (source) {
+          results.push(source);
+        }
+      }
+      // Also check for KaTeX/MathJax inside blockquotes
+      const mathEls = blockquote.querySelectorAll('.katex, .math, mjx-container');
+      for (const mathEl of mathEls) {
+        const annotation = mathEl.querySelector('annotation[encoding="application/x-tex"]');
+        if (annotation) {
+          results.push(annotation.textContent.trim());
+        } else {
+          const tex = mathEl.getAttribute('data-tex') || mathEl.getAttribute('data-latex');
+          if (tex) results.push(tex);
+        }
+      }
+    }
+    return results;
+  });
+  content.blockquoteFormulas = blockquoteFormulas.filter(f => f.length > 0);
+
   // Extract list items from article body
   const listItems = await page.$$eval('.article-formatted-body li', elements =>
     elements.map(el => el.innerText.trim())
@@ -207,6 +239,7 @@ async function extractWebPageContent(article, verbose = false) {
     console.log(`   - ${content.paragraphs.length} paragraphs`);
     console.log(`   - ${content.codeBlocks.length} code blocks`);
     console.log(`   - ${content.formulas.length} formulas`);
+    console.log(`   - ${content.blockquoteFormulas.length} blockquote formulas`);
     console.log(`   - ${content.listItems.length} list items`);
     console.log(`   - ${content.links.length} links`);
     console.log(`   - ${content.figures.length} figures`);
@@ -228,6 +261,7 @@ function verifyMarkdownContent(article, webContent, markdownText, verbose = fals
     paragraphs: [],
     codeBlocks: [],
     formulas: [],
+    blockquoteFormulas: [],  // Formulas inside blockquotes with incorrect formatting
     listItems: [],
     images: 0
   };
@@ -335,6 +369,68 @@ function verifyMarkdownContent(article, webContent, markdownText, verbose = fals
     }
   }
 
+  // Check blockquote formulas - verify they are properly formatted in blockquotes
+  // Formulas in blockquotes should appear as either:
+  // - > $$formula$$ (block formula in blockquote)
+  // - > $formula$ (inline formula in blockquote)
+  // - > text containing $formula$ (inline formula mixed with text in blockquote)
+  if (webContent.blockquoteFormulas && webContent.blockquoteFormulas.length > 0) {
+    if (verbose) console.log('\n📐 Checking blockquote formulas...');
+
+    for (const formula of webContent.blockquoteFormulas) {
+      totalChecks++;
+
+      // Normalize the formula for comparison (remove extra spaces, normalize arrows, etc.)
+      const normalizedFormula = formula
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Extract key parts of the formula for fuzzy matching
+      const keyParts = normalizedFormula
+        .replace(/\\mathbf\{([^}]*)\}/g, '$1')  // Extract content from \mathbf{}
+        .replace(/\\textbf\{([^}]*)\}/g, '$1')  // Extract content from \textbf{}
+        .replace(/[{}\\]/g, '')                  // Remove braces and backslashes
+        .split(/\s+/)
+        .filter(part => part.length > 1);
+
+      // Check if the formula appears in any blockquote line (with $ or $$)
+      let foundInBlockquote = false;
+
+      // Extract all blockquote lines from markdown (lines starting with >)
+      const blockquoteLines = markdownText.match(/^>.*$/gm) || [];
+
+      for (const line of blockquoteLines) {
+        // Check if this blockquote line contains formulas (either $...$ or $$...$$)
+        if (line.includes('$')) {
+          // Check for key formula parts in this line
+          const matchingParts = keyParts.filter(part =>
+            line.toLowerCase().includes(part.toLowerCase())
+          );
+          // If we have key parts and at least some match, consider it found
+          if (keyParts.length > 0 && matchingParts.length >= Math.min(2, keyParts.length)) {
+            foundInBlockquote = true;
+            break;
+          }
+          // Also check for simple formulas like "L \to L^2" directly
+          if (line.includes(normalizedFormula) ||
+              line.includes(formula) ||
+              (formula.length < 20 && line.includes(formula.replace(/\s/g, '')))) {
+            foundInBlockquote = true;
+            break;
+          }
+        }
+      }
+
+      if (foundInBlockquote) {
+        passedChecks++;
+        if (verbose) console.log(`   ✅ Blockquote formula found: "${formula.substring(0, 50)}..."`);
+      } else {
+        missing.blockquoteFormulas.push(formula.substring(0, 100));
+        if (verbose) console.log(`   ❌ Missing blockquote formula: "${formula.substring(0, 60)}..."`);
+      }
+    }
+  }
+
   // Check for local images
   if (article.hasLocalImages) {
     if (verbose) console.log('\n🖼️ Checking local images...');
@@ -404,9 +500,10 @@ function verifyMarkdownContent(article, webContent, markdownText, verbose = fals
 /**
  * Verify a single article
  */
-async function verifyArticle(article, verbose = false) {
+async function verifyArticle(article, verbose = false, verifyDownloaded = false) {
   const archivePath = join(ROOT_DIR, article.archivePath);
-  const markdownPath = join(archivePath, article.markdownFile);
+  const markdownFileName = verifyDownloaded ? 'downloaded.md' : article.markdownFile;
+  const markdownPath = join(archivePath, markdownFileName);
 
   console.log(`\n📋 Verifying ${article.title} (${article.version})`);
   console.log('='.repeat(70));
@@ -450,6 +547,9 @@ async function verifyArticle(article, verbose = false) {
   if (result.missing.listItems.length > 0) {
     console.log(`⚠️  Missing ${result.missing.listItems.length} list items (from sample)`);
   }
+  if (result.missing.blockquoteFormulas && result.missing.blockquoteFormulas.length > 0) {
+    console.log(`⚠️  Missing ${result.missing.blockquoteFormulas.length} blockquote formulas`);
+  }
   if (result.missing.images > 0) {
     console.log(`⚠️  Missing ${result.missing.images} figure images`);
   }
@@ -477,13 +577,15 @@ async function main() {
 Usage: node scripts/verify.mjs [version] [options]
 
 Options:
-  --all       Verify all articles
-  --verbose   Show detailed verification output
+  --all         Verify all articles
+  --downloaded  Verify downloaded.md instead of article.md
+  --verbose     Show detailed verification output
 
 Examples:
   node scripts/verify.mjs 0.0.2
   node scripts/verify.mjs --all
   node scripts/verify.mjs 0.0.2 --verbose
+  node scripts/verify.mjs --all --downloaded
 `);
     process.exit(0);
   }
@@ -498,13 +600,16 @@ Examples:
 
   console.log('🚀 Article Verification Script');
   console.log('==============================');
+  if (options.downloaded) {
+    console.log('📄 Verifying downloaded.md files\n');
+  }
 
   let allPassed = true;
   const results = [];
 
   for (const article of articles) {
     try {
-      const success = await verifyArticle(article, options.verbose);
+      const success = await verifyArticle(article, options.verbose, options.downloaded);
       results.push({ article, success });
       if (!success) allPassed = false;
     } catch (error) {

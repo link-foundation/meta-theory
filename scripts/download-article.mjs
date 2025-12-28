@@ -275,6 +275,22 @@ async function extractArticleContent(article, verbose = false) {
       // Handle blockquotes
       if (tag === 'blockquote') {
         const content = nodeToMarkdownChildren(node).trim();
+
+        // Check if the blockquote contains only a formula (common pattern in articles)
+        // Pattern: starts and ends with $ and mostly contains LaTeX content
+        // Allow for some whitespace around the formula
+        const formulaOnlyMatch = content.match(/^\s*\$([^$]+)\$\s*$/);
+        if (formulaOnlyMatch) {
+          // This is a formula-only blockquote, preserve as blockquote with block formula
+          // Output will be: > $$formula$$
+          const formula = formulaOnlyMatch[1].trim();
+          elements.push({
+            type: 'blockquote-math',
+            content: formula
+          });
+          return;
+        }
+
         elements.push({
           type: 'blockquote',
           content: content
@@ -397,6 +413,50 @@ async function extractArticleContent(article, verbose = false) {
 }
 
 /**
+ * Post-process markdown to fix formatting issues
+ */
+function postProcessMarkdown(markdown) {
+  let result = markdown;
+
+  // Fix spacing around inline LaTeX formulas
+  // Pattern: word$formula$word should become word $formula$ word
+  // We need to run multiple passes to handle all cases
+
+  // Pass 1: Add space after formula when followed by word character
+  // Match: $formula$word -> $formula$ word
+  result = result.replace(/(\$[^$\n]+\$)([a-zA-Zа-яА-ЯёЁ])/g, (match, formula, nextChar) => {
+    return formula + ' ' + nextChar;
+  });
+
+  // Pass 2: Add space before formula when preceded by word character
+  // Match: word$formula$ -> word $formula$
+  result = result.replace(/([a-zA-Zа-яА-ЯёЁ])(\$[^$\n]+\$)/g, (match, prevChar, formula) => {
+    return prevChar + ' ' + formula;
+  });
+
+  // Fix multiple inline formulas on the same line (common pattern from inline extraction)
+  // Pattern: $formula1$$formula2$ -> $formula1$\n\n$formula2$
+  result = result.replace(/(\$[^$\n]+\$)\$([^$\n]+\$)/g, (match, formula1, formula2) => {
+    return formula1 + '\n\n$' + formula2;
+  });
+
+  // Note: We removed the "clean up whitespace inside formulas" regexes because they
+  // were incorrectly matching and removing spaces BETWEEN formula and adjacent text.
+  // The formulas from the source already have correct internal spacing.
+
+  // Fix double spaces (but not in code blocks)
+  result = result.replace(/([^\n`])  +/g, (match, char) => {
+    return char + ' ';
+  });
+
+  // Fix stray standalone $ signs that might have been left from parsing
+  // Pattern: $\n\n$ or just a standalone $ on its own line should be removed
+  result = result.replace(/^\$\s*$/gm, '');
+
+  return result;
+}
+
+/**
  * Convert extracted content to markdown
  */
 function contentToMarkdown(content, article) {
@@ -494,6 +554,12 @@ function contentToMarkdown(content, article) {
         lines.push('');
         break;
 
+      case 'blockquote-math':
+        // Formula in a blockquote - preserve blockquote formatting with block formula
+        lines.push('> $$' + element.content + '$$');
+        lines.push('');
+        break;
+
       case 'hr':
         lines.push('---');
         lines.push('');
@@ -501,7 +567,8 @@ function contentToMarkdown(content, article) {
     }
   }
 
-  return lines.join('\n').trim() + '\n';
+  const rawMarkdown = lines.join('\n').trim() + '\n';
+  return postProcessMarkdown(rawMarkdown);
 }
 
 /**

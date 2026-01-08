@@ -418,6 +418,18 @@ async function extractArticleContent(article, verbose = false) {
 function postProcessMarkdown(markdown) {
   let result = markdown;
 
+  // Unicode character normalization to match article.md style
+  // Normalize curly quotes to straight quotes
+  result = result.replace(/['']/g, "'");
+  result = result.replace(/[""]/g, '"');
+
+  // Normalize em-dash and en-dash to regular dash with spaces
+  result = result.replace(/—/g, ' — ');  // Keep em-dash with spaces for readability
+  result = result.replace(/–/g, '-');     // Convert en-dash to hyphen
+
+  // Normalize ellipsis
+  result = result.replace(/…/g, '...');
+
   // Fix spacing around inline LaTeX formulas
   // Pattern: word$formula$word should become word $formula$ word
   // We need to run multiple passes to handle all cases
@@ -448,6 +460,9 @@ function postProcessMarkdown(markdown) {
   result = result.replace(/([^\n`])  +/g, (match, char) => {
     return char + ' ';
   });
+
+  // Clean up extra spaces around em-dashes that we may have introduced
+  result = result.replace(/\s+—\s+/g, ' — ');
 
   // Fix stray standalone $ signs that might have been left from parsing
   // Pattern: $\n\n$ or just a standalone $ on its own line should be removed
@@ -531,12 +546,15 @@ function contentToMarkdown(content, article) {
         const figNum = figureMatch ? figureMatch[1] : element.index;
         const ext = element.src.includes('.jpeg') || element.src.includes('.jpg') ? 'jpg' : 'png';
 
-        // Use alt text from caption if available
-        const altText = element.caption || `Figure ${figNum}`;
-        lines.push(`![${altText}](images/figure-${figNum}.${ext})`);
+        // Simple alt text format: "Figure N" only, not the full caption
+        // This matches the article.md format
+        const simpleAltText = `Figure ${figNum}`;
+        lines.push(`![${simpleAltText}](images/figure-${figNum}.${ext})`);
         if (element.caption) {
-          // Use italic for caption like the original articles
-          lines.push(`*${element.caption}*`);
+          // Caption already includes bold formatting from extraction (e.g., **Figure 1.** ...)
+          // Don't wrap it again in bold, just output as-is
+          lines.push('');
+          lines.push(element.caption);
         }
         lines.push('');
         break;

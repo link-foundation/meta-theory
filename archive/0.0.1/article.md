@@ -1,9 +1,10 @@
 # Глубокая Теория Связей 0.0.1
 
 **Author:** [Константин Дьяченко (Konard)](https://habr.com/ru/users/Konard/)
-**Автор оригинала: Василий Солопов, Иван Глазунов, Константин Дьяченко**
+**Type:** Перевод
+**Original article:** [Василий Солопов, Иван Глазунов, Константин Дьяченко](https://habr.com/ru/companies/deepfoundation/articles/658705/)
 **Published:** April 1, 2024 (updated March 30, 2025)
-**Reading time: 24 мин | Difficulty: Сложный | Views: 10526**
+**Reading time: 24 мин | Difficulty: Сложный | Views: 10529**
 **Hubs:** Блог компании Deep.Foundation, Математика, Программирование, Open source, Data Engineering
 **Tags:** математика, теория графов, теория множеств, реляционная алгебра, теория типов, теория связей, метатеория, теория отношений, ассоциативная теория, ассоциативная модель данных
 

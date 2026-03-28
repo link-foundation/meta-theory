@@ -1,9 +1,10 @@
 # The Links Theory 0.0.2
 
 **Author:** [Константин Дьяченко (Konard)](https://habr.com/en/users/Konard/)
-**Original author: Vasily Solopov, Roman Vertushkin, Ivan Glazunov, Konstantin Diachenko**
+**Type:** Translation
+**Original article:** [Vasily Solopov, Roman Vertushkin, Ivan Glazunov, Konstantin Diachenko](https://habr.com/ru/companies/deepfoundation/articles/804617/)
 **Published:** April 1, 2025 (updated August 10, 2025)
-**Reading time: 27 min | Difficulty: Medium | Views: 5164**
+**Reading time: 27 min | Difficulty: Medium | Views: 5169**
 **Hubs:** Data Engineering, Open source, Mathematics, Abnormal programming, Programming
 **Tags:** metatheory, links theory, relational theory, associative theory, math, set theory, type theory, graph theory, relational algebra, associative model of data
 

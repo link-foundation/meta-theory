@@ -14,6 +14,8 @@ export const ARTICLES = {
     archivePath: 'archive/0.0.0',
     markdownFile: 'article.md',
     screenshotFile: 'article.png',
+    screenshotLightFile: 'article-light.png',
+    screenshotDarkFile: 'article-dark.png',
     imagesDir: 'images',
     // Images downloaded locally for full offline availability
     hasLocalImages: true,
@@ -28,6 +30,8 @@ export const ARTICLES = {
     archivePath: 'archive/0.0.1',
     markdownFile: 'article.md',
     screenshotFile: 'article.png',
+    screenshotLightFile: 'article-light.png',
+    screenshotDarkFile: 'article-dark.png',
     imagesDir: 'images',
     // Images downloaded locally for full offline availability
     hasLocalImages: true,
@@ -41,6 +45,8 @@ export const ARTICLES = {
     archivePath: 'archive/0.0.2',
     markdownFile: 'article.md',
     screenshotFile: 'article.png',
+    screenshotLightFile: 'article-light.png',
+    screenshotDarkFile: 'article-dark.png',
     imagesDir: 'images',
     // This article has locally downloaded figure images
     hasLocalImages: true,

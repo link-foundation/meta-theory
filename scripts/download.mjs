@@ -107,9 +107,12 @@ async function downloadImages(article) {
 
   console.log('   Navigating to article...');
   await page.goto(article.url, {
-    waitUntil: 'networkidle',
-    timeout: 60000
+    waitUntil: 'domcontentloaded',
+    timeout: 120000
   });
+
+  // Wait for article body to appear
+  await page.waitForSelector('.article-formatted-body', { timeout: 30000 });
 
   // Scroll to load all content
   console.log('   Scrolling to load lazy images...');
@@ -193,31 +196,76 @@ async function downloadImages(article) {
 }
 
 /**
- * Capture a screenshot of the article
+ * Close any popup overlays/modals on the page
  */
-async function captureScreenshot(article) {
-  const archivePath = join(ROOT_DIR, article.archivePath);
-  const screenshotPath = join(archivePath, article.screenshotFile);
-
-  console.log(`\n📸 Capturing screenshot for ${article.title} (${article.version})`);
-  console.log(`   URL: ${article.url}`);
-  console.log(`   Target: ${screenshotPath}`);
-
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({
-    viewport: { width: 1920, height: 1080 },
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-  });
-  const page = await context.newPage();
-
-  console.log('   Navigating to article...');
-  await page.goto(article.url, {
-    waitUntil: 'networkidle',
-    timeout: 60000
+async function closePopups(page) {
+  // Handle Playwright dialog events (browser-level alerts/confirms)
+  page.on('dialog', async dialog => {
+    try { await dialog.dismiss(); } catch (e) { /* ignore */ }
   });
 
-  // Multi-pass scrolling to load all lazy content
-  console.log('   Loading all content (3-pass scroll)...');
+  await page.evaluate(() => {
+    // Common popup/modal close buttons on Habr
+    const closeSelectors = [
+      // Cookie consent
+      '.tm-cookie-banner__close',
+      '.cookie-banner__close',
+      '[data-test-id="cookie-banner-close"]',
+      // Consent popup buttons (accept/reject/close)
+      '.consent-popup__close',
+      '.consent__close',
+      'button[data-testid="consent-close"]',
+      'button[data-testid="consent-reject"]',
+      // Generic close buttons
+      '.tm-popup__close',
+      '.popup__close',
+      '.modal__close',
+      // Overlay close
+      '.overlay__close',
+      // Any visible close button with aria-label
+      '[aria-label="Close"]',
+      '[aria-label="Закрыть"]',
+      // Dismiss buttons
+      '.tm-base-modal__close',
+      // Notification popups
+      '.tm-notification__close',
+    ];
+
+    for (const selector of closeSelectors) {
+      const els = document.querySelectorAll(selector);
+      for (const el of els) {
+        try { el.click(); } catch (e) { /* ignore */ }
+      }
+    }
+
+    // Hide all fixed-position overlays that cover content
+    const allEls = document.querySelectorAll('*');
+    for (const el of allEls) {
+      const style = getComputedStyle(el);
+      if (style.position === 'fixed' && el.offsetParent !== null) {
+        const rect = el.getBoundingClientRect();
+        // Skip very small elements (like tiny icons) and the main nav bar
+        if (rect.height > 200 || el.className.match(/popup|modal|overlay|banner|cookie|notification|consent/i)) {
+          el.style.display = 'none';
+        }
+      }
+    }
+  });
+
+  // Wait for popups to close
+  await page.waitForTimeout(500);
+
+  // Try to close any remaining popups by pressing Escape
+  try {
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
+  } catch (e) { /* ignore */ }
+}
+
+/**
+ * Load page content by scrolling through it to trigger lazy loading
+ */
+async function loadPageContent(page) {
   for (let pass = 0; pass < 3; pass++) {
     await page.evaluate(async () => {
       const scrollHeight = document.documentElement.scrollHeight;
@@ -231,22 +279,81 @@ async function captureScreenshot(article) {
     });
     await page.waitForTimeout(1000);
   }
-
-  // Wait for images to load
-  console.log('   Waiting for images to load...');
+  // Wait for images to fully load
   await page.waitForTimeout(3000);
+}
 
-  // Take full page screenshot
-  console.log('   Taking screenshot...');
+/**
+ * Capture a single themed screenshot of the article
+ *
+ * Uses a fresh browser context with colorScheme set at context level,
+ * which is the reliable way to trigger Habr's prefers-color-scheme media query.
+ */
+async function captureThemedScreenshot(browser, article, screenshotPath, theme) {
+  console.log(`   Creating ${theme} theme context...`);
+  const context = await browser.newContext({
+    viewport: { width: 1920, height: 1080 },
+    colorScheme: theme,
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+  });
+  const page = await context.newPage();
+
+  console.log(`   Navigating (${theme})...`);
+  await page.goto(article.url, {
+    waitUntil: 'domcontentloaded',
+    timeout: 120000
+  });
+  await page.waitForSelector('.article-formatted-body', { timeout: 30000 });
+
+  // Load all lazy content
+  await loadPageContent(page);
+
+  // Close popups
+  await closePopups(page);
+
+  // Scroll to top
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(500);
+
+  console.log(`   Taking ${theme} screenshot...`);
   await page.screenshot({
     path: screenshotPath,
     fullPage: true
   });
 
-  await browser.close();
-
   const stats = fs.statSync(screenshotPath);
-  console.log(`   ✅ Screenshot saved: ${(stats.size / 1024 / 1024).toFixed(1)} MB`);
+  console.log(`   ✅ ${theme} screenshot saved: ${(stats.size / 1024 / 1024).toFixed(1)} MB`);
+
+  await context.close();
+}
+
+/**
+ * Capture screenshots of the article in both light and dark themes
+ */
+async function captureScreenshot(article) {
+  const archivePath = join(ROOT_DIR, article.archivePath);
+
+  console.log(`\n📸 Capturing screenshots for ${article.title} (${article.version})`);
+  console.log(`   URL: ${article.url}`);
+
+  const browser = await chromium.launch({ headless: true });
+
+  // Capture light theme screenshot
+  const lightPath = join(archivePath, article.screenshotLightFile || 'article-light.png');
+  console.log(`   Target (light): ${lightPath}`);
+  await captureThemedScreenshot(browser, article, lightPath, 'light');
+
+  // Capture dark theme screenshot
+  const darkPath = join(archivePath, article.screenshotDarkFile || 'article-dark.png');
+  console.log(`   Target (dark): ${darkPath}`);
+  await captureThemedScreenshot(browser, article, darkPath, 'dark');
+
+  // Also save a default article.png (light theme copy) for backward compatibility
+  const defaultPath = join(archivePath, article.screenshotFile);
+  fs.copyFileSync(lightPath, defaultPath);
+  console.log(`   ✅ Default screenshot (light copy): ${defaultPath}`);
+
+  await browser.close();
 }
 
 /**

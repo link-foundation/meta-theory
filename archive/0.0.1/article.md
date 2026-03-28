@@ -1,5 +1,15 @@
 # Глубокая Теория Связей 0.0.1
 
+**Author:** [Константин Дьяченко (Konard)](https://habr.com/ru/users/Konard/)
+**Type:** Перевод
+**Original article:** [Василий Солопов, Иван Глазунов, Константин Дьяченко](https://habr.com/ru/companies/deepfoundation/articles/658705/)
+**Published:** April 1, 2024 (updated March 30, 2025)
+**Reading time: 24 мин | Difficulty: Сложный | Views: 10529**
+**Hubs:** Блог компании Deep.Foundation, Математика, Программирование, Open source, Data Engineering
+**Tags:** математика, теория графов, теория множеств, реляционная алгебра, теория типов, теория связей, метатеория, теория отношений, ассоциативная теория, ассоциативная модель данных
+
+---
+
 В прошлое первое апреля, как вы могли догадаться, мы пошутили. Пора это исправить, и теперь $100\%$ всё серьёзно.
 
 ### TL;DR (too long; didn't read)
@@ -192,7 +202,7 @@ $\mathbf{4 \to (1, 2, 3)}$
 
 - связывать объект, его свойство и значение;
 - связывать две связи вместе определённым отношением;
-- описать предложение на естественном языке, например по модели [subject-verb-object](https://en.wikipedia.org/wiki/Subject%E2%80%93verb%E2%80%93object_word_order).
+- описать предложение на естественном языке, например по модели [subject-verb-object](https://en.wikipedia.org/wiki/Subject-verb-object_word_order).
 
 #### Вектора
 

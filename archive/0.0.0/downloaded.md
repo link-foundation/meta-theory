@@ -1,5 +1,13 @@
 # Math introduction to Deep Theory
 
+**Author:** [Иван Сергеевич Глазунов (IvanSGlazunov)](https://habr.com/en/users/IvanSGlazunov/)
+**Published:** April 1, 2022 (updated April 1, 2024)
+**Reading time: 4 min | Difficulty: Hard | Views: 4796**
+**Hubs:** Deep.Foundation corporate blog, Data Engineering, Mathematics, SQL
+**Tags:** links, связи, ассоциативность, deep.foundation, триплеты, дуплеты, associative
+
+---
+
 The article is written as a continuation of the [previous article](https://habr.com/ru/post/656879/).
 
 > We *will begin to write this article in English, later it can be translated to Russian.*

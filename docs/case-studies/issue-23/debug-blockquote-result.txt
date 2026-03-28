@@ -1,0 +1,172 @@
+=== BLOCKQUOTES ===
+
+
+Blockquote 0 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="L \to L^2" alt="L \to L^2" src="https://habrastorage.org/getpro/habr/upload_files/42d/52f/71e/42d52f71e0454feb23d2d4d6773ab933.svg" width="66" height
+  Direct children:
+    P.: formula=L \to L^2, text=""
+  Direct <p> elements:
+    formula=L \to L^2, text=""
+
+Blockquote 1 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{R \subseteq S_1 \times S_2 \times \dots \times S_n.}" alt="\mathbf{R \subseteq S_1 \times S_2 \times \dots \times S_n.}" src="https://habrast
+  Direct children:
+    P.: formula=\mathbf{R \subseteq S_1 \times S_2 \times \dots \times S_n.}, text=" [1]"
+  Direct <p> elements:
+    formula=\mathbf{R \subseteq S_1 \times S_2 \times \dots \times S_n.}, text=" [1]"
+
+Blockquote 2 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{G = (V, E), \quad E \subseteq V \times V.}" alt="\mathbf{G = (V, E), \quad E \subseteq V \times V.}" src="https://habrastorage.org/getpro/hab
+  Direct children:
+    P.: formula=\mathbf{G = (V, E), \quad E \subseteq V \times V.}, text=" [2]"
+  Direct <p> elements:
+    formula=\mathbf{G = (V, E), \quad E \subseteq V \times V.}, text=" [2]"
+
+Blockquote 3 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p>It is worth noting that the separate notion of a reference is required here solely because <a href="https://en.wikipedia.org/wiki/Circular_definition" rel="noopener noreferrer nofollow"
+  Direct children:
+    P.: formula=null, text="It is worth noting that the separate notion of a reference is required here solely because circular "
+  Direct <p> elements:
+    formula=null, text="It is worth noting that the separate notion of a reference is required here sole"
+
+Blockquote 4 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{\lambda: L \to L \times L}" alt="\mathbf{\lambda: L \to L \times L}" src="https://habrastorage.org/getpro/habr/upload_files/f2c/b3a/9e6/f2cb3
+  Direct children:
+    P.: formula=\mathbf{\lambda: L \to L \times L}, text=""
+  Direct <p> elements:
+    formula=\mathbf{\lambda: L \to L \times L}, text=""
+
+Blockquote 5 (3 children, 3 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="1 \to (1, 1)" alt="1 \to (1, 1)" src="https://habrastorage.org/getpro/habr/upload_files/e20/117/3ee/e201173eeb4173dad6b5d088650dd2d0.svg" width="84" 
+  Direct children:
+    P.: formula=1 \to (1, 1), text=""
+    P.: formula=2 \to (2, 2), text=""
+    P.: formula=\mathbf{3 \to (1, 2)}, text=""
+  Direct <p> elements:
+    formula=1 \to (1, 1), text=""
+    formula=2 \to (2, 2), text=""
+    formula=\mathbf{3 \to (1, 2)}, text=""
+
+Blockquote 6 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{\lambda : L \to L \times L \times L}" alt="\mathbf{\lambda : L \to L \times L \times L}" src="https://habrastorage.org/getpro/habr/upload_fil
+  Direct children:
+    P.: formula=\mathbf{\lambda : L \to L \times L \times L}, text=""
+  Direct <p> elements:
+    formula=\mathbf{\lambda : L \to L \times L \times L}, text=""
+
+Blockquote 7 (4 children, 4 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="1 \to (1, 1, 1)" alt="1 \to (1, 1, 1)" src="https://habrastorage.org/getpro/habr/upload_files/e5b/d73/c80/e5bd73c8055d79fe139111aa2a55e67a.svg" width
+  Direct children:
+    P.: formula=1 \to (1, 1, 1), text=""
+    P.: formula=2 \to (2, 2, 2), text=""
+    P.: formula=3 \to (3, 3, 3), text=""
+    P.: formula=\mathbf{4 \to (1, 2, 3)}, text=""
+  Direct <p> elements:
+    formula=1 \to (1, 1, 1), text=""
+    formula=2 \to (2, 2, 2), text=""
+    formula=3 \to (3, 3, 3), text=""
+    formula=\mathbf{4 \to (1, 2, 3)}, text=""
+
+Blockquote 8 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{\lambda : L \rightarrow \underbrace{ L \times L \times \ldots \times L}_{n}}" alt="\mathbf{\lambda : L \rightarrow \underbrace{ L \times L \t
+  Direct children:
+    P.: formula=\mathbf{\lambda : L \rightarrow \underbrace{ L \times L \times \ldots \times L}_{n}}, text=""
+  Direct <p> elements:
+    formula=\mathbf{\lambda : L \rightarrow \underbrace{ L \times L \times \ldots \times L}_{n}}, text=""
+
+Blockquote 9 (4 children, 4 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="1 \to (1)" alt="1 \to (1)" src="https://habrastorage.org/getpro/habr/upload_files/be3/043/b11/be3043b119b494fff27df2bd70b5f955.svg" width="65" height
+  Direct children:
+    P.: formula=1 \to (1), text=""
+    P.: formula=2 \to (2, 2), text=""
+    P.: formula=3 \to (3, 3, 3), text=""
+    P.: formula=\mathbf{4 \to (1, 2, 3, 2, 1)}, text=""
+  Direct <p> elements:
+    formula=1 \to (1), text=""
+    formula=2 \to (2, 2), text=""
+    formula=3 \to (3, 3, 3), text=""
+    formula=\mathbf{4 \to (1, 2, 3, 2, 1)}, text=""
+
+Blockquote 10 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p>The links theory is being developed as a more fundamental framework compared to set theory or type theory, and as a replacement for relational algebra and graph theory as unifying theor
+  Direct children:
+    P.: formula=null, text="The links theory is being developed as a more fundamental framework compared to set theory or type t"
+  Direct <p> elements:
+    formula=null, text="The links theory is being developed as a more fundamental framework compared to "
+
+Blockquote 11 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{L ⊆ ℕ_0}" alt="\mathbf{L ⊆ ℕ_0}" src="https://habrastorage.org/getpro/habr/upload_files/d4b/359/be0/d4b359be04ab5657f765a2ac88cc87ed.svg" wid
+  Direct children:
+    P.: formula=\mathbf{L ⊆ ℕ_0}, text=""
+  Direct <p> elements:
+    formula=\mathbf{L ⊆ ℕ_0}, text=""
+
+Blockquote 12 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{V_n = L^n}" alt="\mathbf{V_n = L^n}" src="https://habrastorage.org/getpro/habr/upload_files/e85/8b7/ef4/e858b7ef4aa8f53c89dba3da5d719167.svg"
+  Direct children:
+    P.: formula=\mathbf{V_n = L^n}, text=""
+  Direct <p> elements:
+    formula=\mathbf{V_n = L^n}, text=""
+
+Blockquote 13 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{A = L \times V_n}" alt="\mathbf{A = L \times V_n}" src="https://habrastorage.org/getpro/habr/upload_files/9de/747/627/9de747627c4584713bb01bd
+  Direct children:
+    P.: formula=\mathbf{A = L \times V_n}, text=""
+  Direct <p> elements:
+    formula=\mathbf{A = L \times V_n}, text=""
+
+Blockquote 14 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}" alt="\mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}" src="https://habrastorage.org/getpro/habr/upload_files/d4b/c6a/6
+  Direct children:
+    P.: formula=\mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}, text=""
+  Direct <p> elements:
+    formula=\mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}, text=""
+
+Blockquote 15 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{D = L^2}" alt="\mathbf{D = L^2}" src="https://habrastorage.org/getpro/habr/upload_files/fe0/558/c19/fe0558c1937f1af0e5e1d4775a5e3459.svg" wid
+  Direct children:
+    P.: formula=\mathbf{D = L^2}, text=""
+  Direct <p> elements:
+    formula=\mathbf{D = L^2}, text=""
+
+Blockquote 16 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{anetd: L → L^2}" alt="\mathbf{anetd: L → L^2}" src="https://habrastorage.org/getpro/habr/upload_files/43d/47c/c8d/43d47cc8d060c4e0eb17153e2a2
+  Direct children:
+    P.: formula=\mathbf{anetd: L → L^2}, text=""
+  Direct <p> elements:
+    formula=\mathbf{anetd: L → L^2}, text=""
+
+Blockquote 17 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="\mathbf{anetl: L → NP}\textbf{, where }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\}&nbsp;}" alt="\mathbf{anetl: L → NP}\textbf{, where }\mathbf{
+  Direct children:
+    P.: formula=\mathbf{anetl: L → NP}\textbf{, where }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\} }, text=""
+  Direct <p> elements:
+    formula=\mathbf{anetl: L → NP}\textbf{, where }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\} }, text=""
+
+Blockquote 18 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="L \to L^2" alt="L \to L^2" src="https://habrastorage.org/getpro/habr/upload_files/42d/52f/71e/42d52f71e0454feb23d2d4d6773ab933.svg" width="66" height
+  Direct children:
+    P.: formula=L \to L^2, text=""
+  Direct <p> elements:
+    formula=L \to L^2, text=""
+
+Blockquote 19 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p>L ↦ L²</p></blockquote>
+  Direct children:
+    P.: formula=null, text="L ↦ L²"
+  Direct <p> elements:
+    formula=null, text="L ↦ L²"
+
+Blockquote 20 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p>L \to L^2</p></blockquote>
+  Direct children:
+    P.: formula=null, text="L \to L^2"
+  Direct <p> elements:
+    formula=null, text="L \to L^2"
+
+Blockquote 21 (1 children, 1 direct <p>, 0 nested <p>):
+  HTML preview: <blockquote><p><img class="formula inline" source="L \to L^2" alt="L \to L^2" src="https://habrastorage.org/getpro/habr/upload_files/42d/52f/71e/42d52f71e0454feb23d2d4d6773ab933.svg" width="66" height
+  Direct children:
+    P.: formula=L \to L^2, text=""
+  Direct <p> elements:
+    formula=L \to L^2, text=""

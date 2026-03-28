@@ -4,7 +4,7 @@
 **Type:** Translation
 **Original article:** [Vasily Solopov, Roman Vertushkin, Ivan Glazunov, Konstantin Diachenko](https://habr.com/ru/companies/deepfoundation/articles/804617/)
 **Published:** April 1, 2025 (updated August 10, 2025)
-**Reading time: 27 min | Difficulty: Medium | Views: 5169**
+**Reading time: 27 min | Difficulty: Medium | Views: 5203**
 **Hubs:** Data Engineering, Open source, Mathematics, Abnormal programming, Programming
 **Tags:** metatheory, links theory, relational theory, associative theory, math, set theory, type theory, graph theory, relational algebra, associative model of data
 
@@ -94,7 +94,7 @@ In the projection of the links theory into set theory, [a link](https://habr.com
 
 A doublet-link is represented by a duplet (2-tuple or [ordered pair](https://en.wikipedia.org/wiki/Ordered_pair)) of references to links. A doublet-link also has its own reference.
 
-```
+```python
 L = { 1 , 2 }
 
 L × L = {
@@ -109,9 +109,9 @@ L × L = {
 
 - $L$ is the set of references (from the English word “Links” as in “References”).
 
-In this example, the set $L $ contains only $2$ references to links, namely $1$ and $2$. In other words, in a network of links built on such a set of references, there can be only $2$ links.
+In this example, the set $L$ contains only $2$ references to links, namely $1$ and $2$. In other words, in a network of links built on such a set of references, there can be only $2$ links.
 
-To obtain all possible values of a link, [the Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) of $L $ with itself is used, i.e.,$ L \times L$.
+To obtain all possible values of a link, [the Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) of $L$ with itself is used, i.e., $L \times L$.
 
 ![Figure 4](images/figure-4.png)
 
@@ -133,9 +133,11 @@ Where:
 
 **Example**:
 
-> $1 \to (1, 1)$
+> $$1 \to (1, 1)$$
 
-$2 \to (2, 2)$$\mathbf{3 \to (1, 2)}$
+> $$2 \to (2, 2)$$
+
+> $$\mathbf{3 \to (1, 2)}$$
 
 ![Figure 6](images/figure-6.png)
 
@@ -160,7 +162,7 @@ Thanks to this and other facts, we believe that doublet-links can represent any 
 
 A triplet-link is represented by a triplet (3-tuple) of references to links.
 
-```
+```python
 L = { 1 , 2 }
 
 L × L = {
@@ -201,11 +203,13 @@ Where:
 
 Example of a function specifying a particular triplet links network:
 
-> $1 \to (1, 1, 1)$
+> $$1 \to (1, 1, 1)$$
 
-$2 \to (2, 2, 2)$$3 \to (3, 3, 3)$
+> $$2 \to (2, 2, 2)$$
 
-$\mathbf{4 \to (1, 2, 3)}$
+> $$3 \to (3, 3, 3)$$
+
+> $$\mathbf{4 \to (1, 2, 3)}$$
 
 ![Figure 10](images/figure-10.jpg)
 
@@ -234,11 +238,13 @@ Where:
 
 Example:
 
-> $1 \to (1)$
+> $$1 \to (1)$$
 
-$2 \to (2, 2)$$3 \to (3, 3, 3)$
+> $$2 \to (2, 2)$$
 
-$\mathbf{4 \to (1, 2, 3, 2, 1)}$
+> $$3 \to (3, 3, 3)$$
+
+> $$\mathbf{4 \to (1, 2, 3, 2, 1)}$$
 
 In this example, n-tuples of variable lengths are used as link's values. 
 
@@ -294,27 +300,27 @@ Set of all vectors of references of length $n ∈ ℕ_0$:
 
 > $$\mathbf{V_n = L^n}$$
 
-The Cartesian power $L^n $ always produces a vector of length $ n $ , since all its components are of the same type $ L$.
-In other words, $L^n $ represents the set of all possible n-element vectors (essentially n‑tuples), in which every element belongs to the set $ L$.
+The Cartesian power $L^n$ always produces a vector of length $n$ , since all its components are of the same type $L$.
+In other words, $L^n$ represents the set of all possible n-element vectors (essentially n‑tuples), in which every element belongs to the set $L$.
 
 An **association** is an ordered pair consisting of a reference to a vector and a vector of references. This structure serves as a mapping between references and vectors.
 
 > $$\mathbf{A = L \times V_n}$$
 
-An **associative network** of vectors of length** n** (or an n-dimensional associative network) is defined by a family of functions $\{anetv^n\}$, where each function $ anetv^n: L → V_n$ maps a reference $ l ∈ L $ to a vector of references of length $ n $, belonging to $ V_n$, thereby identifying points in an n-dimensional space.
-$n $ in $ anetv^n $ indicates that the function returns vectors containing $ n$ references. Each n-dimensional associative network thus represents a sequence of points in n-dimensional space.
+An **associative network** of vectors of length** n** (or an n-dimensional associative network) is defined by a family of functions $\{anetv^n\}$, where each function $anetv^n: L → V_n$ maps a reference $l ∈ L$ to a vector of references of length $n$, belonging to $V_n$, thereby identifying points in an n-dimensional space.
+$n$ in $anetv^n$ indicates that the function returns vectors containing $n$ references. Each n-dimensional associative network thus represents a sequence of points in n-dimensional space.
 
 **Family of functions:**
 
 > $$\mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}$$
 
-Here, the union symbol $∪_f $ denotes the aggregation of all functions in the family $\{anetv^n\}$, and the symbol  $ ⊆$ indicates that these ordered pairs — viewed as functional binary relations — are a subset of the set $ A$ of all associations.
+Here, the union symbol $∪_f$ denotes the aggregation of all functions in the family $\{anetv^n\}$, and the symbol  $⊆$ indicates that these ordered pairs — viewed as functional binary relations — are a subset of the set $A$ of all associations.
 
 **Set of duplets (ordered pairs or 2-dimensional vectors) of references:**
 
 > $$\mathbf{D = L^2}$$
 
-This is the set of all duplets $(L, L)$, i.e., the second Cartesian power of $ L$ .
+This is the set of all duplets $(L, L)$, i.e., the second Cartesian power of $L$ .
 
 **Associative network of duplets (or a 2-dimensional associative network):**
 
@@ -328,7 +334,7 @@ An empty vector (vector of length zero) is represented by the empty tuple, denot
 
 > $$\mathbf{anetl: L → NP}\textbf{, where }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\} }$$
 
-$NP $ is the set of nested ordered pairs consisting of empty pairs and pairs containing one or more elements. In this way, a vector of length $ n \in \mathbb{N}_0$ can be represented as nested ordered pairs.
+$NP$ is the set of nested ordered pairs consisting of empty pairs and pairs containing one or more elements. In this way, a vector of length $n \in \mathbb{N}_0$ can be represented as nested ordered pairs.
 
 ### Projection of the links theory into type theory (coq) via set theory
 
@@ -344,7 +350,7 @@ In anticipation of extensive work aimed at proving the equivalence of the relati
 
 [[Link to source code]](https://github.com/deep-foundation/deep-theory/blob/main/associative_proofs/coq/ANetDefs.v)
 
-```
+```coq
 Require Import PeanoNat.
 Require Import Coq.Init.Nat.
 Require Import Vector.
@@ -398,7 +404,7 @@ Definition ANetDl := list D.
 
 #### Functions for converting associative network
 
-```
+```coq
 (* Function to convert Vn to NP *)
 Fixpoint VnToNP {n : nat} (v : Vn n) : NP :=
   match v with
@@ -574,7 +580,7 @@ Definition ANetDlToANetLl (anetd: ANetDl) : ANetLl :=
 
 #### Predicates of equivalence for associative networks
 
-```
+```coq
 (* The definition ANetVf_equiv introduces a predicate for the equivalence of two associative networks of vectors of length n,
   anet1 and anet2 of type ANetVf.
 
@@ -600,7 +606,7 @@ Definition ANetDl_equiv (anet1: ANetDl) (anet2: ANetDl) : Prop := anet1 = anet2.
 
 #### Lemmas of equivalence of associative networks
 
-```
+```coq
 (* Lemma on preservation of vector length in the associative network *)
 Lemma Vn_dim_preserved : forall {l: nat} (t: Vn l), List.length (VnToNP t) = l.
 Proof.
@@ -684,7 +690,7 @@ Qed.
 
 #### Examples of conversions between associative networks
 
-```
+```coq
 (* Notation for list notation *)
 Notation "{ }" := (nil) (at level 0).
 Notation "{ x , .. , y }" := (cons x .. (cons y nil) ..) (at level 0).

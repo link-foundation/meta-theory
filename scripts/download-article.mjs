@@ -268,13 +268,16 @@ async function extractArticleContent(article, verbose = false) {
       if (tag === 'img' && node.classList.contains('formula')) {
         const source = node.getAttribute('source');
         if (source) {
+          // Trim whitespace from LaTeX source to prevent broken rendering
+          // (e.g., "$L $" with trailing space won't render on GitHub)
+          const trimmed = source.trim();
           // Inline formula - wrap in single $
-          return `$${source}$`;
+          return `$${trimmed}$`;
         }
         // Fallback to alt text
         const alt = node.getAttribute('alt');
         if (alt) {
-          return `$${alt}$`;
+          return `$${alt.trim()}$`;
         }
         return '';
       }
@@ -355,34 +358,57 @@ async function extractArticleContent(article, verbose = false) {
         const temp = document.createElement('div');
         temp.innerHTML = code;
         code = temp.textContent || temp.innerText;
-        const language = codeEl?.className?.match(/language-(\w+)/)?.[1] || '';
+        // Habr uses both "language-xxx" and bare class names like "python", "matlab"
+        let language = codeEl?.className?.match(/language-(\w+)/)?.[1]
+          || codeEl?.className?.match(/^(\w+)$/)?.[1]
+          || '';
+
+        // Content-based language correction: Habr sometimes misidentifies languages
+        // Detect Coq by characteristic keywords (Habr labels it as "matlab")
+        const trimmedCode = code.trim();
+        if (language === 'matlab' && (
+          /\b(Require\s+Import|Definition|Fixpoint|Lemma|Theorem|Proof|Qed|Notation|Inductive)\b/.test(trimmedCode)
+        )) {
+          language = 'coq';
+        }
+
         elements.push({
           type: 'code',
           language,
-          content: code.trim()
+          content: trimmedCode
         });
         return;
       }
 
       // Handle blockquotes
       if (tag === 'blockquote') {
-        const content = nodeToMarkdownChildren(node).trim();
+        // Process child paragraphs individually to handle multi-formula blockquotes
+        // Habr often has blockquotes with multiple <p> elements, each containing a formula
+        const childParagraphs = Array.from(node.querySelectorAll(':scope > p, :scope > div > p'));
+        const childContents = childParagraphs.length > 0
+          ? childParagraphs.map(p => nodeToMarkdownChildren(p).trim()).filter(Boolean)
+          : [nodeToMarkdownChildren(node).trim()];
 
-        // Check if the blockquote contains only a formula (common pattern in articles)
-        // Pattern: starts and ends with $ and mostly contains LaTeX content
-        // Allow for some whitespace around the formula
-        const formulaOnlyMatch = content.match(/^\s*\$([^$]+)\$\s*$/);
-        if (formulaOnlyMatch) {
-          // This is a formula-only blockquote, preserve as blockquote with block formula
-          // Output will be: > $$formula$$
-          const formula = formulaOnlyMatch[1].trim();
-          elements.push({
-            type: 'blockquote-math',
-            content: formula
-          });
+        // Check if ALL children are formula-only (blockquote-math pattern)
+        const formulaPattern = /^\s*\$([^$]+)\$\s*$/;
+        const allFormulas = childContents.every(c => formulaPattern.test(c));
+
+        if (allFormulas && childContents.length > 0) {
+          // Each formula-only paragraph becomes its own blockquote-math element
+          for (const content of childContents) {
+            const match = content.match(formulaPattern);
+            if (match) {
+              elements.push({
+                type: 'blockquote-math',
+                content: match[1].trim()
+              });
+            }
+          }
           return;
         }
 
+        // For non-formula blockquotes, join all paragraph content with newlines
+        const content = childContents.join('\n');
         elements.push({
           type: 'blockquote',
           content: content
@@ -440,7 +466,7 @@ async function extractArticleContent(article, verbose = false) {
             // Standalone formula - treat as block formula
             elements.push({
               type: 'math-block',
-              content: source
+              content: source.trim()
             });
             return;
           }
@@ -526,31 +552,76 @@ function postProcessMarkdown(markdown) {
   // Normalize ellipsis
   result = result.replace(/…/g, '...');
 
-  // Fix spacing around inline LaTeX formulas
-  // Pattern: word$formula$word should become word $formula$ word
-  // We need to run multiple passes to handle all cases
+  // Fix spacing around inline LaTeX formulas using a line-by-line token-based approach.
+  // Simple regex replacements fail because they cannot distinguish opening/closing $ delimiters.
+  // Instead, we process each line, identify formula spans, and fix spacing around/inside them.
+  result = result.split('\n').map(line => {
+    // Skip block formula lines ($$...$$) and blockquote block formulas (> $$...$$)
+    const trimmedLine = line.replace(/^>\s*/, '');
+    if (trimmedLine.startsWith('$$') && trimmedLine.endsWith('$$')) return line;
 
-  // Pass 1: Add space after formula when followed by word character
-  // Match: $formula$word -> $formula$ word
-  result = result.replace(/(\$[^$\n]+\$)([a-zA-Zа-яА-ЯёЁ])/g, (match, formula, nextChar) => {
-    return formula + ' ' + nextChar;
-  });
+    // Find all inline formula spans by tracking $ delimiters
+    // We parse left to right, matching opening $ with closing $
+    const formulas = [];
+    let i = 0;
+    while (i < line.length) {
+      if (line[i] === '$' && (i === 0 || line[i - 1] !== '\\')) {
+        // Skip $$ block delimiters
+        if (line[i + 1] === '$') {
+          i += 2;
+          continue;
+        }
+        // Found opening $, find closing $
+        const start = i;
+        i++;
+        while (i < line.length && (line[i] !== '$' || line[i - 1] === '\\')) {
+          i++;
+        }
+        if (i < line.length) {
+          // Found closing $
+          formulas.push({ start, end: i });
+          i++;
+        }
+      } else {
+        i++;
+      }
+    }
 
-  // Pass 2: Add space before formula when preceded by word character
-  // Match: word$formula$ -> word $formula$
-  result = result.replace(/([a-zA-Zа-яА-ЯёЁ])(\$[^$\n]+\$)/g, (match, prevChar, formula) => {
-    return prevChar + ' ' + formula;
-  });
+    if (formulas.length === 0) return line;
 
-  // Fix multiple inline formulas on the same line (common pattern from inline extraction)
-  // Pattern: $formula1$$formula2$ -> $formula1$\n\n$formula2$
-  result = result.replace(/(\$[^$\n]+\$)\$([^$\n]+\$)/g, (match, formula1, formula2) => {
-    return formula1 + '\n\n$' + formula2;
-  });
+    // Build the line with fixes applied
+    let fixed = '';
+    let pos = 0;
+    for (const f of formulas) {
+      // Add text before this formula
+      fixed += line.substring(pos, f.start);
 
-  // Note: We removed the "clean up whitespace inside formulas" regexes because they
-  // were incorrectly matching and removing spaces BETWEEN formula and adjacent text.
-  // The formulas from the source already have correct internal spacing.
+      // Extract and trim formula content (remove internal leading/trailing whitespace)
+      const rawInner = line.substring(f.start + 1, f.end);
+      const inner = rawInner.trim();
+
+      // Add space before formula if preceded by word character or comma
+      // (comma-adjacent formulas like "i.e.,$L$" need a space for readability)
+      if (fixed.length > 0 && /[a-zA-Zа-яА-ЯёЁ,]$/.test(fixed)) {
+        fixed += ' ';
+      }
+
+      // Add the formula with trimmed content
+      fixed += `$${inner}$`;
+
+      // Check if next character after formula is a word character and add space
+      const afterPos = f.end + 1;
+      if (afterPos < line.length && /^[a-zA-Zа-яА-ЯёЁ]/.test(line[afterPos])) {
+        fixed += ' ';
+      }
+
+      pos = f.end + 1;
+    }
+    // Add remaining text
+    fixed += line.substring(pos);
+
+    return fixed;
+  }).join('\n');
 
   // Fix double spaces (but not in code blocks)
   result = result.replace(/([^\n`])  +/g, (match, char) => {

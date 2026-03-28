@@ -2,8 +2,8 @@
 
 **Author:** [Иван Сергеевич Глазунов (IvanSGlazunov)](https://habr.com/en/users/IvanSGlazunov/)
 **Published:** April 1, 2022 (updated April 1, 2024)
-**Reading time: 4 min | Difficulty: Hard | Views: 4796**
-**Hubs:** Deep.Foundation corporate blog, Data Engineering, Mathematics, SQL
+**Reading time: 4 min | Difficulty: Hard | Views: 4812**
+**Hubs:** Deep.Foundation corporate blog, SQL, Mathematics, Data Engineering
 **Tags:** links, связи, ассоциативность, deep.foundation, триплеты, дуплеты, associative
 
 ---
@@ -57,7 +57,7 @@ A link is defined as [n-tuple](https://en.wikipedia.org/wiki/Tuple) of reference
 
 Doublet is also known as 2-tuple or [ordered pair](https://en.wikipedia.org/wiki/Ordered_pair#:~:text=In%20mathematics%2C%20an%20ordered%20pair,%7Bb%2C%20a%7D.)).
 
-```
+```python
 L = { 1 , 2 }
 
 L × L = {
@@ -111,7 +111,7 @@ Because of these, doublets can represent any possible data structure.
 
 Triplet is also known as 3-tuple.
 
-```
+```python
 L = { 1 , 2 }
 
 L × L = {

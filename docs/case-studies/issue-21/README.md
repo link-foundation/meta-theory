@@ -21,6 +21,10 @@ The automated article download script (`scripts/download-article.mjs`) successfu
 
 3. **Fix implemented**: Added metadata extraction to `extractArticleContent()` in `download-article.mjs` and a new `formatMetadataBlock()` function to render metadata as markdown.
 
+4. **Translation badge fix**: The "Original author" line was identified as a translation badge/panel that also contains a link to the original article. Updated extraction to use `.tm-publication-label_variant-translation` for article type detection and `.tm-article-presenter__origin-link` for the original article URL and author names.
+
+5. **Screenshot improvements**: Updated `scripts/download.mjs` to capture screenshots in both light and dark themes using Playwright's `colorScheme` context option, with automatic popup/overlay closing via `closePopups()` function.
+
 ## Root Cause
 
 The original `download-article.mjs` script used `page.evaluate()` to extract content only from the `.article-formatted-body` element, which is the article body container. The metadata (author, date, difficulty, hubs, tags) lives in the `.tm-article-presenter__header` area, which is a sibling element above the body - not inside it. The script simply never looked at this header area.
@@ -50,7 +54,8 @@ The metadata block is rendered as:
 # Article Title
 
 **Author:** [Full Name (Username)](profile-url)
-**Original author: Name1, Name2, ...** (if translation)
+**Type:** Translation (if translation)
+**Original article:** [Author1, Author2, ...](original-article-url) (if translation)
 **Published:** Month Day, Year (updated Month Day, Year)
 **Reading time: Xmin | Difficulty: Level | Views: Count**
 **Hubs:** Hub1, Hub2, Hub3
@@ -60,6 +65,15 @@ The metadata block is rendered as:
 
 Article body content...
 ```
+
+### Screenshot Themes
+
+Each article now has three screenshot files:
+- `article-light.png` — captured with `colorScheme: 'light'` Playwright context
+- `article-dark.png` — captured with `colorScheme: 'dark'` Playwright context
+- `article.png` — default (copy of light theme, for backward compatibility)
+
+Popups and overlays are automatically closed before screenshot capture using common Habr CSS selectors (cookie banners, modals, notifications).
 
 ## Data Collected
 
@@ -91,11 +105,14 @@ Article body content...
 | Views | `.tm-icon-counter__value` | Count in `title` attribute |
 | Hubs | `.tm-publication-hub__link span:first-child` | Hub name spans |
 | Tags | `meta[name="keywords"]` | Comma-separated in content |
-| Original author | `.tm-article-presenter__origin` | For translations |
+| Translation type | `.tm-publication-label_variant-translation` | "Translation"/"Перевод" |
+| Original article | `.tm-article-presenter__origin-link` | Link + author names |
 
 ## Verification
 
 All three articles were successfully downloaded with metadata and verified:
-- 0.0.0: 7.2 KB with metadata
-- 0.0.1: 45.4 KB with metadata
-- 0.0.2: 56.9 KB with metadata, 94.7% verification pass rate
+- 0.0.0: 7.2 KB with metadata, 100% verification pass rate
+- 0.0.1: 45.5 KB with metadata, 94.6% verification pass rate
+- 0.0.2: 57.0 KB with metadata, 94.7% verification pass rate
+
+Light and dark themed screenshots generated for all 3 articles with no popup overlays.

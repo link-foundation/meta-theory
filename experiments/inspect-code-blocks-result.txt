@@ -1,0 +1,1184 @@
+Launching browser...
+
+=== CODE BLOCKS ===
+
+Code block 0:
+  pre classes: ""
+  code classes: "python"
+  code data-lang: "null"
+  pre data-lang: "null"
+  pre data-code: "null"
+  language match: "null"
+  first line: "L = { 1 , 2 }L × L = {  (1, 1),  (1, 2),  (2, 1),  (2, 2),}"
+  html: <pre><code class="python"><span class="ͼ5">L</span> <span class="ͼ6">=</span> { <span class="ͼ9">1</span> , <span class="ͼ9">2</span> }<br><br><span class="ͼ5">L</span> <span class="ͼ5">×</span> <span class="ͼ5">L</span> <span class="ͼ6">=</span> {<br>  (<span class="ͼ9">1</span>, <span class="ͼ9">1</span>),<br>  (<span class="ͼ9">1</span>, <span class="ͼ9">2</span>),<br>  (<span class="ͼ9">2</span>, <span class="ͼ9">1</span>),<br>  (<span class="ͼ9">2</span>, <span class="ͼ9">2</span>),<br>}</c
+
+Code block 1:
+  pre classes: ""
+  code classes: "python"
+  code data-lang: "null"
+  pre data-lang: "null"
+  pre data-code: "null"
+  language match: "null"
+  first line: "L = { 1 , 2 }L × L = {  (1, 1),  (1, 2),  (2, 1),  (2, 2),}L × L × L = {  (1, 1,"
+  html: <pre><code class="python"><span class="ͼ5">L</span> <span class="ͼ6">=</span> { <span class="ͼ9">1</span> , <span class="ͼ9">2</span> }<br><br><span class="ͼ5">L</span> <span class="ͼ5">×</span> <span class="ͼ5">L</span> <span class="ͼ6">=</span> {<br>  (<span class="ͼ9">1</span>, <span class="ͼ9">1</span>),<br>  (<span class="ͼ9">1</span>, <span class="ͼ9">2</span>),<br>  (<span class="ͼ9">2</span>, <span class="ͼ9">1</span>),<br>  (<span class="ͼ9">2</span>, <span class="ͼ9">2</span>),<br>}<br
+
+Code block 2:
+  pre classes: ""
+  code classes: "matlab"
+  code data-lang: "null"
+  pre data-lang: "null"
+  pre data-code: "null"
+  language match: "null"
+  first line: "Require Import PeanoNat.Require Import Coq.Init.Nat.Require Import Vector.Requir"
+  html: <pre><code class="matlab"><span class="ͼ4">Require</span> <span class="ͼ4">Import</span> <span class="ͼ4">PeanoNat</span><span class="ͼ6">.</span><br><span class="ͼ4">Require</span> <span class="ͼ4">Import</span> <span class="ͼ4">Coq</span><span class="ͼ6">.</span><span class="ͼ4">Init</span><span class="ͼ6">.</span><span class="ͼ4">Nat</span><span class="ͼ6">.</span><br><span class="ͼ4">Require</span> <span class="ͼ4">Import</span> <span class="ͼ4">Vector</span><span class="ͼ6">.</span><br><spa
+
+Code block 3:
+  pre classes: ""
+  code classes: "matlab"
+  code data-lang: "null"
+  pre data-lang: "null"
+  pre data-code: "null"
+  language match: "null"
+  first line: "(* Function to convert Vn to NP *)Fixpoint VnToNP {n : nat} (v : Vn n) : NP :=  "
+  html: <pre><code class="matlab"><span class="ͼ8">(* Function to convert Vn to NP *)</span><br><span class="ͼ4">Fixpoint</span> <span class="ͼ4">VnToNP</span> {<span class="ͼ5">n : nat} (v : Vn n) : NP :=</span><br>  <span class="ͼ4">match</span> <span class="ͼ4">v</span> <span class="ͼ4">with</span><br>  <span class="ͼ6">|</span> <span class="ͼ4">Vector</span><span class="ͼ6">.</span><span class="ͼ4">nil</span> <span class="ͼ6">_</span> <span class="ͼ6">=</span><span class="ͼ6">&gt;</span> <span class
+
+Code block 4:
+  pre classes: ""
+  code classes: "matlab"
+  code data-lang: "null"
+  pre data-lang: "null"
+  pre data-code: "null"
+  language match: "null"
+  first line: "(* The definition ANetVf_equiv introduces a predicate for the equivalence of two"
+  html: <pre><code class="matlab"><span class="ͼ8">(* The definition ANetVf_equiv introduces a predicate for the equivalence of two associative networks of vectors of length n,</span><br>   <span class="ͼ8">anet1 and anet2 of type ANetVf.</span><br><br>   <span class="ͼ8">This predicate describes the property of "equivalence" for such networks.</span><br>   <span class="ͼ8">It asserts that anet1 and anet2 are considered "equivalent" if, for every reference id, the vector associated with id in anet1</spa
+
+Code block 5:
+  pre classes: ""
+  code classes: "matlab"
+  code data-lang: "null"
+  pre data-lang: "null"
+  pre data-code: "null"
+  language match: "null"
+  first line: "(* Lemma on preservation of vector length in the associative network *)Lemma Vn_"
+  html: <pre><code class="matlab"><span class="ͼ8">(* Lemma on preservation of vector length in the associative network *)</span><br><span class="ͼ4">Lemma</span> <span class="ͼ5">Vn_dim</span><span class="ͼ5">_preserved</span> <span class="ͼ6">:</span> <span class="ͼ4">forall</span> {<span class="ͼ5">l: nat} (t: Vn l), List.length (VnToNP t) = l.</span><br><span class="ͼ4">Proof</span><span class="ͼ6">.</span><br>  <span class="ͼ4">intros</span> <span class="ͼ4">l</span> <span class="ͼ4">t</span><span 
+
+Code block 6:
+  pre classes: ""
+  code classes: "matlab"
+  code data-lang: "null"
+  pre data-lang: "null"
+  pre data-code: "null"
+  language match: "null"
+  first line: "(* Notation for list notation *)Notation "{ }" := (nil) (at level 0).Notation "{"
+  html: <pre><code class="matlab"><span class="ͼ8">(* Notation for list notation *)</span><br><span class="ͼ4">Notation</span> <span class="ͼ7">"{ }"</span> <span class="ͼ6">:</span><span class="ͼ6">=</span> (<span class="ͼ4">nil</span>) (<span class="ͼ4">at</span> <span class="ͼ4">level</span> <span class="ͼ9">0</span>)<span class="ͼ6">.</span><br><span class="ͼ4">Notation</span> <span class="ͼ7">"{ x , .. , y }"</span> <span class="ͼ6">:</span><span class="ͼ6">=</span> (<span class="ͼ4">cons</span> <s
+
+=== FORMULAS ===
+
+Formula 0:
+  source: "100\%"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "x that, and now everything is "
+  next sibling text: " serious."
+
+Formula 1:
+  source: "L \to L^2"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 2:
+  source: "\mathbf{R \subseteq S_1 \times S_2 \times \dots \times S_n.}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: " "
+
+Formula 3:
+  source: "\mathbf{R}"
+  parent: FIGCAPTION.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: false
+  standalone: false
+  prev sibling text: "relation"
+  next sibling text: ", which is represented as a "
+
+Formula 4:
+  source: "\mathbf{r}"
+  parent: FIGCAPTION.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: false
+  standalone: false
+  prev sibling text: " "
+  next sibling text: ", belonging to a "
+
+Formula 5:
+  source: "\mathbf{S_1 \times S_2 \times \dots \times S_n}"
+  parent: FIGCAPTION.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: false
+  standalone: false
+  prev sibling text: " "
+  next sibling text: "."
+
+Formula 6:
+  source: "\mathbf{R}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " "
+  next sibling text: "denotes a "
+
+Formula 7:
+  source: "\subseteq"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " "
+  next sibling text: " indicates that the left side "
+
+Formula 8:
+  source: "\times"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " "
+  next sibling text: " denotes the "
+
+Formula 9:
+  source: "\mathbf{S_n}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "expression"
+  next sibling text: "represents the "
+
+Formula 10:
+  source: "\mathbf{R}"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " "
+  next sibling text: ", are represented as "
+
+Formula 11:
+  source: "\mathbf{32}"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "en forbidden to use more than "
+  next sibling text: " "
+
+Formula 12:
+  source: "\mathbf{n}"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "). Thus, the actual value of "
+  next sibling text: " is usually lower than "
+
+Formula 13:
+  source: "\mathbf{32}"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " is usually lower than "
+  next sibling text: ". Therefore, in these cases, t"
+
+Formula 14:
+  source: "\mathbf{G}"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " "
+  next sibling text: " is defined as follows:"
+
+Formula 15:
+  source: "\mathbf{G = (V, E), \quad E \subseteq V \times V.}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: " "
+
+Formula 16:
+  source: "\mathbf{V}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: " is a "
+
+Formula 17:
+  source: "\mathbf{E}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: " is a set of "
+
+Formula 18:
+  source: "L"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: " is the set of references (fro"
+
+Formula 19:
+  source: "L"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "In this example, the set "
+  next sibling text: " contains only "
+
+Formula 20:
+  source: "2"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " contains only "
+  next sibling text: " references to links, namely "
+
+Formula 21:
+  source: "1"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " references to links, namely "
+  next sibling text: " and "
+
+Formula 22:
+  source: "2"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " and "
+  next sibling text: ". In other words, in a network"
+
+Formula 23:
+  source: "2"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "references, there can be only "
+  next sibling text: " links."
+
+Formula 24:
+  source: "L"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " of "
+  next sibling text: " with itself is used, i.e.,"
+
+Formula 25:
+  source: "L \times L"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " with itself is used, i.e.,"
+  next sibling text: "."
+
+Formula 26:
+  source: "\mathbf{\lambda: L \to L \times L}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 27:
+  source: "\to"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "denotes "
+
+Formula 28:
+  source: "\mathbf{\lambda}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "  represents the function that"
+
+Formula 29:
+  source: "\mathbf{L}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: " denotes the set of references"
+
+Formula 30:
+  source: "1 \to (1, 1)"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 31:
+  source: "2 \to (2, 2)"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 32:
+  source: "\mathbf{3 \to (1, 2)}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 33:
+  source: "\mathbf{\lambda : L \to L \times L \times L}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 34:
+  source: "\mathbf{\lambda}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: " denotes the function that def"
+
+Formula 35:
+  source: "\mathbf{L}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: " denotes the set of references"
+
+Formula 36:
+  source: "1 \to (1, 1, 1)"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 37:
+  source: "2 \to (2, 2, 2)"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 38:
+  source: "3 \to (3, 3, 3)"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 39:
+  source: "\mathbf{4 \to (1, 2, 3)}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 40:
+  source: "\mathbf{\lambda : L \rightarrow \underbrace{ L \times L \times \ldots \times L}_{n}}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 41:
+  source: "\mathbf{\lambda}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "The "
+  next sibling text: " symbol denotes the function t"
+
+Formula 42:
+  source: "\mathbf{L}"
+  parent: P.
+  grandparent: LI.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "The "
+  next sibling text: " symbol denotes the set of lin"
+
+Formula 43:
+  source: "1 \to (1)"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 44:
+  source: "2 \to (2, 2)"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 45:
+  source: "3 \to (3, 3, 3)"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 46:
+  source: "\mathbf{4 \to (1, 2, 3, 2, 1)}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 47:
+  source: "\mathbf{n \geq 2}"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "ited length using tuples with "
+  next sibling text: ". It is as capable as graph th"
+
+Formula 48:
+  source: "\mathbf{L ⊆ ℕ_0}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 49:
+  source: "n ∈ ℕ_0"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "ctors of references of length "
+  next sibling text: ":"
+
+Formula 50:
+  source: "\mathbf{V_n = L^n}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 51:
+  source: "L^n"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "The Cartesian power "
+  next sibling text: " always produces a vector of l"
+
+Formula 52:
+  source: "n"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "s produces a vector of length "
+  next sibling text: " , since all its components ar"
+
+Formula 53:
+  source: "L"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "mponents are of the same type "
+  next sibling text: "."
+
+Formula 54:
+  source: "L^n"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "In other words, "
+  next sibling text: " represents the set of all pos"
+
+Formula 55:
+  source: "L"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "ry element belongs to the set "
+  next sibling text: "."
+
+Formula 56:
+  source: "\mathbf{A = L \times V_n}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 57:
+  source: "\{anetv^n\}"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "ined by a family of functions "
+  next sibling text: ", where each function"
+
+Formula 58:
+  source: "anetv^n: L → V_n"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: ", where each function"
+  next sibling text: " maps a reference "
+
+Formula 59:
+  source: "l ∈ L"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " maps a reference "
+  next sibling text: " to a vector of references of "
+
+Formula 60:
+  source: "n"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "ector of references of length "
+  next sibling text: ", belonging to "
+
+Formula 61:
+  source: "V_n"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: ", belonging to "
+  next sibling text: ", thereby identifying points i"
+
+Formula 62:
+  source: "n"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: " in "
+
+Formula 63:
+  source: "anetv^n"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " in "
+  next sibling text: " indicates that the function r"
+
+Formula 64:
+  source: "n"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "on returns vectors containing "
+  next sibling text: " references. Each n-dimensiona"
+
+Formula 65:
+  source: "\mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 66:
+  source: "∪_f"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "Here, the union symbol "
+  next sibling text: " denotes the aggregation of al"
+
+Formula 67:
+  source: "\{anetv^n\}"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "f all functions in the family "
+  next sibling text: ", and the symbol  "
+
+Formula 68:
+  source: " ⊆"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: ", and the symbol  "
+  next sibling text: " indicates that these ordered "
+
+Formula 69:
+  source: "A"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "ions —are a subset of the set "
+  next sibling text: " of all associations. "
+
+Formula 70:
+  source: "\mathbf{D = L^2}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 71:
+  source: "(L, L)"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "his is the set of all duplets "
+  next sibling text: ", i.e., the second Cartesian p"
+
+Formula 72:
+  source: "L"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "the second Cartesian power of "
+  next sibling text: " ."
+
+Formula 73:
+  source: "\mathbf{anetd: L → L^2}"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 74:
+  source: "()"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "y the empty tuple, denoted as "
+  next sibling text: " or "
+
+Formula 75:
+  source: "∅"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " or "
+  next sibling text: "."
+
+Formula 76:
+  source: "\mathbf{anetl: L → NP}\textbf{, where }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\} }"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 77:
+  source: "NP"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " "
+  next sibling text: " is the set of nested ordered "
+
+Formula 78:
+  source: "n \in \mathbb{N}_0"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: " this way, a vector of length "
+  next sibling text: " can be represented as nested "
+
+Formula 79:
+  source: "1746 \dots 15745"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "ust outperforms PostgreSQL by "
+  next sibling text: " times in write operations and"
+
+Formula 80:
+  source: "100 \dots 9694"
+  parent: P.
+  grandparent: DIV.
+  in blockquote: false
+  in paragraph: true
+  standalone: true
+  prev sibling text: "times in write operations and "
+  next sibling text: " times in read operations."
+
+Formula 81:
+  source: "L \to L^2"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+Formula 82:
+  source: "L \to L^2"
+  parent: P.
+  grandparent: BLOCKQUOTE.
+  in blockquote: true
+  in paragraph: true
+  standalone: true
+  prev sibling text: "null"
+  next sibling text: "null"
+
+=== PARAGRAPHS WITH FORMULAS ===
+
+Paragraph (1 formulas, 3 children):
+  text: "Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything"
+  formulas: ["100\\%"]
+  children: ["TEXT:\"Last April 1st, as you might h\"","IMG.formula inline","TEXT:\" serious.\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["L \\to L^2"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 3 children):
+  text: "[1]"
+  formulas: ["\\mathbf{R \\subseteq S_1 \\times S_2 \\times \\dots \\times S_n.}"]
+  children: ["IMG.formula inline","TEXT:\" \"","A"]
+
+Paragraph (1 formulas, 9 children):
+  text: "The symbol denotes a relation (table);"
+  formulas: ["\\mathbf{R}"]
+  children: ["TEXT:\"The \"","A","TEXT:\" \"","IMG.formula inline","TEXT:\"denotes a \"","A","TEXT:\" (\"","A","TEXT:\");\""]
+
+Paragraph (1 formulas, 9 children):
+  text: "The symbol  indicates that the left side of the expression is a subset of the right side;"
+  formulas: ["\\subseteq"]
+  children: ["TEXT:\"The \"","A","TEXT:\" \"","IMG.formula inline","TEXT:\" indicates that the left side \"","A","TEXT:\" is a \"","A","TEXT:\" of the right side;\""]
+
+Paragraph (1 formulas, 9 children):
+  text: "The symbol  denotes the Cartesian product of two sets;"
+  formulas: ["\\times"]
+  children: ["TEXT:\"The \"","A","TEXT:\" \"","IMG.formula inline","TEXT:\" denotes the \"","A","TEXT:\" of two \"","A","TEXT:\";\""]
+
+Paragraph (1 formulas, 14 children):
+  text: "The expressionrepresents the domain, i.e., the set of all possible values that each cell in a column"
+  formulas: ["\\mathbf{S_n}"]
+  children: ["TEXT:\"The \"","A","IMG.formula inline","TEXT:\"represents the \"","A","TEXT:\", i.e., the \"","A","TEXT:\" of all possible \"","A","TEXT:\" that each \"","A","TEXT:\" in a \"","A","TEXT:\" can contain.\""]
+
+Paragraph (1 formulas, 10 children):
+  text: "Rows, or elements of the relation , are represented as n-tuples."
+  formulas: ["\\mathbf{R}"]
+  children: ["A","TEXT:\", or \"","A","TEXT:\" of the \"","A","TEXT:\" \"","IMG.formula inline","TEXT:\", are represented as \"","A","TEXT:\".\""]
+
+Paragraph (3 formulas, 62 children):
+  text: "Data in the relational model is grouped into relations. By using n-tuples in this model, one can pre"
+  formulas: ["\\mathbf{32}","\\mathbf{n}","\\mathbf{32}"]
+  children: ["A","TEXT:\" in the \"","A","TEXT:\" is grouped into \"","A","TEXT:\". By using \"","A","TEXT:\" in this \"","A","TEXT:\", one can precisely represent \"","A","TEXT:\", if only we actually ever use\"","A","TEXT:\" for that. And are \"","A","TEXT:\" even necessary? For example, \"","A","TEXT:\" can be represented as \"","A","TEXT:\", which suggests that \"","A","TEXT:\" alone might be sufficient to \"","A","TEXT:\". Moreover, it’s uncommon for \"","A","TEXT:\" values in \"","A","TEXT:\" to be represented as \"","A","TEXT:\" (although, for instance, a \"","A","TEXT:\" can be \"","A","TEXT:\" into an \"","A","TEXT:\" of \"","A","TEXT:\"). In some \"","A","TEXT:\" \"","A","TEXT:\", it is even forbidden to use \"","IMG.formula inline","TEXT:\" \"","A","TEXT:\" in a \"","A","TEXT:\" (and, by extension, in its co\"","A","TEXT:\"). Thus, the actual value of \"","IMG.formula inline","TEXT:\" is usually lower than \"","IMG.formula inline","TEXT:\". Therefore, in these cases, t\"","A","TEXT:\" \"","A","TEXT:\" — even in modern \"","A","TEXT:\" \"","A","TEXT:\".\""]
+
+Paragraph (1 formulas, 4 children):
+  text: "A directed graph  is defined as follows:"
+  formulas: ["\\mathbf{G}"]
+  children: ["A","TEXT:\" \"","IMG.formula inline","TEXT:\" is defined as follows:\""]
+
+Paragraph (1 formulas, 3 children):
+  text: "[2]"
+  formulas: ["\\mathbf{G = (V, E), \\quad E \\subseteq V \\times V.}"]
+  children: ["IMG.formula inline","TEXT:\" \"","A"]
+
+Paragraph (1 formulas, 8 children):
+  text: "is a set whose elements are called vertices, nodes, or points;"
+  formulas: ["\\mathbf{V}"]
+  children: ["IMG.formula inline","TEXT:\" is a \"","A","TEXT:\" whose elements are called \"","A","TEXT:\", nodes, or \"","A","TEXT:\";\""]
+
+Paragraph (1 formulas, 14 children):
+  text: "is a set of ordered pairs (2-tuples) of vertices, referred to as arcs, directed edges (sometimes sim"
+  formulas: ["\\mathbf{E}"]
+  children: ["IMG.formula inline","TEXT:\" is a set of \"","A","TEXT:\" (2-\"","A","TEXT:\") of \"","A","TEXT:\", referred to as arcs, directe\"","A","TEXT:\" (sometimes simply \"","A","TEXT:\"), arrows, or directed \"","A","TEXT:\".\""]
+
+Paragraph (1 formulas, 2 children):
+  text: "is the set of references (from the English word “Links” as in “References”)."
+  formulas: ["L"]
+  children: ["IMG.formula inline","TEXT:\" is the set of references (fro\""]
+
+Paragraph (5 formulas, 11 children):
+  text: "In this example, the set  contains only  references to links, namely  and . In other words, in a net"
+  formulas: ["L","2","1","2","2"]
+  children: ["TEXT:\"In this example, the set \"","IMG.formula inline","TEXT:\" contains only \"","IMG.formula inline","TEXT:\" references to links, namely \"","IMG.formula inline","TEXT:\" and \"","IMG.formula inline","TEXT:\". In other words, in a network\"","IMG.formula inline","TEXT:\" links.\""]
+
+Paragraph (2 formulas, 7 children):
+  text: "To obtain all possible values of a link, the Cartesian product of  with itself is used, i.e.,."
+  formulas: ["L","L \\times L"]
+  children: ["TEXT:\"To obtain all possible values \"","A","TEXT:\" of \"","IMG.formula inline","TEXT:\" with itself is used, i.e.,\"","IMG.formula inline","TEXT:\".\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{\\lambda: L \\to L \\times L}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 4 children):
+  text: "denotes a mapping (function);"
+  formulas: ["\\to"]
+  children: ["IMG.formula inline","TEXT:\"denotes \"","A","TEXT:\";\""]
+
+Paragraph (1 formulas, 2 children):
+  text: "represents the function that defines the duplet-links network;"
+  formulas: ["\\mathbf{\\lambda}"]
+  children: ["IMG.formula inline","TEXT:\"  represents the function that\""]
+
+Paragraph (1 formulas, 2 children):
+  text: "denotes the set of references to links."
+  formulas: ["\\mathbf{L}"]
+  children: ["IMG.formula inline","TEXT:\" denotes the set of references\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["1 \\to (1, 1)"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["2 \\to (2, 2)"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{3 \\to (1, 2)}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{\\lambda : L \\to L \\times L \\times L}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 2 children):
+  text: "denotes the function that defines the triplet links network;"
+  formulas: ["\\mathbf{\\lambda}"]
+  children: ["IMG.formula inline","TEXT:\" denotes the function that def\""]
+
+Paragraph (1 formulas, 2 children):
+  text: "denotes the set of references to links."
+  formulas: ["\\mathbf{L}"]
+  children: ["IMG.formula inline","TEXT:\" denotes the set of references\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["1 \\to (1, 1, 1)"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["2 \\to (2, 2, 2)"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["3 \\to (3, 3, 3)"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{4 \\to (1, 2, 3)}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{\\lambda : L \\rightarrow \\underbrace{ L \\times L \\times \\ldots \\times L}_{n}}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 3 children):
+  text: "The  symbol denotes the function that defines the links network;"
+  formulas: ["\\mathbf{\\lambda}"]
+  children: ["TEXT:\"The \"","IMG.formula inline","TEXT:\" symbol denotes the function t\""]
+
+Paragraph (1 formulas, 3 children):
+  text: "The  symbol denotes the set of link references."
+  formulas: ["\\mathbf{L}"]
+  children: ["TEXT:\"The \"","IMG.formula inline","TEXT:\" symbol denotes the set of lin\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["1 \\to (1)"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["2 \\to (2, 2)"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["3 \\to (3, 3, 3)"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{4 \\to (1, 2, 3, 2, 1)}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 3 children):
+  text: "The associative model can easily represent n-tuples of unlimited length using tuples with . It is as"
+  formulas: ["\\mathbf{n \\geq 2}"]
+  children: ["TEXT:\"The associative model can easi\"","IMG.formula inline","TEXT:\". It is as capable as graph th\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{L ⊆ ℕ_0}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 3 children):
+  text: "Set of all vectors of references of length :"
+  formulas: ["n ∈ ℕ_0"]
+  children: ["TEXT:\"Set of all vectors of referenc\"","IMG.formula inline","TEXT:\":\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{V_n = L^n}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (5 formulas, 13 children):
+  text: "The Cartesian power  always produces a vector of length  , since all its components are of the same "
+  formulas: ["L^n","n","L","L^n","L"]
+  children: ["TEXT:\"The Cartesian power \"","IMG.formula inline","TEXT:\" always produces a vector of l\"","IMG.formula inline","TEXT:\" , since all its components ar\"","IMG.formula inline","TEXT:\".\"","BR","TEXT:\"In other words, \"","IMG.formula inline","TEXT:\" represents the set of all pos\"","IMG.formula inline","TEXT:\".\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{A = L \\times V_n}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (8 formulas, 22 children):
+  text: "An associative network of vectors of length n (or an n-dimensional associative network) is defined b"
+  formulas: ["\\{anetv^n\\}","anetv^n: L → V_n","l ∈ L","n","V_n","n","anetv^n","n"]
+  children: ["TEXT:\"An \"","STRONG","TEXT:\" of vectors of length\"","STRONG","TEXT:\" (or an n-dimensional associat\"","IMG.formula inline","TEXT:\", where each function\"","IMG.formula inline","TEXT:\" maps a reference \"","IMG.formula inline","TEXT:\" to a vector of references of \"","IMG.formula inline","TEXT:\", belonging to \"","IMG.formula inline","TEXT:\", thereby identifying points i\"","BR","IMG.formula inline","TEXT:\" in \"","IMG.formula inline","TEXT:\" indicates that the function r\"","IMG.formula inline","TEXT:\" references. Each n-dimensiona\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{∪_f \\{anetv^n | n ∈ ℕ_0\\} ⊆ A}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (4 formulas, 9 children):
+  text: "Here, the union symbol  denotes the aggregation of all functions in the family , and the symbol   in"
+  formulas: ["∪_f","\\{anetv^n\\}"," ⊆","A"]
+  children: ["TEXT:\"Here, the union symbol \"","IMG.formula inline","TEXT:\" denotes the aggregation of al\"","IMG.formula inline","TEXT:\", and the symbol  \"","IMG.formula inline","TEXT:\" indicates that these ordered \"","IMG.formula inline","TEXT:\" of all associations. \""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{D = L^2}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (2 formulas, 5 children):
+  text: "This is the set of all duplets , i.e., the second Cartesian power of  ."
+  formulas: ["(L, L)","L"]
+  children: ["TEXT:\"This is the set of all duplets\"","IMG.formula inline","TEXT:\", i.e., the second Cartesian p\"","IMG.formula inline","TEXT:\" .\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{anetd: L → L^2}"]
+  children: ["IMG.formula inline"]
+
+Paragraph (2 formulas, 8 children):
+  text: "Each associative network of duplets thus represents a sequence of points in a two‑dimensional space."
+  formulas: ["()","∅"]
+  children: ["TEXT:\"Each associative network of du\"","BR","BR","TEXT:\"An empty vector (vector of len\"","IMG.formula inline","TEXT:\" or \"","IMG.formula inline","TEXT:\".\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["\\mathbf{anetl: L → NP}\\textbf{, where }\\mathbf{NP = \\{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\\} }"]
+  children: ["IMG.formula inline"]
+
+Paragraph (2 formulas, 5 children):
+  text: "is the set of nested ordered pairs consisting of empty pairs and pairs containing one or more elemen"
+  formulas: ["NP","n \\in \\mathbb{N}_0"]
+  children: ["TEXT:\" \"","IMG.formula inline","TEXT:\" is the set of nested ordered \"","IMG.formula inline","TEXT:\" can be represented as nested \""]
+
+Paragraph (2 formulas, 8 children):
+  text: "LinksPlatfrom is a cross-platform, multi-language framework aimed at providing a low-level implement"
+  formulas: ["1746 \\dots 15745","100 \\dots 9694"]
+  children: ["A","TEXT:\" is a cross-platform, multi-la\"","A","TEXT:\" that compares the implementat\"","IMG.formula inline","TEXT:\" times in write operations and\"","IMG.formula inline","TEXT:\" times in read operations.\""]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["L \\to L^2"]
+  children: ["IMG.formula inline"]
+
+Paragraph (1 formulas, 1 children):
+  text: ""
+  formulas: ["L \\to L^2"]
+  children: ["IMG.formula inline"]
+
+Done!

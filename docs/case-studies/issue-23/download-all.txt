@@ -1,0 +1,41 @@
+🚀 Article Download Script
+==========================
+
+📥 Downloading Math introduction to Deep Theory (0.0.0)
+======================================================================
+   URL: https://habr.com/en/companies/deepfoundation/articles/658705/
+   Target: /tmp/gh-issue-solver-1774732595754/archive/0.0.0/article.md
+   Extracting content from web page...
+   ✅ Extracted 81 elements
+   Converting to markdown...
+   ✅ Saved /tmp/gh-issue-solver-1774732595754/archive/0.0.0/article.md
+   File size: 7.2 KB
+
+📥 Downloading Глубокая Теория Связей 0.0.1 (0.0.1)
+======================================================================
+   URL: https://habr.com/ru/companies/deepfoundation/articles/804617/
+   Target: /tmp/gh-issue-solver-1774732595754/archive/0.0.1/article.md
+   Extracting content from web page...
+   ✅ Extracted 170 elements
+   Converting to markdown...
+   ✅ Saved /tmp/gh-issue-solver-1774732595754/archive/0.0.1/article.md
+   File size: 45.5 KB
+
+📥 Downloading The Links Theory 0.0.2 (0.0.2)
+======================================================================
+   URL: https://habr.com/en/articles/895896/
+   Target: /tmp/gh-issue-solver-1774732595754/archive/0.0.2/article.md
+   Extracting content from web page...
+   ✅ Extracted 181 elements
+   Converting to markdown...
+   ✅ Saved /tmp/gh-issue-solver-1774732595754/archive/0.0.2/article.md
+   File size: 57.1 KB
+
+======================================================================
+📊 DOWNLOAD SUMMARY
+======================================================================
+   ✅ 0.0.0: 7.2 KB
+   ✅ 0.0.1: 45.5 KB
+   ✅ 0.0.2: 57.1 KB
+
+======================================================================

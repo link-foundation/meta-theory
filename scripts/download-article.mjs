@@ -160,10 +160,24 @@ async function extractArticleContent(article, verbose = false) {
       }
     }
 
-    // Translation / original author info
-    const originEl = document.querySelector('.tm-article-presenter__origin');
-    if (originEl) {
-      meta.originalAuthor = originEl.innerText.trim();
+    // Translation badge - detect if article is a translation
+    const translationLabelEl = document.querySelector('.tm-publication-label_variant-translation');
+    if (translationLabelEl) {
+      meta.isTranslation = true;
+      meta.translationLabel = translationLabelEl.innerText.trim();
+    }
+
+    // Translation / original author info and link to original article
+    const originLinkEl = document.querySelector('.tm-article-presenter__origin-link');
+    if (originLinkEl) {
+      meta.originalArticleUrl = originLinkEl.href || null;
+      // Extract just the author names from the span inside the link
+      const authorSpan = originLinkEl.querySelector('span');
+      if (authorSpan) {
+        meta.originalAuthors = authorSpan.innerText.trim();
+      }
+      // Full text includes the label like "Original author: ..."
+      meta.originalAuthorText = originLinkEl.innerText.trim();
     }
 
     // LD+JSON structured data for additional metadata
@@ -572,9 +586,19 @@ function formatMetadataBlock(metadata) {
     lines.push(`**Author:** ${authorLink}`);
   }
 
-  // Original author (for translations)
-  if (metadata.originalAuthor) {
-    lines.push(`**${metadata.originalAuthor}**`);
+  // Article type (translation)
+  if (metadata.isTranslation) {
+    lines.push(`**Type:** ${metadata.translationLabel || 'Translation'}`);
+  }
+
+  // Original article link and authors (for translations)
+  if (metadata.originalAuthors) {
+    const authorsText = metadata.originalAuthors;
+    if (metadata.originalArticleUrl) {
+      lines.push(`**Original article:** [${authorsText}](${metadata.originalArticleUrl})`);
+    } else {
+      lines.push(`**Original authors:** ${authorsText}`);
+    }
   }
 
   // Publication date

@@ -1,0 +1,520 @@
+{
+  "title": "The Links Theory 0.0.2",
+  "titleSelector": "tm-title tm-title_h1",
+  "author": "Konard",
+  "authorSelector": ".tm-user-info__username",
+  "authorHref": "https://habr.com/en/users/Konard/",
+  "publishDate": "2025-04-01T12:15:55.000Z",
+  "publishDateText": "Apr 1 2025 at 12:15",
+  "publishDateSelector": "time[datetime]",
+  "readingTime": "27 min",
+  "readingTimeSelector": ".tm-article-reading-time__label",
+  "difficulty": "Medium",
+  "difficultySelector": ".tm-article-complexity__label",
+  "hubs": [
+    {
+      "text": "Data Engineering\n*",
+      "href": "https://habr.com/en/hubs/data_engineering/"
+    },
+    {
+      "text": "Open source\n*",
+      "href": "https://habr.com/en/hubs/open_source/"
+    },
+    {
+      "text": "Mathematics\n*",
+      "href": "https://habr.com/en/hubs/maths/"
+    },
+    {
+      "text": "Abnormal programming\n*",
+      "href": "https://habr.com/en/hubs/crazydev/"
+    },
+    {
+      "text": "Programming\n*",
+      "href": "https://habr.com/en/hubs/programming/"
+    },
+    {
+      "text": "Data Engineering",
+      "href": "https://habr.com/en/hubs/data_engineering/"
+    },
+    {
+      "text": "Open source",
+      "href": "https://habr.com/en/hubs/open_source/"
+    },
+    {
+      "text": "Mathematics",
+      "href": "https://habr.com/en/hubs/maths/"
+    },
+    {
+      "text": "Abnormal programming",
+      "href": "https://habr.com/en/hubs/crazydev/"
+    },
+    {
+      "text": "Programming",
+      "href": "https://habr.com/en/hubs/programming/"
+    },
+    {
+      "text": "Hubs",
+      "href": "https://habr.com/en/hubs/"
+    }
+  ],
+  "hubsSelector": "a[href*=\"/hubs/\"]",
+  "tags": [],
+  "translation": "Original author: Vasily Solopov, Roman Vertushkin, Ivan Glazunov, Konstantin Diachenko",
+  "translationSelector": ".tm-article-presenter__origin",
+  "headerHTML": "<div class=\"tm-article-presenter__header\"><!--[--><!--]--><div class=\"article-snippet tm-article-presenter__snippet\" data-v-a29a3e0d=\"\"><!--[--><!--]--><div class=\"meta-container\" data-v-a29a3e0d=\"\"><div class=\"meta\" data-v-a29a3e0d=\"\"><span class=\"tm-user-info author\" data-v-a29a3e0d=\"\"><a href=\"/en/users/Konard/\" class=\"tm-user-info__userpic\" data-test-id=\"user-info-pic\"><!--[--><div class=\"tm-entity-image\"><img alt=\"\" class=\"tm-entity-image__pic\" height=\"24\" src=\"//habrastorage.org/r/w48/getpro/habr/avatars/faa/6f7/0a5/faa6f70a548befa99b28025c5dfcdd6d.jpg\" width=\"24\"></div><!--]--></a><span class=\"tm-user-info__user tm-user-info__user_appearance-default\" data-test-id=\"user-info-description\"><a href=\"/en/users/Konard/\" class=\"tm-user-info__username\" data-test-id=\"user-info-username\"><!--[-->Konard<!--]--></a><!----><!--[--><span class=\"tm-article-datetime-published\" data-v-a29a3e0d=\"\"><time data-allow-mismatch=\"\" datetime=\"2025-04-01T12:15:55.000Z\" title=\"2025-04-01, 12:15\"> Apr  1 2025 at 12:15</time></span><!--]--></span></span></div><div class=\"controls\" data-v-a29a3e0d=\"\"><!----><!----><!----><!----></div></div><h1 class=\"tm-title tm-title_h1\" lang=\"ru\" data-test-id=\"articleTitle\" data-v-a29a3e0d=\"\"><span>The Links Theory 0.0.2</span></h1><div class=\"stats\" data-test-id=\"articleStats\" data-v-a29a3e0d=\"\"><div class=\"tm-article-complexity tm-article-complexity_complexity-medium\" data-v-a29a3e0d=\"\"><span class=\"tm-svg-icon__wrapper tm-article-complexity__icon\"><svg class=\"tm-svg-img tm-svg-icon\" height=\"24\" width=\"24\"><title>Level of difficulty</title><use xlink:href=\"/img/megazord-v28.4a4414af..svg#complexity-medium\"></use></svg></span><span class=\"tm-article-complexity__label\">Medium</span></div><div class=\"tm-article-reading-time\" data-v-a29a3e0d=\"\"><span class=\"tm-svg-icon__wrapper tm-article-reading-time__icon\"><svg class=\"tm-svg-img tm-svg-icon\" height=\"24\" width=\"24\"><title>Reading time</title><use xlink:href=\"/img/megazord-v28.4a4414af..svg#clock\"></use></svg></span><span class=\"tm-article-reading-time__label\">27 min</span></div><span class=\"tm-icon-counter tm-data-icons__item reach-counter\" data-v-a29a3e0d=\"\"><svg class=\"tm-svg-img tm-icon-counter__icon\" height=\"24\" width=\"24\"><title>Reach and readers</title><use xlink:href=\"/img/megazord-v28.4a4414af..svg#counter-views\"></use></svg><span class=\"tm-icon-counter__value\" title=\"5164\">5.2K</span></span></div><div class=\"tm-publication-hubs__container\" data-test-id=\"articleHubsList\" data-v-a29a3e0d=\"\"><div class=\"tm-publication-hubs\"><!--[--><span class=\"tm-publication-hub__link-container\"><a href=\"/en/hubs/data_engineering/\" class=\"tm-publication-hub__link\"><!--[--><span>Data Engineering</span><span class=\"tm-article-snippet__profiled-hub\" title=\"Core hub\"> * </span><!--]--></a></span><span class=\"tm-publication-hub__link-container\"><a href=\"/en/hubs/open_source/\" class=\"tm-publication-hub__link\"><!--[--><span>Open source</span><span class=\"tm-article-snippet__profiled-hub\" title=\"Core hub\"> * </span><!--]--></a></span><span class=\"tm-publication-hub__link-container\"><a href=\"/en/hubs/maths/\" class=\"tm-publication-hub__link\"><!--[--><span>Mathematics</span><span class=\"tm-article-snippet__profiled-hub\" title=\"Core hub\"> * </span><!--]--></a></span><span class=\"tm-publication-hub__link-container\"><a href=\"/en/hubs/crazydev/\" class=\"tm-publication-hub__link\"><!--[--><span>Abnormal programming</span><span class=\"tm-article-snippet__profiled-hub\" title=\"Core hub\"> * </span><!--]--></a></span><span class=\"tm-publication-hub__link-container\"><a href=\"/en/hubs/programming/\" class=\"tm-publication-hub__link\"><!--[--><span>Programming</span><span class=\"tm-article-snippet__profiled-hub\" title=\"Core hub\"> * </span><!--]--></a></span><!--]--></div></div><div class=\"tm-article-labels\" data-test-id=\"articleLabels\" data-v-a29a3e0d=\"\" data-v-bfa2437b=\"\"><div class=\"tm-article-labels__container\" data-v-bfa2437b=\"\"><!----><!--[--><!----><!--[--><div class=\"tm-publication-label tm-publication-label_variant-translation\" data-v-bfa2437b=\"\"><span>Translation</span></div><!--]--><!--]--></div></div><!----><!----><!--teleport start--><!--teleport end--></div></div>",
+  "headerSelector": ".tm-article-presenter__header",
+  "ldJson": [
+    {
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://habr.com/en/articles/895896/"
+      },
+      "headline": "The Links Theory 0.0.2",
+      "datePublished": "2025-04-01T15:15:55+03:00",
+      "dateModified": "2025-08-10T19:57:06+03:00",
+      "author": {
+        "@type": "Person",
+        "name": "Константин Дьяченко"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Habr",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://habrastorage.org/webt/a_/lk/9m/a_lk9mjkccjox-zccjrpfolmkmq.png"
+        }
+      },
+      "description": "Last April 1st, as you might have guessed, we were joking. It&rsquo;s time to fix that, and now everything is  serious.TL;DR (too long; didn't read)This article c...",
+      "url": "https://habr.com/en/articles/895896/#post-content-body",
+      "about": [
+        "h_data_engineering",
+        "h_open_source",
+        "h_maths",
+        "h_crazydev",
+        "h_programming",
+        "f_develop",
+        "f_admin"
+      ],
+      "image": [
+        "https://habr.com/share/publication/895896/7eceae8b08999e65e612c35c9a083fed/",
+        "https://habrastorage.org/getpro/habr/upload_files/298/8ef/3a6/2988ef3a67988537121da1f6acea3521.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/42d/52f/71e/42d52f71e0454feb23d2d4d6773ab933.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/e61/ff7/187/e61ff7187b7395121c7d84e471201746.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/e8f/883/fef/e8f883fefd210cb011de4adc628c0880.png",
+        "https://habrastorage.org/getpro/habr/upload_files/203/6f3/b34/2036f3b3468859de12152bc067e47dac.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/33d/2a7/97e/33d2a797ee86429db7e38da67483e75f.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/828/aec/1c7/828aec1c78c1359119fc7ccd175da2aa.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/31f/d32/a0d/31fd32a0d3f4da43190e7cb8a750eb76.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/b9b/ec9/a4e/b9bec9a4e452e6275b2121100862a5b5.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/301/5d0/0ff/3015d00ff84b04fc4c65992435fbd09f.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/940/b2c/ce2/940b2cce2daa321e8da40ba1da98f586.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/e84/6f7/61f/e846f761f953c75ff51d3230849758c2.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/e52/b83/18e/e52b8318e2fc33ea0901c041bc1f2acd.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/151/cd6/8ec/151cd68ecf73924d37429c1019914e14.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/ded/f66/0ff/dedf660ff7a5b1d8bfa99b90ca0aca67.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/1ab/e38/6a3/1abe386a353c55b7916bef53e38940ff.png",
+        "https://habrastorage.org/getpro/habr/upload_files/2a0/936/873/2a0936873b5fbf6dc6bce2aaabf716f5.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/fa9/e1f/e8e/fa9e1fe8e000474930ee7d543ebfd8b1.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/59a/ccb/b8a/59accbb8a95f3e359e9a3738c97d272a.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/8c1/379/4d2/8c13794d2118caf7d61eb611492c8e75.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/932/a13/f5d/932a13f5d90b47e39fb12ff8eaf8a1b3.png",
+        "https://habrastorage.org/getpro/habr/upload_files/611/470/8ad/6114708ad83523cef2accb96b6ce0822.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/606/866/4d6/6068664d6d0540aafbc5cd6e5b00dab2.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/3e0/4b9/0b3/3e04b90b3c0ef9a81cc755b045b55fc4.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/f33/919/ad6/f33919ad6e0a7a03a4eed49345d7554c.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/b10/5aa/988/b105aa9888806d40465977f0810f3d4b.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/7a1/3d5/400/7a13d540029bf772a37159dc0e1070b6.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/a58/5e0/6a1/a585e06a14f7587476a496f71943fb06.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/091/d67/cf1/091d67cf176a956cd555a9ed6f1f9ad2.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/f23/51b/fe4/f2351bfe4d41eb941faf542197d51163.png",
+        "https://habrastorage.org/getpro/habr/upload_files/752/178/3cd/7521783cd0938c6d1f98667963df7467.png",
+        "https://habrastorage.org/getpro/habr/upload_files/f2c/b3a/9e6/f2cb3a9e6a92e192bfb30aa3ab04c374.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/b44/f07/bad/b44f07bad2b7ec1faa314c632129e686.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/35c/a66/527/35ca66527c3493632880e4df4e5a76b0.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/102/766/32a/10276632ae4bfa07367daf235a73c68c.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/e20/117/3ee/e201173eeb4173dad6b5d088650dd2d0.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/bd6/77c/115/bd677c1155f209d676352169d3816f78.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/bd1/42a/295/bd142a295ff649cac225e73f1ec6992a.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/87a/8a4/914/87a8a49142aa21abf813634df99f478c.png",
+        "https://habrastorage.org/getpro/habr/upload_files/a45/b25/979/a45b25979018b0847a1cf3ae1e34df60.png",
+        "https://habrastorage.org/getpro/habr/upload_files/43c/8b1/b36/43c8b1b36ce92b6cf1cf2b402efd95d8.png",
+        "https://habrastorage.org/getpro/habr/upload_files/ca2/b5e/f9c/ca2b5ef9c0d0989a2ba8a8d4f097f184.png",
+        "https://habrastorage.org/getpro/habr/upload_files/c51/7e2/87d/c517e287d2a7d79c2b935cd4e973523a.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/2de/458/b3f/2de458b3fcb130fb1d0643151ef8037d.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/e92/594/55f/e9259455f97666907efd09c7ced3d127.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/e5b/d73/c80/e5bd73c8055d79fe139111aa2a55e67a.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/07d/19d/68a/07d19d68a950f6fbda8f7c8ad162a03f.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/48c/e97/ca3/48ce97ca3af3d696ca20be41b206b371.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/a8f/daf/402/a8fdaf4021ef03e2c46d781083b219b2.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/76c/672/576/76c6725766a17ea75ebed8e99abd070e.jpeg",
+        "https://habrastorage.org/getpro/habr/upload_files/5c7/f16/636/5c7f1663641976ee66d0f70703967ef6.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/b2a/298/365/b2a2983658ac09d0fcd4f92eec2b7736.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/4c9/a5d/cc5/4c9a5dcc5d8c83fdc93af35cf54f0f36.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/be3/043/b11/be3043b119b494fff27df2bd70b5f955.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/318/829/e3c/318829e3ceaf6ea333f3ab9e248426c2.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/390/88e/cb1/39088ecb103b398d3eb81ba270bbf089.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/044/ec4/584/044ec45845d69ce2ab702ba7db156212.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/b29/c29/6e9/b29c296e9caa29140c03d5ec5fa2da0d.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/d4b/359/be0/d4b359be04ab5657f765a2ac88cc87ed.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/d34/892/f89/d34892f89cd830e7b2f50691061d6782.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/e85/8b7/ef4/e858b7ef4aa8f53c89dba3da5d719167.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/8e6/a4e/352/8e6a4e352b6dc6a114223e80ac72c2d1.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/81d/8f6/881/81d8f6881171ec6b4c77a12c6c4a66db.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/69e/b3e/52d/69eb3e52d0d10df194e08ac1c8fb62fd.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/58f/85a/448/58f85a448ce12693a88e51a74cbd355a.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/9de/747/627/9de747627c4584713bb01bdbe9a56445.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/4a2/dbe/629/4a2dbe6291659f4a865fa3abf3057490.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/557/ff0/dcf/557ff0dcf80e5e51412557f3e4643c99.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/df1/fad/127/df1fad127ed0e2ae108b855e4daf3786.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/a90/9c5/e4a/a909c5e4aacb8a775f9c0035834441c3.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/c88/daf/d7f/c88dafd7f5e1e21e63cbfcb3785550b9.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/5ba/f2d/c68/5baf2dc683c8181e277f46b8b64c4869.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/d4b/c6a/643/d4bc6a643fd9587a897fe742e42c0b2a.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/649/13d/c54/64913dc54812a2ab04e153c0139d7ba6.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/9a2/54f/2e0/9a254f2e0bfb7cf5b9d2d49a90a09eba.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/e00/ca1/186/e00ca1186f521ffff0257256f5259d18.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/406/c21/65d/406c2165d8c7ee7f53a19daf3ebcad54.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/fe0/558/c19/fe0558c1937f1af0e5e1d4775a5e3459.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/6da/4d3/3c6/6da4d33c6ac154e1494a7697bab1fb8c.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/a0b/4c1/a49/a0b4c1a4959102f4227ab510a22c1781.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/43d/47c/c8d/43d47cc8d060c4e0eb17153e2a24753d.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/6e3/86c/822/6e386c8222f479f1f9adb78524e078c7.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/0a7/742/e37/0a7742e378e2661a73fa374b8e7aa620.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/6da/35e/ea5/6da35eea526805df88de52922e627614.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/aff/e3c/dcd/affe3cdcd5b32d4b11da1d3bbbf92950.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/9fa/a5a/aab/9faa5aaab28e48372a299c0c80da2fcd.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/cbd/c7b/80c/cbdc7b80c67db3247748301c54b2dfb0.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/eee/c96/77c/eeec9677cc65db3059e2dc0a2915ebab.svg",
+        "https://habrastorage.org/getpro/habr/upload_files/2b3/461/555/2b34615551356a195304f0af610858b8.png",
+        "https://habrastorage.org/getpro/habr/upload_files/07f/3c0/c00/07f3c0c003624000b56c731ae349034c.png",
+        "https://habrastorage.org/getpro/habr/upload_files/169/e83/811/169e8381146678c2e1dbab896d3e2569.jpg",
+        "https://habrastorage.org/getpro/habr/upload_files/104/768/821/104768821e08820e2da82aafd57be147.png"
+      ]
+    }
+  ],
+  "metaTags": {
+    "fb:app_id": "444736788986613",
+    "fb:pages": "472597926099084",
+    "twitter:card": "summary_large_image",
+    "twitter:site": "@habr_eng",
+    "og:site_name": "Habr",
+    "og:title": "The Links Theory 0.0.2",
+    "twitter:title": "The Links Theory 0.0.2",
+    "aiturec:title": "The Links Theory 0.0.2",
+    "description": "Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything is serious. TL;DR (too long; didn&#039;t read) This article contains many letters, but it can be...",
+    "og:description": "Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything is serious. TL;DR (too long; didn&#039;t read) This article contains many letters, but it can be...",
+    "twitter:description": "Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything is serious. TL;DR (too long; didn&#039;t read) This article contains many letters, but it can be...",
+    "aiturec:description": "Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything is serious. TL;DR (too long; didn&#039;t read) This article contains many letters, but it can be...",
+    "og:image": "https://habrastorage.org/getpro/habr/upload_files/104/768/821/104768821e08820e2da82aafd57be147.png",
+    "og:image:width": "1200",
+    "og:image:height": "630",
+    "aiturec:image": "https://habrastorage.org/getpro/habr/upload_files/104/768/821/104768821e08820e2da82aafd57be147.png",
+    "twitter:image": "https://habrastorage.org/getpro/habr/upload_files/104/768/821/104768821e08820e2da82aafd57be147.png",
+    "vk:image": "https://habrastorage.org/getpro/habr/upload_files/104/768/821/104768821e08820e2da82aafd57be147.png?format=vk",
+    "aiturec:item_id": "895896",
+    "aiturec:datetime": "2025-04-01T12:15:55.000Z",
+    "og:url": "https://habr.com/en/articles/895896/",
+    "og:type": "article",
+    "og:locale": "en_US",
+    "keywords": "metatheory, links theory, relational theory, associative theory, math, set theory, type theory, graph theory, relational algebra, associative model of data",
+    "viewport": "width=device-width,initial-scale=1.0,viewport-fit=cover,minimum-scale=1",
+    "referrer": "unsafe-url",
+    "habr-version": "2.308.0",
+    "apple-mobile-web-app-status-bar-style": "#303b44",
+    "msapplication-TileColor": "#629FBC",
+    "apple-mobile-web-app-capable": "yes",
+    "mobile-web-app-capable": "yes"
+  },
+  "preBodyElements": [
+    {
+      "tag": "DIV",
+      "className": "tm-misprint-area",
+      "text": "Konard\nApr 1 2025 at 12:15\nThe Links Theory 0.0.2\nMedium\n27 min\n5.2K\nData Engineering\n*\nOpen source\n*\nMathematics\n*\nAbnormal programming\n*\nProgramming\n*\nTranslation\nOriginal author: Vasily Solopov, Ro",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-misprint-area__wrapper",
+      "text": "Konard\nApr 1 2025 at 12:15\nThe Links Theory 0.0.2\nMedium\n27 min\n5.2K\nData Engineering\n*\nOpen source\n*\nMathematics\n*\nAbnormal programming\n*\nProgramming\n*\nTranslation\nOriginal author: Vasily Solopov, Ro",
+      "id": ""
+    },
+    {
+      "tag": "ARTICLE",
+      "className": "tm-article-presenter__content tm-article-presenter__content_narrow",
+      "text": "Konard\nApr 1 2025 at 12:15\nThe Links Theory 0.0.2\nMedium\n27 min\n5.2K\nData Engineering\n*\nOpen source\n*\nMathematics\n*\nAbnormal programming\n*\nProgramming\n*\nTranslation\nOriginal author: Vasily Solopov, Ro",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-article-presenter__header",
+      "text": "Konard\nApr 1 2025 at 12:15\nThe Links Theory 0.0.2\nMedium\n27 min\n5.2K\nData Engineering\n*\nOpen source\n*\nMathematics\n*\nAbnormal programming\n*\nProgramming\n*\nTranslation",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "article-snippet tm-article-presenter__snippet",
+      "text": "Konard\nApr 1 2025 at 12:15\nThe Links Theory 0.0.2\nMedium\n27 min\n5.2K\nData Engineering\n*\nOpen source\n*\nMathematics\n*\nAbnormal programming\n*\nProgramming\n*\nTranslation",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "meta-container",
+      "text": "Konard\nApr 1 2025 at 12:15",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "meta",
+      "text": "Konard\nApr 1 2025 at 12:15",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-user-info author",
+      "text": "Konard\nApr 1 2025 at 12:15",
+      "id": ""
+    },
+    {
+      "tag": "A",
+      "className": "tm-user-info__userpic",
+      "text": "",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-entity-image",
+      "text": "",
+      "id": ""
+    },
+    {
+      "tag": "IMG",
+      "className": "tm-entity-image__pic",
+      "text": "",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-user-info__user tm-user-info__user_appearance-default",
+      "text": "Konard\nApr 1 2025 at 12:15",
+      "id": ""
+    },
+    {
+      "tag": "A",
+      "className": "tm-user-info__username",
+      "text": "Konard",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-article-datetime-published",
+      "text": "Apr 1 2025 at 12:15",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "controls",
+      "text": "",
+      "id": ""
+    },
+    {
+      "tag": "H1",
+      "className": "tm-title tm-title_h1",
+      "text": "The Links Theory 0.0.2",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "stats",
+      "text": "Medium\n27 min\n5.2K",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-article-complexity tm-article-complexity_complexity-medium",
+      "text": "Medium",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-svg-icon__wrapper tm-article-complexity__icon",
+      "text": "",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-article-complexity__label",
+      "text": "Medium",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-article-reading-time",
+      "text": "27 min",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-svg-icon__wrapper tm-article-reading-time__icon",
+      "text": "",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-article-reading-time__label",
+      "text": "27 min",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-icon-counter tm-data-icons__item reach-counter",
+      "text": "5.2K",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-icon-counter__value",
+      "text": "5.2K",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-publication-hubs__container",
+      "text": "Data Engineering\n*\nOpen source\n*\nMathematics\n*\nAbnormal programming\n*\nProgramming\n*",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-publication-hubs",
+      "text": "Data Engineering\n*\nOpen source\n*\nMathematics\n*\nAbnormal programming\n*\nProgramming\n*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-publication-hub__link-container",
+      "text": "Data Engineering\n*",
+      "id": ""
+    },
+    {
+      "tag": "A",
+      "className": "tm-publication-hub__link",
+      "text": "Data Engineering\n*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-article-snippet__profiled-hub",
+      "text": "*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-publication-hub__link-container",
+      "text": "Open source\n*",
+      "id": ""
+    },
+    {
+      "tag": "A",
+      "className": "tm-publication-hub__link",
+      "text": "Open source\n*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-article-snippet__profiled-hub",
+      "text": "*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-publication-hub__link-container",
+      "text": "Mathematics\n*",
+      "id": ""
+    },
+    {
+      "tag": "A",
+      "className": "tm-publication-hub__link",
+      "text": "Mathematics\n*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-article-snippet__profiled-hub",
+      "text": "*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-publication-hub__link-container",
+      "text": "Abnormal programming\n*",
+      "id": ""
+    },
+    {
+      "tag": "A",
+      "className": "tm-publication-hub__link",
+      "text": "Abnormal programming\n*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-article-snippet__profiled-hub",
+      "text": "*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-publication-hub__link-container",
+      "text": "Programming\n*",
+      "id": ""
+    },
+    {
+      "tag": "A",
+      "className": "tm-publication-hub__link",
+      "text": "Programming\n*",
+      "id": ""
+    },
+    {
+      "tag": "SPAN",
+      "className": "tm-article-snippet__profiled-hub",
+      "text": "*",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-article-labels",
+      "text": "Translation",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-article-labels__container",
+      "text": "Translation",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-publication-label tm-publication-label_variant-translation",
+      "text": "Translation",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "tm-article-presenter__origin",
+      "text": "Original author: Vasily Solopov, Roman Vertushkin, Ivan Glazunov, Konstantin Diachenko",
+      "id": ""
+    },
+    {
+      "tag": "A",
+      "className": "tm-article-presenter__origin-link",
+      "text": "Original author: Vasily Solopov, Roman Vertushkin, Ivan Glazunov, Konstantin Diachenko",
+      "id": ""
+    },
+    {
+      "tag": "DIV",
+      "className": "article-body",
+      "text": "Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything is  serious.\n\nTL;DR (too long; didn't read)\n\nThis article contains many letters, but it can be repr",
+      "id": ""
+    }
+  ]
+}

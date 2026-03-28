@@ -107,6 +107,84 @@ async function extractArticleContent(article, verbose = false) {
   // Wait for dynamic content
   await page.waitForTimeout(2000);
 
+  // Extract article metadata from the page header area
+  const metadata = await page.evaluate(() => {
+    const meta = {};
+
+    // Author
+    const authorEl = document.querySelector('.tm-user-info__username');
+    if (authorEl) {
+      meta.author = authorEl.innerText.trim();
+      meta.authorUrl = authorEl.href || null;
+    }
+
+    // Publication date
+    const timeEl = document.querySelector('time[datetime]');
+    if (timeEl) {
+      meta.publishDate = timeEl.getAttribute('datetime');
+      meta.publishDateText = timeEl.innerText.trim();
+    }
+
+    // Reading time
+    const readTimeEl = document.querySelector('.tm-article-reading-time__label');
+    if (readTimeEl) {
+      meta.readingTime = readTimeEl.innerText.trim();
+    }
+
+    // Difficulty level
+    const diffEl = document.querySelector('.tm-article-complexity__label');
+    if (diffEl) {
+      meta.difficulty = diffEl.innerText.trim();
+    }
+
+    // Views
+    const viewsEl = document.querySelector('.tm-icon-counter__value');
+    if (viewsEl) {
+      meta.views = viewsEl.getAttribute('title') || viewsEl.innerText.trim();
+    }
+
+    // Hubs (use specific hub link selector to avoid duplicates)
+    const hubEls = document.querySelectorAll('.tm-publication-hub__link');
+    meta.hubs = Array.from(hubEls).map(el => {
+      // Get only the first span text (hub name), not the asterisk
+      const nameSpan = el.querySelector('span:first-child');
+      return nameSpan ? nameSpan.innerText.trim() : el.innerText.trim().replace(/\s*\*\s*$/, '');
+    });
+
+    // Tags from meta keywords
+    const keywordsMeta = document.querySelector('meta[name="keywords"]');
+    if (keywordsMeta) {
+      const content = keywordsMeta.getAttribute('content');
+      if (content) {
+        meta.tags = content.split(',').map(t => t.trim()).filter(Boolean);
+      }
+    }
+
+    // Translation / original author info
+    const originEl = document.querySelector('.tm-article-presenter__origin');
+    if (originEl) {
+      meta.originalAuthor = originEl.innerText.trim();
+    }
+
+    // LD+JSON structured data for additional metadata
+    const ldJsonScript = document.querySelector('script[type="application/ld+json"]');
+    if (ldJsonScript) {
+      try {
+        const ldData = JSON.parse(ldJsonScript.textContent);
+        if (ldData.dateModified) meta.dateModified = ldData.dateModified;
+        if (ldData.author?.name) meta.authorFullName = ldData.author.name;
+      } catch (e) {
+        // ignore parse errors
+      }
+    }
+
+    return meta;
+  });
+
+  if (verbose) {
+    console.log('   Metadata extracted:', JSON.stringify(metadata, null, 2));
+  }
+
   // Extract article content as structured data with HTML processing
   const content = await page.evaluate(() => {
     const articleBody = document.querySelector('.article-formatted-body');
@@ -409,6 +487,10 @@ async function extractArticleContent(article, verbose = false) {
 
   await browser.close();
 
+  if (content) {
+    content.metadata = metadata;
+  }
+
   return content;
 }
 
@@ -472,6 +554,71 @@ function postProcessMarkdown(markdown) {
 }
 
 /**
+ * Format metadata as a markdown block to be placed after the title
+ */
+function formatMetadataBlock(metadata) {
+  if (!metadata) return [];
+
+  const lines = [];
+
+  // Author line
+  if (metadata.author) {
+    const authorName = metadata.authorFullName
+      ? `${metadata.authorFullName} (${metadata.author})`
+      : metadata.author;
+    const authorLink = metadata.authorUrl
+      ? `[${authorName}](${metadata.authorUrl})`
+      : authorName;
+    lines.push(`**Author:** ${authorLink}`);
+  }
+
+  // Original author (for translations)
+  if (metadata.originalAuthor) {
+    lines.push(`**${metadata.originalAuthor}**`);
+  }
+
+  // Publication date
+  if (metadata.publishDate) {
+    const date = new Date(metadata.publishDate);
+    const formatted = date.toLocaleDateString('en-US', {
+      year: 'numeric', month: 'long', day: 'numeric'
+    });
+    let dateLine = `**Published:** ${formatted}`;
+    if (metadata.dateModified) {
+      const modDate = new Date(metadata.dateModified);
+      const modFormatted = modDate.toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+      if (modFormatted !== formatted) {
+        dateLine += ` (updated ${modFormatted})`;
+      }
+    }
+    lines.push(dateLine);
+  }
+
+  // Reading time and difficulty
+  const infoItems = [];
+  if (metadata.readingTime) infoItems.push(`Reading time: ${metadata.readingTime}`);
+  if (metadata.difficulty) infoItems.push(`Difficulty: ${metadata.difficulty}`);
+  if (metadata.views) infoItems.push(`Views: ${metadata.views}`);
+  if (infoItems.length > 0) {
+    lines.push(`**${infoItems.join(' | ')}**`);
+  }
+
+  // Hubs
+  if (metadata.hubs && metadata.hubs.length > 0) {
+    lines.push(`**Hubs:** ${metadata.hubs.join(', ')}`);
+  }
+
+  // Tags
+  if (metadata.tags && metadata.tags.length > 0) {
+    lines.push(`**Tags:** ${metadata.tags.join(', ')}`);
+  }
+
+  return lines;
+}
+
+/**
  * Convert extracted content to markdown
  */
 function contentToMarkdown(content, article) {
@@ -482,6 +629,17 @@ function contentToMarkdown(content, article) {
   // Add title
   if (content.title) {
     lines.push(`# ${content.title}`);
+    lines.push('');
+  }
+
+  // Add metadata block after title
+  const metadataLines = formatMetadataBlock(content.metadata);
+  if (metadataLines.length > 0) {
+    for (const line of metadataLines) {
+      lines.push(line);
+    }
+    lines.push('');
+    lines.push('---');
     lines.push('');
   }
 

@@ -179,17 +179,47 @@ GitHub's markdown math rendering (using MathJax) has specific requirements:
 | 0.0.1 | ~80 | Multiple | 3 multi-formula blockquotes |
 | 0.0.2 | ~85 | Multiple | 3 multi-formula blockquotes |
 
+## GitHub Math Rendering: Known Issues and Workarounds
+
+GitHub's math rendering (MathJax-based) has several known limitations beyond the spacing issue we fixed:
+
+| Issue | Description | Workaround |
+|-------|-------------|------------|
+| **Spacing** | `$L $` or `$ L$` won't render | Trim whitespace inside `$...$` (our fix) |
+| **Markdown links** | `$[a+b](c+d)$` parsed as link | Use `$`\`...\``$` syntax |
+| **Backticks** | Backticks inside `$...$` trigger code | Use `$`\`...\``$` syntax |
+| **Underscores** | `$a_b$` may trigger italic | Escape or use `$`\`...\``$` |
+| **Lists/tables** | Math may not render in lists | GitHub limitation, no workaround |
+| **Dollar escaping** | `$\$4 + \$5$` fails | Known bug |
+
+**Robust alternative:** GitHub supports `` $` `` ... `` `$ `` as a more robust inline math syntax, and ` ```math ` code blocks for display math. However, these are GitHub-specific and reduce portability.
+
+**Sources:**
+- [GitHub Docs: Writing mathematical expressions](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions)
+- [Math on GitHub: The Good, the Bad and the Ugly](https://nschloe.github.io/2022/05/20/math-on-github.html)
+- [GitHub Community Discussion #19953](https://github.com/orgs/community/discussions/19953)
+
 ## Existing Tools and Libraries
 
 ### HTML to Markdown with Math Support
 
 | Tool | Approach | LaTeX Support | Notes |
 |------|----------|--------------|-------|
-| **Turndown** | DOM-based HTML→MD | Plugin-based | Popular, but no built-in formula support |
-| **Pandoc** | Haskell-based converter | Native | Excellent math support, but doesn't handle Habr's custom `source` attribute |
-| **rehype-katex / remark-math** | unified.js ecosystem | Native | For processing markdown with math, not HTML extraction |
-| **highlight.js** | Language detection | N/A | Can detect code language from content; `highlightAuto()` function |
-| **linguist** | GitHub's language classifier | N/A | File-level detection, not code block level |
+| **[Turndown](https://github.com/mixmark-io/turndown)** | DOM-based HTML→MD | Plugin-based | Popular, supports custom rules via `addRule()`, but no built-in formula support |
+| **[Pandoc](https://pandoc.org)** | Haskell-based converter | Native | Excellent math support with `--mathjax` and `-t markdown+tex_math_dollars`, but doesn't handle Habr's custom `source` attribute |
+| **[rehype-katex](https://github.com/remarkjs/remark-math) / remark-math** | unified.js ecosystem | Native | For markdown-to-HTML rendering, NOT HTML-to-markdown extraction |
+| **[markdown-habr](https://github.com/andrienko/markdown-habr)** | Markdown→Habr HTML | N/A | Converts markdown TO Habr format (opposite direction) |
+
+### Code Language Detection
+
+| Tool | Approach | Notes |
+|------|----------|-------|
+| **[highlight.js](https://github.com/highlightjs/highlight.js)** | Keyword/pattern heuristics | `highlightAuto()` detects from 180+ languages. Best fit for snippet-level detection. |
+| **[@vscode/vscode-languagedetection](https://github.com/microsoft/vscode-languagedetection)** | ML (TensorFlow.js) | More accurate but heavier dependency |
+| **[lang-detector](https://github.com/ts95/lang-detector)** | Lightweight heuristics | Fast but limited language support |
+| **[linguist](https://github.com/github-linguist/linguist)** | GitHub's classifier | File-level detection, not suitable for code snippets |
+
+**Recommendation:** `highlight.js` with `highlightAuto()` could replace/supplement the current manual Coq detection logic for more robust language identification.
 
 ### Habr-Specific Considerations
 
@@ -197,6 +227,7 @@ No known open-source tools specifically handle Habr's formula `source` attribute
 1. Habr uses a non-standard `source` attribute (not a standard HTML5 data attribute)
 2. The formulas are rendered as images, not as MathML or KaTeX HTML
 3. The CSS class `formula` and `inline` are Habr-specific
+4. The Habr Markdown help page does not document formula/LaTeX support at all — formulas appear to be an editor feature using proprietary HTML markup
 
 ### Potential Upstream Issues
 

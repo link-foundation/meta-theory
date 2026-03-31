@@ -1,9 +1,13 @@
 # Math introduction to Deep Theory
 
 **Author:** [Иван Сергеевич Глазунов (IvanSGlazunov)](https://habr.com/en/users/IvanSGlazunov/)
+
 **Published:** April 1, 2022 (updated April 1, 2024)
-**Reading time: 4 min | Difficulty: Hard | Views: 4812**
-**Hubs:** Deep.Foundation corporate blog, SQL, Mathematics, Data Engineering
+
+**Reading time: 4 min | Difficulty: Hard | Views: 4821**
+
+**Hubs:** Deep.Foundation corporate blog, Data Engineering, Mathematics, SQL
+
 **Tags:** links, связи, ассоциативность, deep.foundation, триплеты, дуплеты, associative
 
 ---
@@ -205,3 +209,13 @@ Using an associative model means you no longer need to choose between SQL and No
 ### References
 
 1. “Relational Model of Data for Large Shared Data Banks.”, paragraph 1.3., Edgar F. Codd, IBM Research Laboratory, San Jose, California, June 1970
+
+---
+
+**Tags:** links, связи, ассоциативность, deep.foundation, триплеты, дуплеты, associative
+
+**Hubs:** [Deep.Foundation corporate blog](https://habr.com/en/companies/deepfoundation/articles/), [Data Engineering](https://habr.com/en/hubs/data_engineering/), [Mathematics](https://habr.com/en/hubs/maths/), [SQL](https://habr.com/en/hubs/sql/)
+
+**Votes: +1 | Views: 4821**
+
+**Author:** [Иван Сергеевич Глазунов (IvanSGlazunov)](https://habr.com/en/users/IvanSGlazunov/)

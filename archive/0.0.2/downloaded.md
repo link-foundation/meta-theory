@@ -1,16 +1,22 @@
 # The Links Theory 0.0.2
 
 **Author:** [Константин Дьяченко (Konard)](https://habr.com/en/users/Konard/)
+
 **Type:** Translation
+
 **Original article:** [Vasily Solopov, Roman Vertushkin, Ivan Glazunov, Konstantin Diachenko](https://habr.com/ru/companies/deepfoundation/articles/804617/)
+
 **Published:** April 1, 2025 (updated August 10, 2025)
-**Reading time: 27 min | Difficulty: Medium | Views: 5203**
+
+**Reading time: 27 min | Difficulty: Medium | Views: 5231**
+
 **Hubs:** Data Engineering, Open source, Mathematics, Abnormal programming, Programming
+
 **Tags:** metatheory, links theory, relational theory, associative theory, math, set theory, type theory, graph theory, relational algebra, associative model of data
 
 ---
 
-Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything is $100\%$ serious.
+Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything is 100% serious.
 
 #### TL;DR (too long; didn't read)
 
@@ -134,9 +140,9 @@ Where:
 **Example**:
 
 > $$1 \to (1, 1)$$
-
+>
 > $$2 \to (2, 2)$$
-
+>
 > $$\mathbf{3 \to (1, 2)}$$
 
 ![Figure 6](images/figure-6.png)
@@ -204,11 +210,11 @@ Where:
 Example of a function specifying a particular triplet links network:
 
 > $$1 \to (1, 1, 1)$$
-
+>
 > $$2 \to (2, 2, 2)$$
-
+>
 > $$3 \to (3, 3, 3)$$
-
+>
 > $$\mathbf{4 \to (1, 2, 3)}$$
 
 ![Figure 10](images/figure-10.jpg)
@@ -239,11 +245,11 @@ Where:
 Example:
 
 > $$1 \to (1)$$
-
+>
 > $$2 \to (2, 2)$$
-
+>
 > $$3 \to (3, 3, 3)$$
-
+>
 > $$\mathbf{4 \to (1, 2, 3, 2, 1)}$$
 
 In this example, n-tuples of variable lengths are used as link's values. 
@@ -891,17 +897,17 @@ In this demo we build up on links notation to create a dialect that is able to d
 
 ![Figure 11](images/figure-11.png)
 
-**Figure 11. **In this image you can see creation of two links `(1: 1 1)` and `(2: 2 2);` update of first link to `(1: 1 2)`; update/substitution using variables to swap sources and targets of each link; and a deletion of all links using `(* *)` pattern.
+**Figure 11.** In this image you can see creation of two links `(1: 1 1)` and `(2: 2 2);` update of first link to `(1: 1 2)`; update/substitution using variables to swap sources and targets of each link; and a deletion of all links using `(* *)` pattern.
 
 ### Visual demos
 
 ![Figure 12](images/figure-12.png)
 
-**Figure 12. **Link blueprint designer build on top of a configurable spline:** **[konard.github.io/links-visuals/blueprint.html](http://konard.github.io/links-visuals/blueprint.html) (move control points of spline that represents the link)
+**Figure 12.** Link blueprint designer build on top of a configurable spline: [konard.github.io/links-visuals/blueprint.html](http://konard.github.io/links-visuals/blueprint.html) (move control points of spline that represents the link)
 
 ![Figure 13](images/figure-13.jpg)
 
-**Figure 13. **[H-tree](https://en.wikipedia.org/wiki/H_tree) like fractal build using links represented by straight arrows:** **[konard.github.io/links-visuals/H-fractal.html](https://konard.github.io/links-visuals/H-fractal.html) (click at any place to iterate the fractal)
+**Figure 13.** [H-tree](https://en.wikipedia.org/wiki/H_tree) like fractal build using links represented by straight arrows: [konard.github.io/links-visuals/H-fractal.html](https://konard.github.io/links-visuals/H-fractal.html) (click at any place to iterate the fractal)
 
 ### P.S.
 
@@ -929,3 +935,13 @@ Which is rendered as SVG (clickable):
 2. Bender, Edward A.; Williamson, S. Gill (2010). [“Lists, Decisions and Graphs. With an Introduction to Probability.”, section 2, definition 6, page 161](https://books.google.com/books?id=vaXv_yhefG8C)
 3. Simon Williams, Great Britain (1988), [The Associative Model Of Data](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf)
 4. Homan, J. V., & Kovacs, P. J. (2009). [A Comparison of the Relational Database Model and the Associative Database Model](https://www.researchgate.net/publication/255670856_A_COMPARISON_OF_THE_RELATIONAL_DATABASE_MODEL_AND_THE_ASSOCIATIVE_DATABASE_MODEL). Issues in Information Systems, X(1), 208.
+
+---
+
+**Tags:** metatheory, links theory, relational theory, associative theory, math, set theory, type theory, graph theory, relational algebra, associative model of data
+
+**Hubs:** [Data Engineering](https://habr.com/en/hubs/data_engineering/), [Open source](https://habr.com/en/hubs/open_source/), [Mathematics](https://habr.com/en/hubs/maths/), [Abnormal programming](https://habr.com/en/hubs/crazydev/), [Programming](https://habr.com/en/hubs/programming/)
+
+**Votes: +10 | Views: 5231**
+
+**Author:** [Константин Дьяченко (Konard)](https://habr.com/en/users/Konard/)

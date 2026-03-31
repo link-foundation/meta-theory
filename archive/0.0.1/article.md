@@ -1,16 +1,22 @@
 # Глубокая Теория Связей 0.0.1
 
 **Author:** [Константин Дьяченко (Konard)](https://habr.com/ru/users/Konard/)
+
 **Type:** Перевод
+
 **Original article:** [Василий Солопов, Иван Глазунов, Константин Дьяченко](https://habr.com/ru/companies/deepfoundation/articles/658705/)
+
 **Published:** April 1, 2024 (updated March 30, 2025)
-**Reading time: 24 мин | Difficulty: Сложный | Views: 10546**
-**Hubs:** Блог компании Deep.Foundation, Математика, Программирование, Open source, Data Engineering
+
+**Reading time: 24 мин | Difficulty: Сложный | Views: 10558**
+
+**Hubs:** Блог компании Deep.Foundation, Open source, Программирование, Математика, Data Engineering
+
 **Tags:** математика, теория графов, теория множеств, реляционная алгебра, теория типов, теория связей, метатеория, теория отношений, ассоциативная теория, ассоциативная модель данных
 
 ---
 
-В прошлое первое апреля, как вы могли догадаться, мы пошутили. Пора это исправить, и теперь $100\%$ всё серьёзно.
+В прошлое первое апреля, как вы могли догадаться, мы пошутили. Пора это исправить, и теперь 100% всё серьёзно.
 
 ### TL;DR (too long; didn't read)
 
@@ -119,9 +125,9 @@ L × L = {
 Пример:
 
 > $$1 \to (1, 1)$$
-
+>
 > $$2 \to (2, 2)$$
-
+>
 > $$\mathbf{3 \to (1, 2)}$$
 
 ![Figure 6](images/figure-6.png)
@@ -189,11 +195,11 @@ L × L × L = {
 Пример функции задающей конкретную сеть триплетов:
 
 > $$1 \to (1, 1, 1)$$
-
+>
 > $$2 \to (2, 2, 2)$$
-
+>
 > $$3 \to (3, 3, 3)$$
-
+>
 > $$\mathbf{4 \to (1, 2, 3)}$$
 
 ![Figure 10](images/figure-10.jpg)
@@ -224,11 +230,11 @@ L × L × L = {
 Пример:
 
 > $$1 \to (1)$$
-
+>
 > $$2 \to (2, 2)$$
-
+>
 > $$3 \to (3, 3, 3)$$
-
+>
 > $$\mathbf{4 \to (1, 2, 3, 2, 1)}$$
 
 В этом примере используются n-кортежи переменной длины в качестве значений связей.
@@ -899,3 +905,13 @@ Deep позволяет делать весь софт на планете со
 
 1. Edgar F. Codd, IBM Research Laboratory, San Jose, California, June 1970, [“Relational Model of Data for Large Shared Data Banks.”, paragraph 1.3., page 379](https://dl.acm.org/doi/abs/10.1145/362384.362685)
 2. Bender, Edward A.; Williamson, S. Gill (2010). [“Lists, Decisions and Graphs. With an Introduction to Probability.”, section 2, definition 6, page 161](https://books.google.com/books?id=vaXv_yhefG8C)
+
+---
+
+**Tags:** математика, теория графов, теория множеств, реляционная алгебра, теория типов, теория связей, метатеория, теория отношений, ассоциативная теория, ассоциативная модель данных
+
+**Hubs:** [Блог компании Deep.Foundation](https://habr.com/ru/companies/deepfoundation/articles/), [Open source](https://habr.com/ru/hubs/open_source/), [Программирование](https://habr.com/ru/hubs/programming/), [Математика](https://habr.com/ru/hubs/maths/), [Data Engineering](https://habr.com/ru/hubs/data_engineering/)
+
+**Votes: +14 | Views: 10558**
+
+**Author:** [Константин Дьяченко (Konard)](https://habr.com/ru/users/Konard/)

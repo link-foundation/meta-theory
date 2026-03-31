@@ -669,6 +669,17 @@ function postProcessMarkdown(markdown) {
   // Convert patterns like $100\%$ or $100\\%$ to plain text "100%"
   result = result.replace(/\$(\d+)\\+%\$/g, '$1%');
 
+  // Fix bold formatting artifacts:
+  // 1. Remove empty bold markers (**** or ** ** with only inline whitespace),
+  //    preserving a space between non-whitespace chars on each side.
+  //    Use [^\S\n] (non-newline whitespace) to avoid matching across lines.
+  result = result.replace(/(\S)\*\*[^\S\n]*\*\*(\S)/g, '$1 $2');
+  result = result.replace(/\*\*[^\S\n]*\*\*/g, '');
+  // 2. Ensure space after closing bold marker before next word character.
+  //    Only match closing ** (preceded by non-whitespace) followed by a word character.
+  //    e.g., "**Figure 11.**In this" → "**Figure 11.** In this"
+  result = result.replace(/(\S)\*\*([a-zA-Zа-яА-ЯёЁ\[(])/g, '$1** $2');
+
   // Fix double spaces (but not in code blocks)
   result = result.replace(/([^\n`])  +/g, (match, char) => {
     return char + ' ';

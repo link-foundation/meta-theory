@@ -4,100 +4,123 @@
 
 **Issue:** [#30](https://github.com/link-foundation/meta-theory/issues/30)
 **Type:** Bug / Enhancement
-**Status:** In Progress
+**Status:** Fixed
 **Date:** 2026-03-31
+**PR:** [#31](https://github.com/link-foundation/meta-theory/pull/31)
 
 ## Problem Description
 
 The downloaded markdown articles have several formatting discrepancies compared to the original Habr articles. These issues reduce the accuracy of the archived versions.
 
-## Detailed Task Breakdown (from screenshots and issue description)
+## Root Causes Found and Fixed
 
-### 1. Missing empty lines between metadata fields (Screenshot 1)
+### 1. Non-breaking spaces (U+00A0) breaking formula delimiters
 
-**Problem:** In the rendered markdown on GitHub, the metadata block at the top of each article shows all metadata lines crammed together without visual separation. The metadata lines (Author, Type, Original article, Published, Reading time, Hubs, Tags) are on consecutive lines with no blank lines between them, causing GitHub to render them as a single continuous paragraph.
+**Root cause:** Habr pages contain non-breaking space characters (U+00A0) in the HTML. GitHub's math renderer does not recognize `\xa0` as a word boundary for inline math `$...$` delimiters. This caused formulas like `text\xa0$L$` to appear as raw `$L$` text instead of rendered math.
 
-**Expected:** Each metadata line should be visually separated, matching the original article's spacing.
+**Fix:** Replace all U+00A0 with regular spaces in `postProcessMarkdown()`:
+```js
+result = result.replace(/\u00A0/g, ' ');
+```
 
-**Root cause:** The `formatMetadataBlock()` function in `download-article.mjs` adds metadata lines without blank lines between them. In GitHub markdown, consecutive lines without blank lines are rendered as a single paragraph.
+**Affected formulas:** `$A$`, `$(L, L)$`, `$l ∈ L$`, `$\{anetv^n\}$`, `$n \in \mathbb{N}_0$`, and many more inline formulas across all articles.
 
-### 2. `$100\%$` formula rendering issue (Screenshot 1)
+### 2. Missing space before `$` after closing parentheses
 
-**Problem:** The text "everything is $100\%$ serious" renders as "everything is 100 serious" on GitHub — the `%` sign is lost because `$100\%$` is not properly rendered as a LaTeX formula on GitHub.
+**Root cause:** When a markdown link like `[text](url)` is immediately followed by an inline formula `$...$` without a space, GitHub does not recognize the `$` as a math delimiter. The `postProcessMarkdown()` formula-spacing logic handles most cases but the `)` from markdown link syntax `](url))$` was a boundary case.
 
-**Expected:** Should show "100%" as rendered formula or plain text.
+**Fix:** The formula spacing tokenizer in `postProcessMarkdown()` already includes `)` in its regex pattern `/[a-zA-Zа-яА-ЯёЁ,:;»)\]]$/`, but the article files needed to be regenerated after this fix was added.
 
-**Root cause:** GitHub's math rendering has issues with `\%` in inline LaTeX. The `%` is a comment character in LaTeX. While `$100\%$` is valid LaTeX, GitHub's renderer may not handle it correctly.
+**Specific instances fixed:**
+- `[relation](...))$\mathbf{R}$` → `[relation](...)) $\mathbf{R}$`
+- `[expression](...))$\mathbf{S_n}$` → `[expression](...)) $\mathbf{S_n}$`
 
-**Solution:** Use `$100\\%$` or simply write `100%` as plain text since it doesn't need to be a formula.
+### 3. Percent sign (`%`) treated as LaTeX comment
 
-### 3. Blockquote formulas centered instead of left-aligned (Screenshots 2, 3)
+**Root cause:** GitHub's KaTeX renderer treats `%` as a LaTeX comment character, stripping everything after it on the same line. So `$100\%$` renders as just "100" with no percent sign.
 
-**Problem:** In the original Habr article, formulas within blockquotes are left-aligned. In the markdown, blockquote formulas using `> $$...$$` are centered by GitHub's renderer.
+**Fix:** Use `\\%` (double backslash + percent) which GitHub's markdown preprocessor converts to `\%` before passing to KaTeX.
 
-**Expected:** Formulas in blockquotes should be left-aligned as in the original.
+**Reference:** [GitHub Community Discussion #31812](https://github.com/orgs/community/discussions/31812)
 
-**Root cause:** GitHub renders `$$...$$` as display math (centered). The original uses inline-style formulas that happen to be on their own line, left-aligned within blockquotes.
+```js
+result = result.replace(/\$(\d+)\\+%\$/g, '$$$1\\\\%$$');
+result = result.replace(/\$(\d+)\\text\{%\}\$/g, '$$$1\\\\%$$');
+```
 
-**Solution:** For blockquote formulas that should be left-aligned, use `> $\mathbf{...}$` (inline math with bold) instead of `> $$...$$`. Adding a non-breaking space or text after the formula can also force left-alignment. Alternatively, group multi-formula blockquotes into a single blockquote block.
+### 4. Centered blockquote formulas instead of left-aligned
 
-### 4. Split blockquotes should be grouped (Screenshot 2)
+**Root cause:** GitHub renders `$$...$$` as display math which is always centered. The original Habr articles show formulas left-aligned within blockquotes.
 
-**Problem:** In the original, a blockquote with multiple formulas (e.g., Example with `1→(1,1)`, `2→(2,2)`, `3→(1,2)`) is a single continuous blockquote. In the markdown, they are split into separate blockquotes with gaps between them.
+**Fix:** Use `$\displaystyle ...$` (inline math with displaystyle command) instead of `$$...$$` for blockquote formulas. The `\displaystyle` ensures full-size rendering (same visual quality as block math), while `$...$` inline math stays left-aligned.
 
-**Expected:** Multiple formulas in a single blockquote should remain as one continuous blockquote.
+```js
+// Single formula in blockquote
+lines.push('> $\\displaystyle ' + element.content + '$');
 
-**Root cause:** The script generates separate `> $$...$$` blocks for each formula instead of grouping them in one blockquote.
+// Multiple formulas grouped in blockquote
+for (let fi = 0; fi < element.formulas.length; fi++) {
+  lines.push('> $\\displaystyle ' + element.formulas[fi] + '$');
+  if (fi < element.formulas.length - 1) {
+    lines.push('>');  // blank line within blockquote keeps it connected
+  }
+}
+```
 
-### 5. Bold formatting broken on Figure captions (Screenshot 6)
+### 5. Split blockquotes that should be grouped
 
-**Problem:** Figure 11 and Figure 12 captions have broken bold formatting:
-- `**Figure 11. **In this image...` — space before closing `**` breaks the bold
-- `**Figure 12. **Link blueprint designer...:** **[link]...` — same issue plus extra bold markers
+**Root cause:** The original articles have blockquotes with multiple formula paragraphs (e.g., `1→(1,1)`, `2→(2,2)`, `3→(1,2)` as one blockquote). The script generated separate blockquote blocks for each formula.
 
-**Expected:** `**Figure 11.** In this image...` — no space before closing `**`
+**Fix:** Added `blockquote-math-group` element type. When all children of a blockquote are formula-only, they are grouped into a single continuous blockquote with `>` on blank lines between formulas.
 
-**Root cause:** The `nodeToMarkdown` function produces `**text **` with a trailing space inside the bold markers when the source HTML has a space after the text within the `<strong>` element.
+### 6. Bold marker spacing issues
 
-### 6. Inline formulas appearing as raw text (Screenshot 5)
+**Root cause:** HTML extraction from Habr produces bold text with trailing spaces like `**Figure 11. **` (space before closing `**`), which is invalid markdown. Also, empty bold markers `****` appear from certain HTML structures.
 
-**Problem:** Several formulas in the "links theory definitions" section appear as raw text instead of rendered formulas:
-- `$\{anetv^n\}$` — curly braces cause issues
-- `$l ∈ L$` — Unicode math symbols instead of LaTeX commands
-- `$(L, L)$` — appears as raw text
-- `$n ∈ ℕ_0$` — Unicode symbols
-- `** n**` — bold formatting broken (space before text)
+**Fix:** Two-stage bold fixing in `postProcessMarkdown()`:
+1. Remove empty bold markers (`****` and `** **`)
+2. Line-by-line bold pair processing: trim content inside `**...**` and ensure proper spacing around bold pairs
 
-**Expected:** These should render as proper inline math formulas.
+### 7. Missing metadata at article top and bottom
 
-**Root cause:** Multiple issues:
-1. Habr uses Unicode math symbols (∈, ℕ, ⊆, ∪) which GitHub LaTeX may not fully support
-2. Curly braces `{}` in formulas may need escaping for GitHub
-3. Bold markers with leading spaces (`** n**`) are invalid markdown
+**Root cause:** The original script only extracted basic metadata (title, date). The issue requested metadata spacing (separate paragraphs), tags, hubs, votes, views, bookmarks, author info, and karma.
 
-### 7. Missing tags, hubs, and author info at article end (Screenshot 7)
+**Fix:**
+- Added `formatMetadataBlock()` with blank lines between each metadata field (so GitHub renders them as separate paragraphs)
+- Added `formatFooterBlock()` that appends tags (with links), hubs (with links), votes, views, bookmarks, and author info at the end of each article
 
-**Problem:** The original Habr article shows tags, hubs, karma, and author info at the bottom of the article. The markdown version doesn't include this information at the end.
+## Timeline
 
-**Expected:** Tags and hubs should be repeated at the end of the article (as they appear on the original page). Author metadata (karma, comments, bookmarks) should be included if available without login.
+1. **Initial script development** — Download script created to extract articles from Habr using Playwright
+2. **Issue #30 opened** — Multiple formatting discrepancies identified via screenshots comparing original Habr pages with GitHub-rendered markdown
+3. **Root cause analysis** — Non-breaking spaces identified as the primary cause of formula rendering failures; percent sign, bold spacing, and blockquote centering identified as secondary causes
+4. **Script fixes applied** — All 7 root causes fixed in `download-article.mjs` and `verify.mjs`
+5. **Articles re-downloaded** — All 6 article files (3 articles × article.md + downloaded.md) regenerated
+6. **Visual verification** — Playwright browser automation confirmed 0 unrendered formulas across all articles on GitHub
 
-**Root cause:** The script only extracts metadata for the header block but doesn't add it to the footer.
+## Verification Results
+
+All articles pass 100% verification:
+- `archive/0.0.0/article.md` — 35/35 checks pass
+- `archive/0.0.1/article.md` — 92/92 checks pass
+- `archive/0.0.2/article.md` — 95/95 checks pass
+- Total: **222/222 checks pass (100%)**
+
+DOM inspection via Playwright confirmed **0 unrendered `$...$` formulas** on any article page on GitHub.
 
 ## Affected Articles
 
-All three articles are affected:
-- `archive/0.0.0/article.md` — Math introduction to Deep Theory
-- `archive/0.0.1/article.md` — Глубокая Теория Связей 0.0.1
-- `archive/0.0.2/article.md` — The Links Theory 0.0.2
+All three articles were re-processed:
+- `archive/0.0.0/` — Math introduction to Deep Theory (article.md + downloaded.md)
+- `archive/0.0.1/` — Глубокая Теория Связей 0.0.1 (article.md + downloaded.md)
+- `archive/0.0.2/` — The Links Theory 0.0.2 (article.md + downloaded.md)
 
-## Solution Plan
+## Key Technical Insights
 
-1. Fix `formatMetadataBlock()` to add blank lines between metadata fields
-2. Fix `$100\%$` rendering — use plain text `100%` instead
-3. Change blockquote formulas from `$$...$$` to left-aligned format using `$\mathbf{...}$`
-4. Group multi-formula blockquotes into single continuous blockquotes
-5. Fix bold formatting: trim trailing spaces inside `**...**` markers
-6. Fix Unicode math symbols in formulas — convert to LaTeX equivalents
-7. Add footer section with tags, hubs, and available author metadata
-8. Re-download all articles with the updated script
-9. Verify all articles pass verification
+1. **GitHub's inline math requires regular spaces around `$` delimiters.** Non-breaking spaces (U+00A0) are not recognized as word boundaries. This is the most impactful finding — a single invisible character can break formula rendering across an entire document.
+
+2. **GitHub's KaTeX treats `%` as a LaTeX comment.** The workaround `\\%` (double backslash) is needed because GitHub's markdown preprocessor strips one backslash before passing to KaTeX.
+
+3. **`$\displaystyle ...$` provides left-aligned block-quality math.** This is the correct approach for formulas in blockquotes where `$$...$$` would force centering.
+
+4. **Markdown bold markers are whitespace-sensitive.** `**text **` (trailing space) is invalid — the closing `**` must immediately follow non-whitespace content.

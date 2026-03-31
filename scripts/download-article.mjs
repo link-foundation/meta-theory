@@ -583,6 +583,11 @@ function postProcessMarkdown(markdown) {
   let result = markdown;
 
   // Unicode character normalization to match article.md style
+  // Replace non-breaking spaces (U+00A0) with regular spaces.
+  // GitHub's math renderer doesn't recognize \xa0 as a word boundary for inline
+  // math $...$ delimiters, causing formulas like "text\xa0$L$" to not render.
+  result = result.replace(/\u00A0/g, ' ');
+
   // Normalize curly quotes to straight quotes
   result = result.replace(/['']/g, "'");
   result = result.replace(/[""]/g, '"');
@@ -642,9 +647,10 @@ function postProcessMarkdown(markdown) {
       const rawInner = line.substring(f.start + 1, f.end);
       const inner = rawInner.trim();
 
-      // Add space before formula if preceded by word character or comma
-      // (comma-adjacent formulas like "i.e.,$L$" need a space for readability)
-      if (fixed.length > 0 && /[a-zA-Zа-яА-ЯёЁ,]$/.test(fixed)) {
+      // Add space before formula if preceded by word character, comma, colon, or
+      // closing punctuation. GitHub's math renderer requires a space or line start
+      // before the opening $ for inline math to be recognized.
+      if (fixed.length > 0 && /[a-zA-Zа-яА-ЯёЁ,:;»)\]]$/.test(fixed)) {
         fixed += ' ';
       }
 
@@ -665,9 +671,12 @@ function postProcessMarkdown(markdown) {
     return fixed;
   }).join('\n');
 
-  // Fix numeric percentage formulas — GitHub doesn't render $100\%$ properly
-  // Use \text{%} which KaTeX renders correctly on GitHub
-  result = result.replace(/\$(\d+)\\+%\$/g, '$$$1\\text{%}$$');
+  // Fix percent sign in inline formulas — GitHub's KaTeX treats % as a LaTeX
+  // comment character, stripping everything after it. The workaround is to use
+  // \\% (double backslash + percent) which GitHub's markdown preprocessor converts
+  // to \% before passing to KaTeX. See: https://github.com/orgs/community/discussions/31812
+  result = result.replace(/\$(\d+)\\+%\$/g, '$$$1\\\\%$$');
+  result = result.replace(/\$(\d+)\\text\{%\}\$/g, '$$$1\\\\%$$');
 
   // Fix bold formatting artifacts:
   // 1. Remove empty bold markers (**** or ** ** with only inline whitespace),

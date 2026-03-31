@@ -72,6 +72,8 @@ function normalizeText(text) {
     .replace(/\$/g, '') // Remove LaTeX inline delimiters
     .replace(/\\displaystyle\s*/g, '') // Remove \displaystyle command
     .replace(/\\text\{([^}]*)\}/g, '$1') // Extract text from \text{}
+    .replace(/\\\\%/g, '%') // Normalize double-backslash percent (GitHub workaround) to %
+    .replace(/\\%/g, '%') // Normalize escaped percent to %
     .replace(/\\subseteq/g, '⊆')
     .replace(/\\mathbb\{n\}_0/gi, 'ℕ₀')
     .replace(/\\in/g, '∈')

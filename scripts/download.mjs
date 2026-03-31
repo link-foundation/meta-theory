@@ -197,6 +197,11 @@ async function downloadImages(article) {
 
 /**
  * Close any popup overlays/modals on the page
+ *
+ * Handles multiple types of popups including:
+ * - Google Funding Choices (FC) consent dialogs (fc-consent-root, fc-dialog)
+ * - Habr cookie banners (tm-cookie-banner)
+ * - Generic modals and overlays
  */
 async function closePopups(page) {
   // Handle Playwright dialog events (browser-level alerts/confirms)
@@ -204,9 +209,28 @@ async function closePopups(page) {
     try { await dialog.dismiss(); } catch (e) { /* ignore */ }
   });
 
+  // First, try to dismiss the Google Funding Choices (FC) consent dialog
+  // by clicking the "Consent" button (this is the most reliable approach)
+  const fcConsentClicked = await page.evaluate(() => {
+    // Google FC consent dialog - click "Consent" to dismiss
+    const consentBtn = document.querySelector('.fc-cta-consent');
+    if (consentBtn) {
+      try { consentBtn.click(); return true; } catch (e) { /* ignore */ }
+    }
+    return false;
+  });
+
+  if (fcConsentClicked) {
+    await page.waitForTimeout(1000);
+  }
+
   await page.evaluate(() => {
     // Common popup/modal close buttons on Habr
     const closeSelectors = [
+      // Google Funding Choices (FC) consent dialog
+      '.fc-cta-consent',         // "Consent" button
+      '.fc-close',               // FC close button
+      '.fc-dismiss-button',      // FC dismiss button
       // Cookie consent
       '.tm-cookie-banner__close',
       '.cookie-banner__close',
@@ -238,6 +262,16 @@ async function closePopups(page) {
       }
     }
 
+    // Remove Google FC consent dialog elements entirely from DOM
+    const fcRoot = document.querySelector('.fc-consent-root');
+    if (fcRoot) {
+      try { fcRoot.remove(); } catch (e) { /* ignore */ }
+    }
+    const fcOverlay = document.querySelector('.fc-dialog-overlay');
+    if (fcOverlay) {
+      try { fcOverlay.remove(); } catch (e) { /* ignore */ }
+    }
+
     // Hide all fixed-position overlays that cover content
     const allEls = document.querySelectorAll('*');
     for (const el of allEls) {
@@ -245,7 +279,7 @@ async function closePopups(page) {
       if (style.position === 'fixed' && el.offsetParent !== null) {
         const rect = el.getBoundingClientRect();
         // Skip very small elements (like tiny icons) and the main nav bar
-        if (rect.height > 200 || el.className.match(/popup|modal|overlay|banner|cookie|notification|consent/i)) {
+        if (rect.height > 200 || el.className.match(/popup|modal|overlay|banner|cookie|notification|consent|fc-/i)) {
           el.style.display = 'none';
         }
       }
@@ -348,10 +382,7 @@ async function captureScreenshot(article) {
   console.log(`   Target (dark): ${darkPath}`);
   await captureThemedScreenshot(browser, article, darkPath, 'dark');
 
-  // Also save a default article.png (light theme copy) for backward compatibility
-  const defaultPath = join(archivePath, article.screenshotFile);
-  fs.copyFileSync(lightPath, defaultPath);
-  console.log(`   ✅ Default screenshot (light copy): ${defaultPath}`);
+  // Note: article.png is no longer generated as we have both light and dark themed versions
 
   await browser.close();
 }

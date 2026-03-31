@@ -13,7 +13,7 @@ export const ARTICLES = {
     language: 'en',
     archivePath: 'archive/0.0.0',
     markdownFile: 'article.md',
-    screenshotFile: 'article.png',
+    // screenshotFile removed: article.png is no longer generated (see issue #25)
     screenshotLightFile: 'article-light.png',
     screenshotDarkFile: 'article-dark.png',
     imagesDir: 'images',
@@ -29,7 +29,7 @@ export const ARTICLES = {
     language: 'ru',
     archivePath: 'archive/0.0.1',
     markdownFile: 'article.md',
-    screenshotFile: 'article.png',
+    // screenshotFile removed: article.png is no longer generated (see issue #25)
     screenshotLightFile: 'article-light.png',
     screenshotDarkFile: 'article-dark.png',
     imagesDir: 'images',
@@ -44,7 +44,7 @@ export const ARTICLES = {
     language: 'en',
     archivePath: 'archive/0.0.2',
     markdownFile: 'article.md',
-    screenshotFile: 'article.png',
+    // screenshotFile removed: article.png is no longer generated (see issue #25)
     screenshotLightFile: 'article-light.png',
     screenshotDarkFile: 'article-dark.png',
     imagesDir: 'images',

@@ -192,6 +192,46 @@ async function extractArticleContent(article, verbose = false) {
       }
     }
 
+    // Votes (upvotes/downvotes)
+    const votesEl = document.querySelector('.tm-votes-meter__value');
+    if (votesEl) {
+      meta.votes = votesEl.innerText.trim();
+    }
+
+    // Comments count
+    const commentsEl = document.querySelector('.tm-article-comments-counter-link__value');
+    if (commentsEl) {
+      meta.comments = commentsEl.innerText.trim();
+    }
+
+    // Bookmarks count
+    const bookmarksEl = document.querySelector('.bookmarks-button__counter');
+    if (bookmarksEl) {
+      meta.bookmarks = bookmarksEl.innerText.trim();
+    }
+
+    // Author karma and rating (from author card in sidebar or inline)
+    const karmaEl = document.querySelector('.tm-karma__votes');
+    if (karmaEl) {
+      meta.authorKarma = karmaEl.innerText.trim();
+    }
+
+    // Hub URLs for linking
+    const hubLinkEls = document.querySelectorAll('.tm-publication-hub__link');
+    meta.hubUrls = Array.from(hubLinkEls).map(el => ({
+      name: (el.querySelector('span:first-child')?.innerText || el.innerText).trim().replace(/\s*\*\s*$/, ''),
+      url: el.href || null
+    }));
+
+    // Tags with URLs (from article footer)
+    const tagEls = document.querySelectorAll('.tm-article-body__tags-item a, .tm-tags-list__link');
+    if (tagEls.length > 0) {
+      meta.tagLinks = Array.from(tagEls).map(el => ({
+        name: el.innerText.trim(),
+        url: el.href || null
+      }));
+    }
+
     return meta;
   });
 
@@ -236,7 +276,9 @@ async function extractArticleContent(article, verbose = false) {
       // Handle bold
       if (tag === 'strong' || tag === 'b') {
         const text = nodeToMarkdownChildren(node);
-        return text ? `**${text}**` : '';
+        // Trim spaces inside bold markers to prevent broken rendering
+        // e.g., "**Figure 11. **" → "**Figure 11.**"
+        return text ? `**${text.trim()}**` : '';
       }
 
       // Handle italic
@@ -394,16 +436,16 @@ async function extractArticleContent(article, verbose = false) {
         const allFormulas = childContents.every(c => formulaPattern.test(c));
 
         if (allFormulas && childContents.length > 0) {
-          // Each formula-only paragraph becomes its own blockquote-math element
-          for (const content of childContents) {
-            const match = content.match(formulaPattern);
-            if (match) {
-              elements.push({
-                type: 'blockquote-math',
-                content: match[1].trim()
-              });
-            }
-          }
+          // Group all formulas into a single blockquote-math-group element
+          // so they render as one continuous blockquote (matching original)
+          const formulas = childContents.map(c => {
+            const match = c.match(formulaPattern);
+            return match ? match[1].trim() : c;
+          });
+          elements.push({
+            type: 'blockquote-math-group',
+            formulas: formulas
+          });
           return;
         }
 
@@ -623,6 +665,10 @@ function postProcessMarkdown(markdown) {
     return fixed;
   }).join('\n');
 
+  // Fix simple numeric percentage formulas — GitHub doesn't render $100\%$ properly
+  // Convert patterns like $100\%$ or $100\\%$ to plain text "100%"
+  result = result.replace(/\$(\d+)\\+%\$/g, '$1%');
+
   // Fix double spaces (but not in code blocks)
   result = result.replace(/([^\n`])  +/g, (match, char) => {
     return char + ' ';
@@ -714,6 +760,72 @@ function formatMetadataBlock(metadata) {
 }
 
 /**
+ * Format footer metadata block to be placed at the end of the article
+ * This repeats tags and hubs as they appear at the bottom of the original Habr article
+ */
+function formatFooterBlock(metadata) {
+  if (!metadata) return [];
+
+  const lines = [];
+
+  lines.push('---');
+  lines.push('');
+
+  // Tags with links (matching Habr article footer)
+  if (metadata.tagLinks && metadata.tagLinks.length > 0) {
+    const tagStrings = metadata.tagLinks.map(t =>
+      t.url ? `[${t.name}](${t.url})` : t.name
+    );
+    lines.push(`**Tags:** ${tagStrings.join(', ')}`);
+    lines.push('');
+  } else if (metadata.tags && metadata.tags.length > 0) {
+    lines.push(`**Tags:** ${metadata.tags.join(', ')}`);
+    lines.push('');
+  }
+
+  // Hubs with links
+  if (metadata.hubUrls && metadata.hubUrls.length > 0) {
+    const hubStrings = metadata.hubUrls.map(h =>
+      h.url ? `[${h.name}](${h.url})` : h.name
+    );
+    lines.push(`**Hubs:** ${hubStrings.join(', ')}`);
+    lines.push('');
+  } else if (metadata.hubs && metadata.hubs.length > 0) {
+    lines.push(`**Hubs:** ${metadata.hubs.join(', ')}`);
+    lines.push('');
+  }
+
+  // Article stats
+  const stats = [];
+  if (metadata.votes) stats.push(`Votes: ${metadata.votes}`);
+  if (metadata.views) stats.push(`Views: ${metadata.views}`);
+  if (metadata.bookmarks) stats.push(`Bookmarks: ${metadata.bookmarks}`);
+  if (metadata.comments) stats.push(`Comments: ${metadata.comments}`);
+  if (stats.length > 0) {
+    lines.push(`**${stats.join(' | ')}**`);
+    lines.push('');
+  }
+
+  // Author info
+  if (metadata.author) {
+    const authorName = metadata.authorFullName
+      ? `${metadata.authorFullName} (${metadata.author})`
+      : metadata.author;
+    const authorLink = metadata.authorUrl
+      ? `[${authorName}](${metadata.authorUrl})`
+      : authorName;
+    let authorLine = `**Author:** ${authorLink}`;
+    if (metadata.authorKarma) {
+      authorLine += ` | Karma: ${metadata.authorKarma}`;
+    }
+    lines.push(authorLine);
+    lines.push('');
+  }
+
+  return lines;
+}
+
+/**
  * Convert extracted content to markdown
  */
 function contentToMarkdown(content, article) {
@@ -728,12 +840,14 @@ function contentToMarkdown(content, article) {
   }
 
   // Add metadata block after title
+  // Each metadata line gets its own blank line separator so GitHub renders them
+  // as separate paragraphs (consecutive lines without blanks merge into one paragraph)
   const metadataLines = formatMetadataBlock(content.metadata);
   if (metadataLines.length > 0) {
     for (const line of metadataLines) {
       lines.push(line);
+      lines.push('');
     }
-    lines.push('');
     lines.push('---');
     lines.push('');
   }
@@ -826,8 +940,20 @@ function contentToMarkdown(content, article) {
         break;
 
       case 'blockquote-math':
-        // Formula in a blockquote - preserve blockquote formatting with block formula
+        // Single formula in a blockquote — use display math for standalone formulas
         lines.push('> $$' + element.content + '$$');
+        lines.push('');
+        break;
+
+      case 'blockquote-math-group':
+        // Multiple formulas grouped in a single continuous blockquote
+        // Use "> " prefix on each line with ">" on blank lines to keep the blockquote connected
+        for (let fi = 0; fi < element.formulas.length; fi++) {
+          lines.push('> $$' + element.formulas[fi] + '$$');
+          if (fi < element.formulas.length - 1) {
+            lines.push('>');  // blank line within blockquote to separate formulas
+          }
+        }
         lines.push('');
         break;
 
@@ -835,6 +961,14 @@ function contentToMarkdown(content, article) {
         lines.push('---');
         lines.push('');
         break;
+    }
+  }
+
+  // Add footer metadata (tags, hubs, author info — matching Habr article bottom)
+  const footerLines = formatFooterBlock(content.metadata);
+  if (footerLines.length > 0) {
+    for (const line of footerLines) {
+      lines.push(line);
     }
   }
 

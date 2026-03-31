@@ -1,31 +1,41 @@
-# GitHub Math Rendering Test
+# Percent Test
 
-## Test 1: Non-breaking space before dollar
-
-test $l$ with nbsp before dollar
-
-## Test 2: Regular space before dollar
-
-test $l$ with regular space
-
-## Test 3: Colon no space
-
-Где:$L$ test
-
-## Test 4: Colon with space
-
-Где: $L$ test
-
-## Test 5: Percent variants
-
-a) $100\%$ backslash-percent
+a) $100\%$ single-bslash-percent
 
 b) $100\text{%}$ text-percent
 
-c) $100\text{\%}$ text-bslash-percent
+c) $100$% dollar-then-percent
 
-## Test 6: Block math percent
+d) $100\,\%$ thinspace-bslash-percent
+
+e) $100\\%$ double-bslash-percent
+
+f) $100\mathbin{\%}$ mathbin
+
+g) $100\kern{0pt}\%$ kern
+
+h) $100\text{&#37;}$ html-entity
+
+i) $100\unicode{37}$ unicode
+
+j) $100\%{}$ percent-braces
+
+k) $100\text{}\%$ text-empty-bslash
+
+l) $100\mathclose{\%}$ mathclose
+
+## Block math
 
 $$100\%$$
 
 $$100\text{%}$$
+
+$$100\text{&#37;}$$
+
+## Alternative approaches
+
+m) $100$% formula then percent
+
+n) $100$\% formula then bslash-percent
+
+o) 100% plain text

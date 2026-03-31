@@ -1,9 +1,11 @@
 
-> meta-theory-experiments@1.0.0 test
-> node scripts/verify.mjs --all
+> meta-theory-experiments@1.0.0 verify:downloaded
+> node scripts/verify.mjs --all --downloaded
 
 🚀 Article Verification Script
 ==============================
+📄 Verifying downloaded.md files
+
 
 📋 Verifying Math introduction to Deep Theory (0.0.0)
 ======================================================================

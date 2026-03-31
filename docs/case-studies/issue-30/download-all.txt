@@ -4,38 +4,38 @@
 📥 Downloading Math introduction to Deep Theory (0.0.0)
 ======================================================================
    URL: https://habr.com/en/companies/deepfoundation/articles/658705/
-   Target: /tmp/gh-issue-solver-1774993409869/archive/0.0.0/downloaded.md
+   Target: /tmp/gh-issue-solver-1774994895117/archive/0.0.0/article.md
    Extracting content from web page...
    ✅ Extracted 81 elements
    Converting to markdown...
-   ✅ Saved /tmp/gh-issue-solver-1774993409869/archive/0.0.0/downloaded.md
+   ✅ Saved /tmp/gh-issue-solver-1774994895117/archive/0.0.0/article.md
    File size: 7.7 KB
 
 📥 Downloading Глубокая Теория Связей 0.0.1 (0.0.1)
 ======================================================================
    URL: https://habr.com/ru/companies/deepfoundation/articles/804617/
-   Target: /tmp/gh-issue-solver-1774993409869/archive/0.0.1/downloaded.md
+   Target: /tmp/gh-issue-solver-1774994895117/archive/0.0.1/article.md
    Extracting content from web page...
    ✅ Extracted 162 elements
    Converting to markdown...
-   ✅ Saved /tmp/gh-issue-solver-1774993409869/archive/0.0.1/downloaded.md
-   File size: 46.1 KB
+   ✅ Saved /tmp/gh-issue-solver-1774994895117/archive/0.0.1/article.md
+   File size: 46.4 KB
 
 📥 Downloading The Links Theory 0.0.2 (0.0.2)
 ======================================================================
    URL: https://habr.com/en/articles/895896/
-   Target: /tmp/gh-issue-solver-1774993409869/archive/0.0.2/downloaded.md
+   Target: /tmp/gh-issue-solver-1774994895117/archive/0.0.2/article.md
    Extracting content from web page...
    ✅ Extracted 173 elements
    Converting to markdown...
-   ✅ Saved /tmp/gh-issue-solver-1774993409869/archive/0.0.2/downloaded.md
-   File size: 57.6 KB
+   ✅ Saved /tmp/gh-issue-solver-1774994895117/archive/0.0.2/article.md
+   File size: 57.9 KB
 
 ======================================================================
 📊 DOWNLOAD SUMMARY
 ======================================================================
    ✅ 0.0.0: 7.7 KB
-   ✅ 0.0.1: 46.1 KB
-   ✅ 0.0.2: 57.6 KB
+   ✅ 0.0.1: 46.4 KB
+   ✅ 0.0.2: 57.9 KB
 
 ======================================================================

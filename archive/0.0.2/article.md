@@ -8,7 +8,7 @@
 
 **Published:** April 1, 2025 (updated August 10, 2025)
 
-**Reading time: 27 min | Difficulty: Medium | Views: 5231**
+**Reading time: 27 min | Difficulty: Medium | Views: 5241**
 
 **Hubs:** Data Engineering, Open source, Mathematics, Abnormal programming, Programming
 
@@ -16,13 +16,13 @@
 
 ---
 
-Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything is 100% serious.
+Last April 1st, as you might have guessed, we were joking. It’s time to fix that, and now everything is $100\text{%}$ serious.
 
 #### TL;DR (too long; didn't read)
 
 This article contains many letters, but it can be represented using just 4 symbols from [set theory](https://en.wikipedia.org/wiki/Set_theory):
 
-> $$L \to L^2$$
+> $\displaystyle L \to L^2$
 
 Everything else follows from them.
 
@@ -129,7 +129,7 @@ To obtain all possible values of a link, [the Cartesian product](https://en.wiki
 
 The **doublet-links network** is defined as:
 
-> $$\mathbf{\lambda: L \to L \times L}$$
+> $\displaystyle \mathbf{\lambda: L \to L \times L}$
 
 Where:
 
@@ -139,11 +139,11 @@ Where:
 
 **Example**:
 
-> $$1 \to (1, 1)$$
+> $\displaystyle 1 \to (1, 1)$
 >
-> $$2 \to (2, 2)$$
+> $\displaystyle 2 \to (2, 2)$
 >
-> $$\mathbf{3 \to (1, 2)}$$
+> $\displaystyle \mathbf{3 \to (1, 2)}$
 
 ![Figure 6](images/figure-6.png)
 
@@ -200,7 +200,7 @@ L × L × L = {
 
 A **triplet links network** is defined as:
 
-> $$\mathbf{\lambda : L \to L \times L \times L}$$
+> $\displaystyle \mathbf{\lambda : L \to L \times L \times L}$
 
 Where:
 
@@ -209,13 +209,13 @@ Where:
 
 Example of a function specifying a particular triplet links network:
 
-> $$1 \to (1, 1, 1)$$
+> $\displaystyle 1 \to (1, 1, 1)$
 >
-> $$2 \to (2, 2, 2)$$
+> $\displaystyle 2 \to (2, 2, 2)$
 >
-> $$3 \to (3, 3, 3)$$
+> $\displaystyle 3 \to (3, 3, 3)$
 >
-> $$\mathbf{4 \to (1, 2, 3)}$$
+> $\displaystyle \mathbf{4 \to (1, 2, 3)}$
 
 ![Figure 10](images/figure-10.jpg)
 
@@ -235,7 +235,7 @@ A sequence of link references — also known as an [n-tuple](https://en.wikipedi
 
 In general, a links network is defined as:
 
-> $$\mathbf{\lambda : L \rightarrow \underbrace{ L \times L \times \ldots \times L}_{n}}$$
+> $\displaystyle \mathbf{\lambda : L \rightarrow \underbrace{ L \times L \times \ldots \times L}_{n}}$
 
 Where:
 
@@ -244,13 +244,13 @@ Where:
 
 Example:
 
-> $$1 \to (1)$$
+> $\displaystyle 1 \to (1)$
 >
-> $$2 \to (2, 2)$$
+> $\displaystyle 2 \to (2, 2)$
 >
-> $$3 \to (3, 3, 3)$$
+> $\displaystyle 3 \to (3, 3, 3)$
 >
-> $$\mathbf{4 \to (1, 2, 3, 2, 1)}$$
+> $\displaystyle \mathbf{4 \to (1, 2, 3, 2, 1)}$
 
 In this example, n-tuples of variable lengths are used as link's values. 
 
@@ -298,39 +298,39 @@ A **reference to a vector** is a unique identifier or ordinal number, which is
 
 Set of references to vectors:
 
-> $$\mathbf{L ⊆ ℕ_0}$$
+> $\displaystyle \mathbf{L ⊆ ℕ_0}$
 
 A **vector of references** is a vector consisting of zero or more references to vectors, where the number of references corresponds to the number of elements in the vector.
 
 Set of all vectors of references of length $n ∈ ℕ_0$:
 
-> $$\mathbf{V_n = L^n}$$
+> $\displaystyle \mathbf{V_n = L^n}$
 
 The Cartesian power $L^n$ always produces a vector of length $n$ , since all its components are of the same type $L$.
 In other words, $L^n$ represents the set of all possible n-element vectors (essentially n‑tuples), in which every element belongs to the set $L$.
 
 An **association** is an ordered pair consisting of a reference to a vector and a vector of references. This structure serves as a mapping between references and vectors.
 
-> $$\mathbf{A = L \times V_n}$$
+> $\displaystyle \mathbf{A = L \times V_n}$
 
-An **associative network** of vectors of length** n** (or an n-dimensional associative network) is defined by a family of functions $\{anetv^n\}$, where each function $anetv^n: L → V_n$ maps a reference $l ∈ L$ to a vector of references of length $n$, belonging to $V_n$, thereby identifying points in an n-dimensional space.
+An **associative network** of vectors of length **n** (or an n-dimensional associative network) is defined by a family of functions $\{anetv^n\}$, where each function $anetv^n: L → V_n$ maps a reference $l ∈ L$ to a vector of references of length $n$, belonging to $V_n$, thereby identifying points in an n-dimensional space.
 $n$ in $anetv^n$ indicates that the function returns vectors containing $n$ references. Each n-dimensional associative network thus represents a sequence of points in n-dimensional space.
 
 **Family of functions:**
 
-> $$\mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}$$
+> $\displaystyle \mathbf{∪_f \{anetv^n | n ∈ ℕ_0\} ⊆ A}$
 
 Here, the union symbol $∪_f$ denotes the aggregation of all functions in the family $\{anetv^n\}$, and the symbol  $⊆$ indicates that these ordered pairs — viewed as functional binary relations — are a subset of the set $A$ of all associations.
 
 **Set of duplets (ordered pairs or 2-dimensional vectors) of references:**
 
-> $$\mathbf{D = L^2}$$
+> $\displaystyle \mathbf{D = L^2}$
 
 This is the set of all duplets $(L, L)$, i.e., the second Cartesian power of $L$ .
 
 **Associative network of duplets (or a 2-dimensional associative network):**
 
-> $$\mathbf{anetd: L → L^2}$$
+> $\displaystyle \mathbf{anetd: L → L^2}$
 
 Each associative network of duplets thus represents a sequence of points in a two‑dimensional space.
 
@@ -338,7 +338,7 @@ An empty vector (vector of length zero) is represented by the empty tuple, denot
 
 **Associative network of nested ordered pairs:**
 
-> $$\mathbf{anetl: L → NP}\textbf{, where }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\} }$$
+> $\displaystyle \mathbf{anetl: L → NP}\textbf{, where }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\} }$
 
 $NP$ is the set of nested ordered pairs consisting of empty pairs and pairs containing one or more elements. In this way, a vector of length $n \in \mathbb{N}_0$ can be represented as nested ordered pairs.
 
@@ -867,7 +867,7 @@ An entity, in its internal principle, is triune (threefold, consisting of three 
 
 In this article, we examined the mathematical foundations of relational algebra and graph theory, and presented the definitions of the links theory in terms of set theory and its projection into type theory. We also defined a set of functions and lemmas necessary for proving the possibility of an equivalent conversion from any vector/sequence into nested doublet-links and back. This means that only one formula is sufficient to represent any possible type of information:
 
-> $$L \to L^2$$
+> $\displaystyle L \to L^2$
 
 Thus, this forms the basis for testing the hypothesis that any other data structure can be represented by doublet-links. In other words, doublet-links are sufficient to represent any tables, graphs, strings, arrays, lists, numbers, sound, images, videos, and much more.
 
@@ -927,7 +927,7 @@ Using LaTeX:
 
 Which is rendered as SVG (clickable):
 
-> $$L \to L^2$$
+> $\displaystyle L \to L^2$
 
 ### References
 
@@ -942,6 +942,6 @@ Which is rendered as SVG (clickable):
 
 **Hubs:** [Data Engineering](https://habr.com/en/hubs/data_engineering/), [Open source](https://habr.com/en/hubs/open_source/), [Mathematics](https://habr.com/en/hubs/maths/), [Abnormal programming](https://habr.com/en/hubs/crazydev/), [Programming](https://habr.com/en/hubs/programming/)
 
-**Votes: +10 | Views: 5231**
+**Votes: +10 | Views: 5241**
 
 **Author:** [Константин Дьяченко (Konard)](https://habr.com/en/users/Konard/)

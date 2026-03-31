@@ -665,9 +665,9 @@ function postProcessMarkdown(markdown) {
     return fixed;
   }).join('\n');
 
-  // Fix simple numeric percentage formulas — GitHub doesn't render $100\%$ properly
-  // Convert patterns like $100\%$ or $100\\%$ to plain text "100%"
-  result = result.replace(/\$(\d+)\\+%\$/g, '$1%');
+  // Fix numeric percentage formulas — GitHub doesn't render $100\%$ properly
+  // Use \text{%} which KaTeX renders correctly on GitHub
+  result = result.replace(/\$(\d+)\\+%\$/g, '$$$1\\text{%}$$');
 
   // Fix bold formatting artifacts:
   // 1. Remove empty bold markers (**** or ** ** with only inline whitespace),
@@ -675,10 +675,49 @@ function postProcessMarkdown(markdown) {
   //    Use [^\S\n] (non-newline whitespace) to avoid matching across lines.
   result = result.replace(/(\S)\*\*[^\S\n]*\*\*(\S)/g, '$1 $2');
   result = result.replace(/\*\*[^\S\n]*\*\*/g, '');
-  // 2. Ensure space after closing bold marker before next word character.
-  //    Only match closing ** (preceded by non-whitespace) followed by a word character.
-  //    e.g., "**Figure 11.**In this" → "**Figure 11.** In this"
-  result = result.replace(/(\S)\*\*([a-zA-Zа-яА-ЯёЁ\[(])/g, '$1** $2');
+  // 2. Fix bold marker spacing: trim content inside **...** and ensure proper
+  //    spacing around bold pairs. Process line-by-line for correctness.
+  result = result.split('\n').map(line => {
+    // Find all **...** pairs on this line using non-greedy matching
+    // and rebuild the line with proper spacing
+    const parts = [];
+    let lastIndex = 0;
+    const boldRegex = /\*\*(.+?)\*\*/g;
+    let m;
+    while ((m = boldRegex.exec(line)) !== null) {
+      // Text before this bold pair
+      parts.push({ type: 'text', content: line.substring(lastIndex, m.index) });
+      // The bold pair with trimmed content
+      parts.push({ type: 'bold', content: m[1].trim() });
+      lastIndex = m.index + m[0].length;
+    }
+    // Remaining text
+    parts.push({ type: 'text', content: line.substring(lastIndex) });
+
+    if (parts.filter(p => p.type === 'bold').length === 0) return line;
+
+    // Rebuild line with proper spacing
+    let rebuilt = '';
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      if (part.type === 'bold') {
+        if (!part.content) continue; // skip empty bold
+        // Check if we need space before opening **
+        if (rebuilt.length > 0 && /[a-zA-Zа-яА-ЯёЁ0-9).]$/.test(rebuilt)) {
+          rebuilt += ' ';
+        }
+        rebuilt += `**${part.content}**`;
+        // Check if we need space after closing **
+        const nextPart = parts[i + 1];
+        if (nextPart && nextPart.content && /^[a-zA-Zа-яА-ЯёЁ\[(]/.test(nextPart.content)) {
+          rebuilt += ' ';
+        }
+      } else {
+        rebuilt += part.content;
+      }
+    }
+    return rebuilt;
+  }).join('\n');
 
   // Fix double spaces (but not in code blocks)
   result = result.replace(/([^\n`])  +/g, (match, char) => {
@@ -951,16 +990,19 @@ function contentToMarkdown(content, article) {
         break;
 
       case 'blockquote-math':
-        // Single formula in a blockquote — use display math for standalone formulas
-        lines.push('> $$' + element.content + '$$');
+        // Single formula in a blockquote — use $\displaystyle ...$ for left-aligned rendering
+        // GitHub centers $$...$$ (block math) but $...$ (inline math) stays left-aligned
+        // \displaystyle ensures full-size rendering equivalent to block math
+        lines.push('> $\\displaystyle ' + element.content + '$');
         lines.push('');
         break;
 
       case 'blockquote-math-group':
         // Multiple formulas grouped in a single continuous blockquote
+        // Use $\displaystyle ...$ for left-aligned rendering (matching original Habr layout)
         // Use "> " prefix on each line with ">" on blank lines to keep the blockquote connected
         for (let fi = 0; fi < element.formulas.length; fi++) {
-          lines.push('> $$' + element.formulas[fi] + '$$');
+          lines.push('> $\\displaystyle ' + element.formulas[fi] + '$');
           if (fi < element.formulas.length - 1) {
             lines.push('>');  // blank line within blockquote to separate formulas
           }

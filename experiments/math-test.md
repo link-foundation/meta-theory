@@ -1,49 +1,31 @@
 # GitHub Math Rendering Test
 
-## Test 1: Basic inline math
+## Test 1: Non-breaking space before dollar
 
-Works: $L$ here
+test $l$ with nbsp before dollar
 
-Works: $A$ here
+## Test 2: Regular space before dollar
 
-## Test 2: Curly braces in math
+test $l$ with regular space
 
-Test curly braces: $\{anetv^n\}$ then $l$ and $L$ here
-
-## Test 3: Same but with lbrace/rbrace
-
-Test: $\lbrace anetv^n \rbrace$ then $l$ and $L$ here
-
-## Test 4: No space before dollar
+## Test 3: Colon no space
 
 Где:$L$ test
 
-## Test 5: Space before dollar
+## Test 4: Colon with space
 
 Где: $L$ test
 
-## Test 6: Parentheses in math
+## Test 5: Percent variants
 
-Dупл $(L, L)$ test
+a) $100\%$ backslash-percent
 
-## Test 7: Unicode before dollar
+b) $100\text{%}$ text-percent
 
-«подмножество», а $A$ — test
+c) $100\text{\%}$ text-bslash-percent
 
-## Test 8: Line starting with dollar
+## Test 6: Block math percent
 
-$n$ в $anetv^n$ test
+$$100\%$$
 
-## Test 9: 100 percent
-
-$100\%$ test
-
-$100\text{%}$ test
-
-## Test 10: Multiple formulas on one line with curly braces
-
-семейства функций $\{anetv^n\}$, $anetv^n: L \to V_n$ отображает ссылку $l$ из множества $L$ в вектор
-
-## Test 11: Same line without curly brace formula
-
-$anetv^n: L \to V_n$ отображает ссылку $l$ из множества $L$ в вектор
+$$100\text{%}$$

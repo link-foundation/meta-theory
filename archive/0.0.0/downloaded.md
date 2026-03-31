@@ -4,7 +4,7 @@
 
 **Published:** April 1, 2022 (updated April 1, 2024)
 
-**Reading time: 4 min | Difficulty: Hard | Views: 4825**
+**Reading time: 4 min | Difficulty: Hard | Views: 4831**
 
 **Hubs:** Deep.Foundation corporate blog, Data Engineering, Mathematics, SQL
 
@@ -216,6 +216,6 @@ Using an associative model means you no longer need to choose between SQL and No
 
 **Hubs:** [Deep.Foundation corporate blog](https://habr.com/en/companies/deepfoundation/articles/), [Data Engineering](https://habr.com/en/hubs/data_engineering/), [Mathematics](https://habr.com/en/hubs/maths/), [SQL](https://habr.com/en/hubs/sql/)
 
-**Votes: +1 | Views: 4825**
+**Votes: +1 | Views: 4831**
 
 **Author:** [Иван Сергеевич Глазунов (IvanSGlazunov)](https://habr.com/en/users/IvanSGlazunov/)

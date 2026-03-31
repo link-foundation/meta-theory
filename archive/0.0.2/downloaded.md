@@ -8,7 +8,7 @@
 
 **Published:** April 1, 2025 (updated August 10, 2025)
 
-**Reading time: 27 min | Difficulty: Medium | Views: 5241**
+**Reading time: 27 min | Difficulty: Medium | Views: 5249**
 
 **Hubs:** Data Engineering, Open source, Mathematics, Abnormal programming, Programming
 
@@ -52,14 +52,14 @@ A [relation](https://en.wikipedia.org/wiki/Relation_(database)) is defined as a 
 
 ![Figure 1](images/figure-1.png)
 
-**Figure 1.** A table is described by a [relation](https://en.wikipedia.org/wiki/Relation_(database))$\mathbf{R}$, which is represented as a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of [rows](https://en.wikipedia.org/wiki/Row_(database)) $\mathbf{r}$, belonging to a [Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) $\mathbf{S_1 \times S_2 \times \dots \times S_n}$.
+**Figure 1.** A table is described by a [relation](https://en.wikipedia.org/wiki/Relation_(database)) $\mathbf{R}$, which is represented as a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of [rows](https://en.wikipedia.org/wiki/Row_(database)) $\mathbf{r}$, belonging to a [Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) $\mathbf{S_1 \times S_2 \times \dots \times S_n}$.
 
 **Where:**
 
 - The [symbol](https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols) $\mathbf{R}$ denotes a [relation](https://en.wikipedia.org/wiki/Relation_(mathematics)) ([table](https://en.wikipedia.org/wiki/Table_(database)));
 - The [symbol](https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols) $\subseteq$ indicates that the left side of the [expression](https://en.wikipedia.org/wiki/Expression_(mathematics)) is a [subset](https://en.wikipedia.org/wiki/Subset) of the right side;
 - The [symbol](https://en.wikipedia.org/wiki/Glossary_of_mathematical_symbols) $\times$ denotes the [Cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) of two [sets](https://en.wikipedia.org/wiki/Set_(mathematics));
-- The [expression](https://en.wikipedia.org/wiki/Expression_(mathematics))$\mathbf{S_n}$ represents the [domain](https://en.wikipedia.org/wiki/Data_domain), i.e., the [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of all possible [values](https://en.wikipedia.org/wiki/Value_(computer_science)) that each [cell](https://en.wikipedia.org/wiki/Table_(database)) in a [column](https://en.wikipedia.org/wiki/Table_(database)) can contain.
+- The [expression](https://en.wikipedia.org/wiki/Expression_(mathematics)) $\mathbf{S_n}$ represents the [domain](https://en.wikipedia.org/wiki/Data_domain), i.e., the [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of all possible [values](https://en.wikipedia.org/wiki/Value_(computer_science)) that each [cell](https://en.wikipedia.org/wiki/Table_(database)) in a [column](https://en.wikipedia.org/wiki/Table_(database)) can contain.
 
 [Rows](https://en.wikipedia.org/wiki/Row_(database)), or [elements](https://en.wikipedia.org/wiki/Element_(mathematics)) of the [relation](https://en.wikipedia.org/wiki/Relation_(database)) $\mathbf{R}$, are represented as [n-tuples](https://en.wikipedia.org/wiki/Tuple).
 
@@ -942,6 +942,6 @@ Which is rendered as SVG (clickable):
 
 **Hubs:** [Data Engineering](https://habr.com/en/hubs/data_engineering/), [Open source](https://habr.com/en/hubs/open_source/), [Mathematics](https://habr.com/en/hubs/maths/), [Abnormal programming](https://habr.com/en/hubs/crazydev/), [Programming](https://habr.com/en/hubs/programming/)
 
-**Votes: +10 | Views: 5241**
+**Votes: +10 | Views: 5249**
 
 **Author:** [Константин Дьяченко (Konard)](https://habr.com/en/users/Konard/)

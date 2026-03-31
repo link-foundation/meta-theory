@@ -1,0 +1,1154 @@
+🔍 Detecting consent modals on Habr...
+   URL: https://habr.com/en/articles/895896/
+
+
+=== DARK THEME ===
+   📸 Before screenshot: /tmp/gh-issue-solver-1774988288923/experiments/consent-before-dark.png
+
+   Found 12 fixed/sticky overlays:
+
+   --- Overlay ---
+   Tag: HEADER, ID: ""
+   Class: tm-header tm-header
+   Position: sticky, Z-Index: 1001
+   Rect: {"top":200,"left":0,"width":1920,"height":56}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: "All streams
+Login"
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":268,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":2880,"left":1208,"width":300,"height":683}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: "MOST READING
+Installing and Configuring a VPN with VLESS and Reality
+20K
+0
+A guide to bypassing 'whitelists' and setting up a chain: working options a"
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":5575,"left":1208,"width":300,"height":250}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":7837,"left":1208,"width":300,"height":250}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":10099,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":13711,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":17323,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":20935,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":24547,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":28159,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":31771,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   Found 38 consent-related elements:
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: header-banner-wrapper
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":200}
+   Text: "РЕКЛАМА"
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder above-header
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: "adfox_175449164307199013_aboveHeader"
+   Class: banner-target tm-header-banner
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":200}
+   Text: "РЕКЛАМА"
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: element-wrapper leaderboard tm-page-article__banner
+   Visible: true
+   Rect: {"top":35268,"left":412,"width":780,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":35268,"left":412,"width":780,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder leaderboard
+   Visible: true
+   Rect: {"top":35268,"left":412,"width":780,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: Leaderboard-gam roxot-dynamic banner-target roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":35268,"left":412,"width":780,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":268,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":268,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":268,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":5575,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder medium-rectangle
+   Visible: true
+   Rect: {"top":5575,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_bottom-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":5575,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":7837,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder medium-rectangle
+   Visible: true
+   Rect: {"top":7837,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_bottom-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":7837,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":10099,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":10099,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":10099,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":13711,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":13711,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":13711,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":17323,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":17323,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":17323,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":20935,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":20935,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":20935,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":24547,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":24547,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":24547,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":28159,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":28159,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":28159,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":31771,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":31771,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":31771,"left":1208,"width":300,"height":600}
+   Text: ""
+
+=== LIGHT THEME ===
+   📸 Before screenshot: /tmp/gh-issue-solver-1774988288923/experiments/consent-before-light.png
+
+   Found 12 fixed/sticky overlays:
+
+   --- Overlay ---
+   Tag: HEADER, ID: ""
+   Class: tm-header tm-header
+   Position: sticky, Z-Index: 1001
+   Rect: {"top":200,"left":0,"width":1920,"height":56}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: "All streams
+Login"
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":268,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":2880,"left":1208,"width":300,"height":683}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: "MOST READING
+Installing and Configuring a VPN with VLESS and Reality
+20K
+0
+A guide to bypassing 'whitelists' and setting up a chain: working options a"
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":5575,"left":1208,"width":300,"height":250}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":7837,"left":1208,"width":300,"height":250}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":10099,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":13711,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":17323,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":20935,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":24547,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":28159,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   --- Overlay ---
+   Tag: DIV, ID: ""
+   Class: block
+   Position: sticky, Z-Index: auto
+   Rect: {"top":31771,"left":1208,"width":300,"height":600}
+   Has close button: false
+   Has consent text: false
+   Data-testids: []
+   Text preview: ""
+
+   Found 71 consent-related elements:
+
+   --- Consent Element ---
+   Matched selector: [class*="consent"]
+   Tag: DIV, ID: ""
+   Class: fc-consent-root
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":1080}
+   Text: "habr.com asks for your consent to use your personal data to:
+Personalised advertising and content, advertising and content measurement, audience resea"
+
+   --- Consent Element ---
+   Matched selector: [class*="consent"]
+   Tag: BUTTON, ID: ""
+   Class: fc-button fc-cta-consent fc-primary-button
+   Visible: true
+   Rect: {"top":750,"left":972,"width":196,"height":38}
+   Text: "Consent"
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: header-banner-wrapper
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":200}
+   Text: "РЕКЛАМА"
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder above-header
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: "adfox_175449164307199013_aboveHeader"
+   Class: banner-target tm-header-banner
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":200}
+   Text: "РЕКЛАМА"
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: element-wrapper leaderboard tm-page-article__banner
+   Visible: true
+   Rect: {"top":35268,"left":412,"width":780,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":35268,"left":412,"width":780,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder leaderboard
+   Visible: true
+   Rect: {"top":35268,"left":412,"width":780,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: Leaderboard-gam roxot-dynamic banner-target roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":35268,"left":412,"width":780,"height":200}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":268,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":268,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":268,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":5575,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder medium-rectangle
+   Visible: true
+   Rect: {"top":5575,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_bottom-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":5575,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":7837,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder medium-rectangle
+   Visible: true
+   Rect: {"top":7837,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_bottom-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":7837,"left":1208,"width":300,"height":250}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":10099,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":10099,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":10099,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":13711,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":13711,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":13711,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":17323,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":17323,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":17323,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":20935,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":20935,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":20935,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":24547,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":24547,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":24547,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":28159,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":28159,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":28159,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: placeholder-wrapper banner-container__placeholder
+   Visible: true
+   Rect: {"top":31771,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: adfox-banner-placeholder half-page
+   Visible: true
+   Rect: {"top":31771,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="banner"]
+   Tag: DIV, ID: ""
+   Class: roxot-dynamic banner-target Right_rectangle_top-gam roxot-dynamic-inited
+   Visible: true
+   Rect: {"top":31771,"left":1208,"width":300,"height":600}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-consent-root
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":1080}
+   Text: "habr.com asks for your consent to use your personal data to:
+Personalised advertising and content, advertising and content measurement, audience resea"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-dialog-overlay
+   Visible: true
+   Rect: {"top":0,"left":0,"width":1920,"height":1080}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-dialog-container
+   Visible: true
+   Rect: {"top":269,"left":704,"width":512,"height":543}
+   Text: "habr.com asks for your consent to use your personal data to:
+Personalised advertising and content, advertising and content measurement, audience resea"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-dialog fc-choice-dialog
+   Visible: true
+   Rect: {"top":269,"left":704,"width":512,"height":543}
+   Text: "habr.com asks for your consent to use your personal data to:
+Personalised advertising and content, advertising and content measurement, audience resea"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-dialog-content
+   Visible: true
+   Rect: {"top":270,"left":705,"width":510,"height":457}
+   Text: "habr.com asks for your consent to use your personal data to:
+Personalised advertising and content, advertising and content measurement, audience resea"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-dialog-scrollable-content
+   Visible: true
+   Rect: {"top":270,"left":720,"width":480,"height":457}
+   Text: "habr.com asks for your consent to use your personal data to:
+Personalised advertising and content, advertising and content measurement, audience resea"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-header fc-dialog-restricted-content
+   Visible: true
+   Rect: {"top":270,"left":752,"width":416,"height":160}
+   Text: "habr.com asks for your consent to use your personal data to:"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-header
+   Visible: true
+   Rect: {"top":270,"left":752,"width":416,"height":88}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-header-image-container fc-header
+   Visible: true
+   Rect: {"top":294,"left":752,"width":416,"height":64}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: IMG, ID: ""
+   Class: fc-header-image
+   Visible: true
+   Rect: {"top":294,"left":915,"width":90,"height":60}
+   Src: https://lh3.googleusercontent.com/VlO8b_b5WaQLogC-A8mLsr-rs21dymZp3JYoH5BdbKNdHJrqDAY6zD3bdFOQ8z5pEsF5zYZUUDV8NYJumWtLlb7heh_kHnIbedepEms01qOvAC1oU4d6=h60
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: H1, ID: ""
+   Class: fc-dialog-headline
+   Visible: true
+   Rect: {"top":370,"left":752,"width":416,"height":48}
+   Text: "habr.com asks for your consent to use your personal data to:"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-stacks fc-dialog-restricted-content
+   Visible: true
+   Rect: {"top":438,"left":752,"width":416,"height":97}
+   Text: "Personalised advertising and content, advertising and content measurement, audience research and services development
+Store and/or access information "
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-stack-icon
+   Visible: true
+   Rect: {"top":442,"left":752,"width":28,"height":28}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: SPAN, ID: ""
+   Class: fc-stack-name
+   Visible: true
+   Rect: {"top":443,"left":796,"width":372,"height":32}
+   Text: "Personalised advertising and content, advertising and content measurement, audience research and services development"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-stack-icon
+   Visible: true
+   Rect: {"top":491,"left":752,"width":28,"height":28}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: SPAN, ID: ""
+   Class: fc-stack-name
+   Visible: true
+   Rect: {"top":499,"left":796,"width":372,"height":16}
+   Text: "Store and/or access information on a device"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: BUTTON, ID: ""
+   Class: fc-faq-header fc-dialog-restricted-content
+   Visible: true
+   Rect: {"top":535,"left":752,"width":416,"height":28}
+   Text: "Learn more"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-faq-icon
+   Visible: true
+   Rect: {"top":535,"left":752,"width":28,"height":28}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: SPAN, ID: ""
+   Class: fc-faq-label
+   Visible: true
+   Rect: {"top":540,"left":796,"width":67,"height":23}
+   Text: "Learn more"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-footer fc-dialog-restricted-content
+   Visible: true
+   Rect: {"top":563,"left":752,"width":416,"height":164}
+   Text: "Your personal data will be processed and information from your device (cookies, unique identifiers, and other device data) may be stored by, accessed "
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: A, ID: ""
+   Class: fc-vendors-list-dialog fc-footer-link-v2
+   Visible: true
+   Rect: {"top":622,"left":1063,"width":87,"height":17}
+   Text: "List of partners."
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-footer-buttons-container
+   Visible: true
+   Rect: {"top":727,"left":705,"width":510,"height":84}
+   Text: "Consent
+
+Manage options"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-footer-buttons-divider
+   Visible: true
+   Rect: {"top":727,"left":752,"width":416,"height":1}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-footer-buttons
+   Visible: true
+   Rect: {"top":736,"left":752,"width":416,"height":67}
+   Text: "Consent
+
+Manage options"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: BUTTON, ID: ""
+   Class: fc-button fc-cta-consent fc-primary-button
+   Visible: true
+   Rect: {"top":750,"left":972,"width":196,"height":38}
+   Text: "Consent"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-button-background
+   Visible: true
+   Rect: {"top":750,"left":972,"width":196,"height":38}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: P, ID: ""
+   Class: fc-button-label
+   Visible: true
+   Rect: {"top":759,"left":972,"width":196,"height":20}
+   Text: "Consent"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: BUTTON, ID: ""
+   Class: fc-button fc-cta-manage-options fc-secondary-button
+   Visible: true
+   Rect: {"top":750,"left":752,"width":196,"height":38}
+   Text: "Manage options"
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: DIV, ID: ""
+   Class: fc-button-background
+   Visible: true
+   Rect: {"top":750,"left":752,"width":196,"height":38}
+   Text: ""
+
+   --- Consent Element ---
+   Matched selector: [class*="fc-"]
+   Tag: P, ID: ""
+   Class: fc-button-label
+   Visible: true
+   Rect: {"top":759,"left":752,"width":196,"height":20}
+   Text: "Manage options"
+
+   --- Consent Element ---
+   Matched selector: .fc-dialog
+   Tag: DIV, ID: ""
+   Class: fc-dialog fc-choice-dialog
+   Visible: true
+   Rect: {"top":269,"left":704,"width":512,"height":543}
+   Text: "habr.com asks for your consent to use your personal data to:
+Personalised advertising and content, advertising and content measurement, audience resea"
+
+✅ Done!

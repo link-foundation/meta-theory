@@ -70,6 +70,10 @@ function normalizeText(text) {
     .replace(/[−]/g, '-') // Normalize minus sign
     .replace(/\$\$/g, '') // Remove LaTeX block delimiters
     .replace(/\$/g, '') // Remove LaTeX inline delimiters
+    .replace(/\\displaystyle\s*/g, '') // Remove \displaystyle command
+    .replace(/\\text\{([^}]*)\}/g, '$1') // Extract text from \text{}
+    .replace(/\\\\%/g, '%') // Normalize double-backslash percent (GitHub workaround) to %
+    .replace(/\\%/g, '%') // Normalize escaped percent to %
     .replace(/\\subseteq/g, '⊆')
     .replace(/\\mathbb\{n\}_0/gi, 'ℕ₀')
     .replace(/\\in/g, '∈')
@@ -371,7 +375,7 @@ function verifyMarkdownContent(article, webContent, markdownText, verbose = fals
 
   // Check blockquote formulas - verify they are properly formatted in blockquotes
   // Formulas in blockquotes should appear as either:
-  // - > $$formula$$ (block formula in blockquote)
+  // - > $\displaystyle formula$ (left-aligned display formula in blockquote)
   // - > $formula$ (inline formula in blockquote)
   // - > text containing $formula$ (inline formula mixed with text in blockquote)
   if (webContent.blockquoteFormulas && webContent.blockquoteFormulas.length > 0) {

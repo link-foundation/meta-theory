@@ -1,0 +1,48 @@
+
+> meta-theory-experiments@1.0.0 test
+> node scripts/verify.mjs --all
+
+🚀 Article Verification Script
+==============================
+
+📋 Verifying Math introduction to Deep Theory (0.0.0)
+======================================================================
+
+──────────────────────────────────────────────────────────────────────
+📊 VERIFICATION RESULTS
+──────────────────────────────────────────────────────────────────────
+✅ Passed: 35/35 checks (100.0%)
+❌ Failed: 0/35 checks
+
+🎉 SUCCESS! All checked content from the web page exists in the markdown file.
+
+📋 Verifying Глубокая Теория Связей 0.0.1 (0.0.1)
+======================================================================
+
+──────────────────────────────────────────────────────────────────────
+📊 VERIFICATION RESULTS
+──────────────────────────────────────────────────────────────────────
+✅ Passed: 92/92 checks (100.0%)
+❌ Failed: 0/92 checks
+
+🎉 SUCCESS! All checked content from the web page exists in the markdown file.
+
+📋 Verifying The Links Theory 0.0.2 (0.0.2)
+======================================================================
+
+──────────────────────────────────────────────────────────────────────
+📊 VERIFICATION RESULTS
+──────────────────────────────────────────────────────────────────────
+✅ Passed: 95/95 checks (100.0%)
+❌ Failed: 0/95 checks
+
+🎉 SUCCESS! All checked content from the web page exists in the markdown file.
+
+======================================================================
+📊 OVERALL SUMMARY
+======================================================================
+   ✅ 0.0.0: Math introduction to Deep Theory
+   ✅ 0.0.1: Глубокая Теория Связей 0.0.1
+   ✅ 0.0.2: The Links Theory 0.0.2
+
+======================================================================

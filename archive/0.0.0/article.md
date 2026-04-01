@@ -1,9 +1,13 @@
 # Math introduction to Deep Theory
 
 **Author:** [Иван Сергеевич Глазунов (IvanSGlazunov)](https://habr.com/en/users/IvanSGlazunov/)
+
 **Published:** April 1, 2022 (updated April 1, 2024)
-**Reading time: 4 min | Difficulty: Hard | Views: 4812**
-**Hubs:** Deep.Foundation corporate blog, SQL, Mathematics, Data Engineering
+
+**Reading time: 4 min | Difficulty: Hard | Views: 4829**
+
+**Hubs:** Deep.Foundation corporate blog, Data Engineering, Mathematics, SQL
+
 **Tags:** links, связи, ассоциативность, deep.foundation, триплеты, дуплеты, associative
 
 ---
@@ -20,7 +24,7 @@ In this article, we would like to compare the core mathematical bases of the two
 
 Relational algebra and the [relational model](https://en.wikipedia.org/wiki/Relational_model) are based on the concept of relation and n-tuples.
 
-A relation is defined as a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of [n-tuples](https://en.wikipedia.org/wiki/Tuple):
+A relation is defined as a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) of [n-tuples](https://en.wikipedia.org/wiki/Tuple):
 
 ![Figure 1](images/figure-1.png)
 
@@ -36,14 +40,14 @@ Data in relational model is grouped into relations. Using n-tuples in a relation
 
 Directed graph and graphs in general are based on concepts of vertex and edge (2-tuple).
 
-A [directed graph](https://en.wikipedia.org/wiki/Directed_graph) G is defined as an ordered pair *G*(*V*, E):
+A [directed graph](https://en.wikipedia.org/wiki/Directed_graph) G is defined as an ordered pair *G*(*V*, E):
 
 ![Figure 2](images/figure-2.png)
 
 Where:
 
-- **V** is a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) whose [elements](https://en.wikipedia.org/wiki/Element_(mathematics)) are called [*vertices*](https://en.wikipedia.org/wiki/Vertex_(graph_theory)), *nodes*, or *points*;
-- **E** is a set of [ordered pairs](https://en.wikipedia.org/wiki/Ordered_pair) (2-tuples) of vertices, called *arcs*, *directed edges* (sometimes simply *edges*), *arrows*, or *directed lines*.
+- **V** is a [set](https://en.wikipedia.org/wiki/Set_(mathematics)) whose [elements](https://en.wikipedia.org/wiki/Element_(mathematics)) are called [*vertices*](https://en.wikipedia.org/wiki/Vertex_(graph_theory)), *nodes*, or *points*;
+- **E** is a set of [ordered pairs](https://en.wikipedia.org/wiki/Ordered_pair) (2-tuples) of vertices, called *arcs*, *directed edges* (sometimes simply *edges*), *arrows*, or *directed lines*.
 
 Data in the graph model is represented as a collection of nodes and edges, and you may use this model pretty much for everything, except maybe sequences (n-tuples). Well, perhaps you can represent [sequences as sets](https://en.wikipedia.org/wiki/Tuple#Tuples_as_nested_sets), but in our point of view it is a messy way to represent sequences. Probably we are not alone and this may be the reason we didn’t see other people to do so.
 
@@ -205,3 +209,13 @@ Using an associative model means you no longer need to choose between SQL and No
 ### References
 
 1. “Relational Model of Data for Large Shared Data Banks.”, paragraph 1.3., Edgar F. Codd, IBM Research Laboratory, San Jose, California, June 1970
+
+---
+
+**Tags:** links, связи, ассоциативность, deep.foundation, триплеты, дуплеты, associative
+
+**Hubs:** [Deep.Foundation corporate blog](https://habr.com/en/companies/deepfoundation/articles/), [Data Engineering](https://habr.com/en/hubs/data_engineering/), [Mathematics](https://habr.com/en/hubs/maths/), [SQL](https://habr.com/en/hubs/sql/)
+
+**Votes: +1 | Views: 4829**
+
+**Author:** [Иван Сергеевич Глазунов (IvanSGlazunov)](https://habr.com/en/users/IvanSGlazunov/)

@@ -52,3 +52,47 @@ Definition NetworkDupletFunction := Reference -> Duplet.
 
 (* Сеть дуплетов (или двумерная сеть) в виде последовательности дуплетов *)
 Definition NetworkDupletList := list Duplet.
+
+(** * Сеть всех сетей *)
+
+(**
+  Сеть всех сетей (Ω) — пространство, в котором каждая возможная сеть
+  произвольной размерности и размера получает уникальную ссылку.
+
+  𝒩 = ⋃_{n ∈ ℕ₀} ⋃_{s ∈ ℕ₀} {Nⁿ размера s}
+  Ω: R → 𝒩
+
+  Поскольку в Rocq мы не можем напрямую определить тип, параметризованный
+  произвольным n на уровне значений, мы представляем элемент 𝒩 как запись
+  (размерность, список кортежей переменной длины), используя списки ссылок
+  для представления кортежей произвольной размерности.
+*)
+
+(* Элемент сети произвольной размерности: пара (размерность, список кортежей).
+   Кортеж переменной длины представлен как ReferenceList *)
+Record AnyNetwork := mkAnyNetwork {
+  dimension : nat;
+  tuples : list ReferenceList
+}.
+
+(* Сеть всех сетей: отображение ссылок на сети произвольной размерности и размера *)
+(* Ω: R → 𝒩 *)
+Definition NetworkOfAllNetworks := Reference -> AnyNetwork.
+
+(* Сеть всех сетей в виде последовательности (для конечного фрагмента) *)
+Definition NetworkOfAllNetworksList := list AnyNetwork.
+
+(* Пустая сеть нулевой размерности и размера — наименьший элемент 𝒩 *)
+Definition emptyNetwork : AnyNetwork := mkAnyNetwork 0 nil.
+
+(* Размер сети (количество кортежей) *)
+Definition anyNetworkSize (net : AnyNetwork) : nat :=
+  length (tuples net).
+
+(* Проверка корректности: все кортежи имеют длину, равную размерности *)
+Definition anyNetworkIsWellFormed (net : AnyNetwork) : bool :=
+  forallb (fun t => Nat.eqb (length t) (dimension net)) (tuples net).
+
+(* Пример: представление дуплетной сети N² размера 3 как элемента 𝒩 *)
+Definition exampleAnyNetwork : AnyNetwork :=
+  mkAnyNetwork 2 [[1; 1]; [2; 2]; [1; 2]].

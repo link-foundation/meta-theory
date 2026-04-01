@@ -99,7 +99,7 @@ theorem meta_link_space_elements_valid (size : Nat) :
     AssociativeNetwork := Link → Duplet
 
   Уровень 1 (последовательности через связи):
-    Sequence := Link  (ссылка на корень дерева дуплетов в ассоциативной сети)
+    LinkSequence := Link  (ссылка на корень дерева дуплетов в ассоциативной сети)
     Дерево дуплетов хранится в AssociativeNetworkDupletList
 
   Уровень 2 (множества через последовательности):

@@ -27,14 +27,14 @@ Definition AssociativeNetworkTupleFunction (n : nat) := Link -> TupleOfLinks n.
 (* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
 Definition AssociativeNetworkTupleList (n : nat) := list (TupleOfLinks n).
 
-(* Вложенные упорядоченные пары *)
-Definition NestedPair := list Link.
+(* Список ссылок (ранее NestedPair — вложенные упорядоченные пары): LinkList ⊆ List(L) *)
+Definition LinkList := list Link.
 
-(* Ассоциативная сеть вложенных упорядоченных пар: anetl : Link → NestedPair *)
-Definition AssociativeNetworkNestedPairFunction := Link -> NestedPair.
+(* Ассоциативная сеть списков ссылок: anetl : Link → LinkList *)
+Definition AssociativeNetworkLinkListFunction := Link -> LinkList.
 
-(* Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар *)
-Definition AssociativeNetworkNestedPairList := list NestedPair.
+(* Ассоциативная сеть списков ссылок в виде последовательности списков ссылок *)
+Definition AssociativeNetworkLinkListList := list LinkList.
 
 (* Дуплет ссылок *)
 Definition Duplet := prod Link Link.

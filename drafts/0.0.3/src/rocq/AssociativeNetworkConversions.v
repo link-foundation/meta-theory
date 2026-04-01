@@ -7,65 +7,65 @@ Import ListNotations.
 Import VectorNotations.
 Require Import AssociativeNetworkDefinitions.
 
-(* Функция преобразования TupleOfLinks в NestedPair *)
-Fixpoint TupleOfLinksToNestedPair {n : nat} (v : TupleOfLinks n) : NestedPair :=
+(* Функция преобразования TupleOfLinks в LinkList *)
+Fixpoint TupleOfLinksToLinkList {n : nat} (v : TupleOfLinks n) : LinkList :=
   match v with
   | Vector.nil _ => List.nil
-  | Vector.cons _ h _ t => List.cons h (TupleOfLinksToNestedPair t)
+  | Vector.cons _ h _ t => List.cons h (TupleOfLinksToLinkList t)
   end.
 
-(* Функция преобразования AssociativeNetworkTupleFunction в AssociativeNetworkNestedPairFunction *)
-Definition TupleFunctionToNestedPairFunction {n : nat} (a: AssociativeNetworkTupleFunction n) : AssociativeNetworkNestedPairFunction :=
-  fun id => TupleOfLinksToNestedPair (a id).
+(* Функция преобразования AssociativeNetworkTupleFunction в AssociativeNetworkLinkListFunction *)
+Definition TupleFunctionToLinkListFunction {n : nat} (a: AssociativeNetworkTupleFunction n) : AssociativeNetworkLinkListFunction :=
+  fun id => TupleOfLinksToLinkList (a id).
 
-(* Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkNestedPairList *)
-Definition TupleListToNestedPairList {n: nat} (net: AssociativeNetworkTupleList n) : AssociativeNetworkNestedPairList :=
-  map TupleOfLinksToNestedPair net.
+(* Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkLinkListList *)
+Definition TupleListToLinkListList {n: nat} (net: AssociativeNetworkTupleList n) : AssociativeNetworkLinkListList :=
+  map TupleOfLinksToLinkList net.
 
-(* Функция преобразования NestedPair в TupleOfLinks, возвращающая option *)
-Fixpoint NestedPairToTupleOfLinksOption (n: nat) (p: NestedPair) : option (TupleOfLinks n) :=
+(* Функция преобразования LinkList в TupleOfLinks, возвращающая option *)
+Fixpoint LinkListToTupleOfLinksOption (n: nat) (p: LinkList) : option (TupleOfLinks n) :=
   match n, p with
   | 0, List.nil => Some (Vector.nil nat)
   | S n', List.cons f p' =>
-  match NestedPairToTupleOfLinksOption n' p' with
+  match LinkListToTupleOfLinksOption n' p' with
   | None => None
   | Some t => Some (Vector.cons nat f n' t)
   end
   | _, _ => None
   end.
 
-(* Функция преобразования NestedPair в TupleOfLinks с использованием TupleOfLinksDefault *)
-Definition NestedPairToTupleOfLinks (n: nat) (p: NestedPair) : TupleOfLinks n :=
-  match NestedPairToTupleOfLinksOption n p with
+(* Функция преобразования LinkList в TupleOfLinks с использованием TupleOfLinksDefault *)
+Definition LinkListToTupleOfLinks (n: nat) (p: LinkList) : TupleOfLinks n :=
+  match LinkListToTupleOfLinksOption n p with
   | None => TupleOfLinksDefault n
   | Some t => t
   end.
 
-(* Функция преобразования AssociativeNetworkNestedPairFunction в AssociativeNetworkTupleFunction *)
-Definition NestedPairFunctionToTupleFunction { n: nat } (net: AssociativeNetworkNestedPairFunction) : AssociativeNetworkTupleFunction n :=
-  fun id => match NestedPairToTupleOfLinksOption n (net id) with
+(* Функция преобразования AssociativeNetworkLinkListFunction в AssociativeNetworkTupleFunction *)
+Definition LinkListFunctionToTupleFunction { n: nat } (net: AssociativeNetworkLinkListFunction) : AssociativeNetworkTupleFunction n :=
+  fun id => match LinkListToTupleOfLinksOption n (net id) with
   | Some t => t
   | None => TupleOfLinksDefault n
   end.
 
-(* Функция преобразования AssociativeNetworkNestedPairList в AssociativeNetworkTupleList *)
-Definition NestedPairListToTupleList {n: nat} (net : AssociativeNetworkNestedPairList) : AssociativeNetworkTupleList n :=
-  map (NestedPairToTupleOfLinks n) net.
+(* Функция преобразования AssociativeNetworkLinkListList в AssociativeNetworkTupleList *)
+Definition LinkListListToTupleList {n: nat} (net : AssociativeNetworkLinkListList) : AssociativeNetworkTupleList n :=
+  map (LinkListToTupleOfLinks n) net.
 
-(* Функция преобразования NestedPair в AssociativeNetworkDupletList со смещением индексации *)
-Fixpoint NestedPairToDupletList_ (offset: nat) (np: NestedPair) : AssociativeNetworkDupletList :=
+(* Функция преобразования LinkList в AssociativeNetworkDupletList со смещением индексации *)
+Fixpoint LinkListToDupletList_ (offset: nat) (np: LinkList) : AssociativeNetworkDupletList :=
   match np with
   | nil => nil
   | cons h nil => cons (h, offset) nil
-  | cons h t => cons (h, S offset) (NestedPairToDupletList_ (S offset) t)
+  | cons h t => cons (h, S offset) (LinkListToDupletList_ (S offset) t)
   end.
 
-(* Функция преобразования NestedPair в AssociativeNetworkDupletList *)
-Definition NestedPairToDupletList (np: NestedPair) : AssociativeNetworkDupletList := NestedPairToDupletList_ 0 np.
+(* Функция преобразования LinkList в AssociativeNetworkDupletList *)
+Definition LinkListToDupletList (np: LinkList) : AssociativeNetworkDupletList := LinkListToDupletList_ 0 np.
 
-(* Функция добавления NestedPair в хвост AssociativeNetworkDupletList *)
-Definition AddNestedPairToDupletList (anet: AssociativeNetworkDupletList) (np: NestedPair) : AssociativeNetworkDupletList :=
-  app anet (NestedPairToDupletList_ (length anet) np).
+(* Функция добавления LinkList в хвост AssociativeNetworkDupletList *)
+Definition AddLinkListToDupletList (anet: AssociativeNetworkDupletList) (np: LinkList) : AssociativeNetworkDupletList :=
+  app anet (LinkListToDupletList_ (length anet) np).
 
 (* Функция отрезает голову anetd и возвращает хвост начиная с offset *)
 Fixpoint DupletListBehead (anet: AssociativeNetworkDupletList) (offset : nat) : AssociativeNetworkDupletList :=
@@ -78,26 +78,26 @@ Fixpoint DupletListBehead (anet: AssociativeNetworkDupletList) (offset : nat) : 
   end
   end.
 
-(* Функция преобразования AssociativeNetworkDupletList в NestedPair с индексацией в начале AssociativeNetworkDupletList начиная с offset *)
-Fixpoint DupletListToNestedPair_ (anet: AssociativeNetworkDupletList) (offset: nat) (index: nat): NestedPair :=
+(* Функция преобразования AssociativeNetworkDupletList в LinkList с индексацией в начале AssociativeNetworkDupletList начиная с offset *)
+Fixpoint DupletListToLinkList_ (anet: AssociativeNetworkDupletList) (offset: nat) (index: nat): LinkList :=
   match anet with
   | nil => nil
   | cons (x, next_index) tail_anet =>
   if offset =? index then
-  cons x (DupletListToNestedPair_ tail_anet (S offset) next_index)
+  cons x (DupletListToLinkList_ tail_anet (S offset) next_index)
   else
-  DupletListToNestedPair_ tail_anet (S offset) index
+  DupletListToLinkList_ tail_anet (S offset) index
   end.
 
-(* Функция чтения NestedPair из AssociativeNetworkDupletList по индексу дуплета *)
-Definition DupletListReadNestedPair (anet: AssociativeNetworkDupletList) (index: nat) : NestedPair :=
-  DupletListToNestedPair_ anet 0 index.
+(* Функция чтения LinkList из AssociativeNetworkDupletList по индексу дуплета *)
+Definition DupletListReadLinkList (anet: AssociativeNetworkDupletList) (index: nat) : LinkList :=
+  DupletListToLinkList_ anet 0 index.
 
-(* Функция преобразования AssociativeNetworkDupletList в NestedPair начиная с головы списка ассоциативной сети *)
-Definition DupletListToNestedPair (anet: AssociativeNetworkDupletList) : NestedPair := DupletListReadNestedPair anet 0.
+(* Функция преобразования AssociativeNetworkDupletList в LinkList начиная с головы списка ассоциативной сети *)
+Definition DupletListToLinkList (anet: AssociativeNetworkDupletList) : LinkList := DupletListReadLinkList anet 0.
 
 (*
-  Теперь всё готово для преобразования ассоциативной сети вложенных упорядоченных пар anetl : Link → NestedPair
+  Теперь всё готово для преобразования ассоциативной сети вложенных упорядоченных пар anetl : Link → LinkList
   в ассоциативную сеть дуплетов anetd : Link → Link².
 
   Данное преобразование можно делать по-разному: с сохранением исходных ссылок на кортежи
@@ -105,23 +105,23 @@ Definition DupletListToNestedPair (anet: AssociativeNetworkDupletList) : NestedP
   ассоциативной сети дуплетов, которая возвращает вложенную упорядоченную пару по её ссылке.
 *)
 
-(* Функция добавления AssociativeNetworkNestedPairList в AssociativeNetworkDupletList *)
-Fixpoint AddNestedPairListToDupletList (anetd: AssociativeNetworkDupletList) (anetl: AssociativeNetworkNestedPairList) : AssociativeNetworkDupletList :=
+(* Функция добавления AssociativeNetworkLinkListList в AssociativeNetworkDupletList *)
+Fixpoint AddLinkListListToDupletList (anetd: AssociativeNetworkDupletList) (anetl: AssociativeNetworkLinkListList) : AssociativeNetworkDupletList :=
   match anetl with
   | nil => anetd
-  | cons h t => AddNestedPairListToDupletList (AddNestedPairToDupletList anetd h) t
+  | cons h t => AddLinkListListToDupletList (AddLinkListToDupletList anetd h) t
   end.
 
-(* Функция преобразования AssociativeNetworkNestedPairList в AssociativeNetworkDupletList *)
-Definition NestedPairListToDupletList (anetl: AssociativeNetworkNestedPairList) : AssociativeNetworkDupletList :=
+(* Функция преобразования AssociativeNetworkLinkListList в AssociativeNetworkDupletList *)
+Definition LinkListListToDupletList (anetl: AssociativeNetworkLinkListList) : AssociativeNetworkDupletList :=
   match anetl with
   | nil => nil
-  | cons h t => AddNestedPairListToDupletList (NestedPairToDupletList h) t
+  | cons h t => AddLinkListListToDupletList (LinkListToDupletList h) t
   end.
 
-(* Функция поиска NestedPair в хвосте AssociativeNetworkDupletList начинающемуся с offset по её порядковому номеру.
-   Возвращает offset NestedPair. *)
-Fixpoint DupletListOffsetNestedPair_ (anet: AssociativeNetworkDupletList) (offset: nat) (index: nat) : nat :=
+(* Функция поиска LinkList в хвосте AssociativeNetworkDupletList начинающемуся с offset по её порядковому номеру.
+   Возвращает offset LinkList. *)
+Fixpoint DupletListOffsetLinkList_ (anet: AssociativeNetworkDupletList) (offset: nat) (index: nat) : nat :=
   match anet with
   | nil => offset + (length anet)
   | cons (_, next_index) tail_anet =>
@@ -129,51 +129,51 @@ Fixpoint DupletListOffsetNestedPair_ (anet: AssociativeNetworkDupletList) (offse
   | O => offset
   | S index' =>
   if offset =? next_index then
-  DupletListOffsetNestedPair_ tail_anet (S offset) index'
+  DupletListOffsetLinkList_ tail_anet (S offset) index'
   else
-  DupletListOffsetNestedPair_ tail_anet (S offset) index
+  DupletListOffsetLinkList_ tail_anet (S offset) index
   end
   end.
 
-(* Функция поиска NestedPair в AssociativeNetworkDupletList по её порядковому номеру. Возвращает offset NestedPair. *)
-Definition DupletListOffsetNestedPair (anet: AssociativeNetworkDupletList) (index: nat) : nat :=
-  DupletListOffsetNestedPair_ anet 0 index.
+(* Функция поиска LinkList в AssociativeNetworkDupletList по её порядковому номеру. Возвращает offset LinkList. *)
+Definition DupletListOffsetLinkList (anet: AssociativeNetworkDupletList) (index: nat) : nat :=
+  DupletListOffsetLinkList_ anet 0 index.
 
 (* Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkDupletList *)
 Definition TupleListToDupletList {n : nat} (anetv: AssociativeNetworkTupleList n) : AssociativeNetworkDupletList :=
-  NestedPairListToDupletList (TupleListToNestedPairList anetv).
+  LinkListListToDupletList (TupleListToLinkListList anetv).
 
 (*
   Теперь всё готово для преобразования ассоциативной сети дуплетов anetd : Link → Link²
-  в ассоциативную сеть вложенных упорядоченных пар anetl : Link → NestedPair.
+  в ассоциативную сеть вложенных упорядоченных пар anetl : Link → LinkList.
 
   Данное преобразование будем делать с сохранением исходных ссылок на кортежи.
-  Переиндексацию можно не делать, потому что есть функция DupletListOffsetNestedPair для
+  Переиндексацию можно не делать, потому что есть функция DupletListOffsetLinkList для
   ассоциативной сети дуплетов, которая возвращает смещение вложенной УП по ссылке на неё.
 *)
 
-(* Функция отрезает первую NestedPair из AssociativeNetworkDupletList и возвращает хвост *)
-Fixpoint DupletListBeheadNestedPair (anet: AssociativeNetworkDupletList) (offset: nat) : AssociativeNetworkDupletList :=
+(* Функция отрезает первую LinkList из AssociativeNetworkDupletList и возвращает хвост *)
+Fixpoint DupletListBeheadLinkList (anet: AssociativeNetworkDupletList) (offset: nat) : AssociativeNetworkDupletList :=
   match anet with
   | nil => nil
   | cons (_, next_index) tail_anet =>
-  if offset =? next_index then (* конец NestedPair *)
+  if offset =? next_index then (* конец LinkList *)
   tail_anet
-  else (* ещё не конец NestedPair *)
-  DupletListBeheadNestedPair tail_anet (S offset)
+  else (* ещё не конец LinkList *)
+  DupletListBeheadLinkList tail_anet (S offset)
   end.
 
-(* Функция преобразования NestedPair и AssociativeNetworkDupletList со смещения offset в AssociativeNetworkNestedPairList *)
-Fixpoint DupletListToNestedPairList_ (anetd: AssociativeNetworkDupletList) (np: NestedPair) (offset: nat) : AssociativeNetworkNestedPairList :=
+(* Функция преобразования LinkList и AssociativeNetworkDupletList со смещения offset в AssociativeNetworkLinkListList *)
+Fixpoint DupletListToLinkListList_ (anetd: AssociativeNetworkDupletList) (np: LinkList) (offset: nat) : AssociativeNetworkLinkListList :=
   match anetd with
-  | nil => nil (* отбрасываем NestedPair даже если она недостроена *)
+  | nil => nil (* отбрасываем LinkList даже если она недостроена *)
   | cons (x, next_index) tail_anet =>
-  if offset =? next_index then (* конец NestedPair, переходим к следующей NestedPair *)
-  cons (app np (cons x nil)) (DupletListToNestedPairList_ tail_anet nil (S offset))
-  else (* ещё не конец NestedPair, парсим ассоциативную сеть дуплетов дальше *)
-  DupletListToNestedPairList_ tail_anet (app np (cons x nil)) (S offset)
+  if offset =? next_index then (* конец LinkList, переходим к следующей LinkList *)
+  cons (app np (cons x nil)) (DupletListToLinkListList_ tail_anet nil (S offset))
+  else (* ещё не конец LinkList, парсим ассоциативную сеть дуплетов дальше *)
+  DupletListToLinkListList_ tail_anet (app np (cons x nil)) (S offset)
   end.
 
-(* Функция преобразования AssociativeNetworkDupletList в AssociativeNetworkNestedPairList *)
-Definition DupletListToNestedPairList (anetd: AssociativeNetworkDupletList) : AssociativeNetworkNestedPairList :=
-  DupletListToNestedPairList_ anetd nil LinkDefault.
+(* Функция преобразования AssociativeNetworkDupletList в AssociativeNetworkLinkListList *)
+Definition DupletListToLinkListList (anetd: AssociativeNetworkDupletList) : AssociativeNetworkLinkListList :=
+  DupletListToLinkListList_ anetd nil LinkDefault.

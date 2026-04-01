@@ -17,14 +17,14 @@ abbrev TupleOfLinks (n : Nat) := Vector Link n
 -- Значение TupleOfLinks по умолчанию
 def TupleOfLinksDefault (n : Nat) : TupleOfLinks n := Vector.replicate n LinkDefault
 
--- Вложенные упорядоченные пары
-abbrev NestedPair := List Link
+-- Список ссылок (ранее NestedPair — вложенные упорядоченные пары): LinkList ⊆ List(L)
+abbrev LinkList := List Link
 
--- Ассоциативная сеть вложенных упорядоченных пар: anetl : Link → NestedPair
-abbrev AssociativeNetworkNestedPairFunction := Link → NestedPair
+-- Ассоциативная сеть вложенных упорядоченных пар: anetl : Link → LinkList
+abbrev AssociativeNetworkLinkListFunction := Link → LinkList
 
 -- Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар
-abbrev AssociativeNetworkNestedPairList := List NestedPair
+abbrev AssociativeNetworkLinkListList := List LinkList
 
 -- Множество всех ассоциаций: Association = Link × TupleOfLinks
 abbrev Association (n : Nat) := Link × TupleOfLinks n

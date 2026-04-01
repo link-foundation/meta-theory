@@ -29,7 +29,7 @@ import AssociativeNetworkConversions
 
 /-- Последовательность идентифицируется ссылкой (Link) на корень дерева дуплетов,
     хранимого в ассоциативной сети. Это не отдельный тип — это просто Link. -/
-abbrev Sequence := Link
+abbrev LinkSequence := Link
 
 -- * Вспомогательное дерево для построения последовательностей
 
@@ -59,7 +59,7 @@ def TreeToDupletList (t : LinkTree) (offset : Nat) : AssociativeNetworkDupletLis
   (TreeToDupletList_ t offset).1
 
 /-- Получение ссылки на корень дерева (= последовательность) -/
-def TreeToSequence (t : LinkTree) (offset : Nat) : Sequence :=
+def TreeToSequence (t : LinkTree) (offset : Nat) : LinkSequence :=
   match t with
   | .Leaf x => x
   | .Node _ _ => offset
@@ -115,7 +115,7 @@ def ListToBalancedTree (l : List Link) (fuel : Nat := l.length + 1) : Option Lin
 
 /-- Преобразование списка в последовательность (ссылку на корень) и ассоциативную сеть -/
 def ListToSequence (l : List Link) (offset : Nat)
-    : Option (Sequence × AssociativeNetworkDupletList) :=
+    : Option (LinkSequence × AssociativeNetworkDupletList) :=
   match ListToBalancedTree l with
   | none => none
   | some t => some (TreeToSequence t offset, TreeToDupletList t offset)
@@ -139,7 +139,7 @@ def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Link) (fuel : Na
     else
       [root]
 
-def ReadSequence (anet : AssociativeNetworkDupletList) (root : Sequence) : List Link :=
+def ReadSequence (anet : AssociativeNetworkDupletList) (root : LinkSequence) : List Link :=
   ReadSequence_ anet root (anet.length + 1)
 
 -- * Примеры

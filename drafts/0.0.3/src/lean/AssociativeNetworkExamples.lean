@@ -23,24 +23,24 @@ def exampleTuple1 : TupleOfLinks 1 := #v[0]
 def exampleTuple4 : TupleOfLinks 4 := #v[3, 2, 1, 0]
 
 -- Преобразование кортежей ссылок во вложенные упорядоченные пары (списки)
-def nestedPair0 := TupleOfLinksToNestedPair exampleTuple0
-def nestedPair1 := TupleOfLinksToNestedPair exampleTuple1
-def nestedPair4 := TupleOfLinksToNestedPair exampleTuple4
+def nestedPair0 := TupleOfLinksToLinkList exampleTuple0
+def nestedPair1 := TupleOfLinksToLinkList exampleTuple1
+def nestedPair4 := TupleOfLinksToLinkList exampleTuple4
 
 #eval nestedPair0 -- Ожидается результат: []
 #eval nestedPair1 -- Ожидается результат: [0]
 #eval nestedPair4 -- Ожидается результат: [3, 2, 1, 0]
 
 -- Вычисление значений преобразованной функции трёхмерной ассоциативной сети
-#eval (TupleFunctionToNestedPairFunction complexExampleNetwork) 0 -- Ожидается результат: [0, 0, 0]
-#eval (TupleFunctionToNestedPairFunction complexExampleNetwork) 1 -- Ожидается результат: [1, 1, 2]
-#eval (TupleFunctionToNestedPairFunction complexExampleNetwork) 2 -- Ожидается результат: [2, 4, 0]
-#eval (TupleFunctionToNestedPairFunction complexExampleNetwork) 3 -- Ожидается результат: [3, 0, 5]
-#eval (TupleFunctionToNestedPairFunction complexExampleNetwork) 4 -- Ожидается результат: [4, 1, 1]
-#eval (TupleFunctionToNestedPairFunction complexExampleNetwork) 5 -- Ожидается результат: [0, 0, 0]
+#eval (TupleFunctionToLinkListFunction complexExampleNetwork) 0 -- Ожидается результат: [0, 0, 0]
+#eval (TupleFunctionToLinkListFunction complexExampleNetwork) 1 -- Ожидается результат: [1, 1, 2]
+#eval (TupleFunctionToLinkListFunction complexExampleNetwork) 2 -- Ожидается результат: [2, 4, 0]
+#eval (TupleFunctionToLinkListFunction complexExampleNetwork) 3 -- Ожидается результат: [3, 0, 5]
+#eval (TupleFunctionToLinkListFunction complexExampleNetwork) 4 -- Ожидается результат: [4, 1, 1]
+#eval (TupleFunctionToLinkListFunction complexExampleNetwork) 5 -- Ожидается результат: [0, 0, 0]
 
 -- Ассоциативная сеть вложенных упорядоченных пар
-def testPairsNetwork : AssociativeNetworkNestedPairFunction :=
+def testPairsNetwork : AssociativeNetworkLinkListFunction :=
   fun id => match id with
   | 0 => [5, 0, 8]
   | 1 => [7, 1, 2]
@@ -51,7 +51,7 @@ def testPairsNetwork : AssociativeNetworkNestedPairFunction :=
 
 -- Преобразованная ассоциативная сеть вложенных УП в трёхмерную ассоциативную сеть (размерность должна совпадать)
 def testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
-  NestedPairFunctionToTupleFunction testPairsNetwork
+  LinkListFunctionToTupleFunction testPairsNetwork
 
 -- Вычисление значений преобразованной функции ассоциативной сети вложенных УП
 #eval (testTuplesNetwork 0).toList -- Ожидается результат: [5, 0, 8]
@@ -62,49 +62,49 @@ def testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
 #eval (testTuplesNetwork 5).toList -- Ожидается результат: [0, 0, 0]
 
 -- Преобразование вложенных УП в ассоциативную сеть дуплетов
-#eval NestedPairToDupletList [121, 21, 1343]
+#eval LinkListToDupletList [121, 21, 1343]
 -- Должно вернуть: [(121, 1), (21, 2), (1343, 2)]
 
 -- Добавление вложенных УП в ассоциативную сеть дуплетов
-#eval AddNestedPairToDupletList [(121, 1), (21, 2), (1343, 2)] [12, 23, 34]
+#eval AddLinkListToDupletList [(121, 1), (21, 2), (1343, 2)] [12, 23, 34]
 -- Ожидается результат: [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)]
 
 -- Преобразование ассоциативной сети дуплетов во вложенные УП
-#eval DupletListToNestedPair [(121, 1), (21, 2), (1343, 2)]
+#eval DupletListToLinkList [(121, 1), (21, 2), (1343, 2)]
 -- Ожидается результат: [121, 21, 1343]
 
-#eval DupletListToNestedPair [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)]
+#eval DupletListToLinkList [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)]
 -- Ожидается результат: [121, 21, 1343]
 
 -- Чтение вложенных УП из ассоциативной сети дуплетов по индексу дуплета — начала вложенных УП
-#eval DupletListReadNestedPair [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)] 0
+#eval DupletListReadLinkList [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)] 0
 -- Ожидается результат: [121, 21, 1343]
 
-#eval DupletListReadNestedPair [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)] 3
+#eval DupletListReadLinkList [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)] 3
 -- Ожидается результат: [12, 23, 34]
 
 -- Определяем ассоциативную сеть вложенных УП
-def testNestedPairList : AssociativeNetworkNestedPairList :=
+def testLinkListList : AssociativeNetworkLinkListList :=
   [[121, 21, 1343], [12, 23], [34], [121, 21, 1343], [12, 23], [34]]
 
 -- Преобразованная ассоциативная сеть вложенных УП в ассоциативную сеть дуплетов
-def testDupletList := NestedPairListToDupletList testNestedPairList
+def testDupletList := LinkListListToDupletList testLinkListList
 
 -- Вычисление преобразованной ассоциативной сети вложенных УП в ассоциативную сеть дуплетов
 #eval testDupletList
 
--- Вычисление преобразования ассоциативной сети вложенных УП в ассоциативную сеть дуплетов и обратно в testNestedPairList
-#eval DupletListToNestedPairList testDupletList
+-- Вычисление преобразования ассоциативной сети вложенных УП в ассоциативную сеть дуплетов и обратно в testLinkListList
+#eval DupletListToLinkListList testDupletList
 
 -- Вычисление смещения вложенных УП в ассоциативной сети дуплетов по их порядковому номеру
-#eval DupletListOffsetNestedPair testDupletList 0 -- Ожидается результат: 0
-#eval DupletListOffsetNestedPair testDupletList 1 -- Ожидается результат: 3
-#eval DupletListOffsetNestedPair testDupletList 2 -- Ожидается результат: 5
-#eval DupletListOffsetNestedPair testDupletList 3 -- Ожидается результат: 6
-#eval DupletListOffsetNestedPair testDupletList 4 -- Ожидается результат: 9
-#eval DupletListOffsetNestedPair testDupletList 5 -- Ожидается результат: 11
-#eval DupletListOffsetNestedPair testDupletList 6 -- Ожидается результат: 12
-#eval DupletListOffsetNestedPair testDupletList 7 -- Ожидается результат: 12
+#eval DupletListOffsetLinkList testDupletList 0 -- Ожидается результат: 0
+#eval DupletListOffsetLinkList testDupletList 1 -- Ожидается результат: 3
+#eval DupletListOffsetLinkList testDupletList 2 -- Ожидается результат: 5
+#eval DupletListOffsetLinkList testDupletList 3 -- Ожидается результат: 6
+#eval DupletListOffsetLinkList testDupletList 4 -- Ожидается результат: 9
+#eval DupletListOffsetLinkList testDupletList 5 -- Ожидается результат: 11
+#eval DupletListOffsetLinkList testDupletList 6 -- Ожидается результат: 12
+#eval DupletListOffsetLinkList testDupletList 7 -- Ожидается результат: 12
 
 -- Определяем трёхмерную ассоциативную сеть как последовательность кортежей длины 3
 def testTupleList : AssociativeNetworkTupleList 3 :=
@@ -118,7 +118,7 @@ def testTuplesToDupletList : AssociativeNetworkDupletList := TupleListToDupletLi
 
 -- Преобразование и обратно в трёхмерную ассоциативную сеть
 def resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
-  NestedPairListToTupleList (DupletListToNestedPairList testTuplesToDupletList)
+  LinkListListToTupleList (DupletListToLinkListList testTuplesToDupletList)
 
 -- Итоговая проверка эквивалентности ассоциативных сетей
 #eval resultTuplesNetwork.map (·.toList)

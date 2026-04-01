@@ -10,16 +10,16 @@ import AssociativeNetworkEquivalence
 
 -- Лемма о сохранении длины кортежей ассоциативной сети
 theorem TupleOfLinksDimensionPreserved {l : Nat} (t : TupleOfLinks l) :
-    (TupleOfLinksToNestedPair t).length = l := by
-  simp [TupleOfLinksToNestedPair]
+    (TupleOfLinksToLinkList t).length = l := by
+  simp [TupleOfLinksToLinkList]
 
--- Лемма о взаимном обращении функций NestedPairToTupleOfLinksOption и TupleOfLinksToNestedPair
+-- Лемма о взаимном обращении функций LinkListToTupleOfLinksOption и TupleOfLinksToLinkList
 --
--- NestedPairToTupleOfLinksInverse доказывает, что каждый кортеж TupleOfLinks без потери данных может быть преобразован в NestedPair
--- с помощью TupleOfLinksToNestedPair и обратно в TupleOfLinks с помощью NestedPairToTupleOfLinksOption.
-theorem NestedPairToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
-    NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = some t := by
-  simp [NestedPairToTupleOfLinksOption, TupleOfLinksToNestedPair]
+-- LinkListToTupleOfLinksInverse доказывает, что каждый кортеж TupleOfLinks без потери данных может быть преобразован в LinkList
+-- с помощью TupleOfLinksToLinkList и обратно в TupleOfLinks с помощью LinkListToTupleOfLinksOption.
+theorem LinkListToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
+    LinkListToTupleOfLinksOption n (TupleOfLinksToLinkList t) = some t := by
+  simp [LinkListToTupleOfLinksOption, TupleOfLinksToLinkList]
   congr 1
 
 /-
@@ -29,21 +29,21 @@ theorem NestedPairToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
 -/
 theorem TupleFunctionEquivalenceAfterTransforms {n : Nat} (anet : AssociativeNetworkTupleFunction n) :
     TupleFunctionEquivalence anet
-      (fun id => match NestedPairToTupleOfLinksOption n ((TupleFunctionToNestedPairFunction anet) id) with
+      (fun id => match LinkListToTupleOfLinksOption n ((TupleFunctionToLinkListFunction anet) id) with
         | some t => t
         | none => anet id) := by
   intro id
-  simp [TupleFunctionToNestedPairFunction]
-  rw [NestedPairToTupleOfLinksInverse]
+  simp [TupleFunctionToLinkListFunction]
+  rw [LinkListToTupleOfLinksInverse]
 
--- Лемма о сохранении длины списков NestedPair в ассоциативной сети дуплетов
-theorem NestedPairDimensionPreserved (offset : Nat) (np : NestedPair) :
-    np.length = (NestedPairToDupletList_ offset np).length := by
+-- Лемма о сохранении длины списков LinkList в ассоциативной сети дуплетов
+theorem LinkListDimensionPreserved (offset : Nat) (np : LinkList) :
+    np.length = (LinkListToDupletList_ offset np).length := by
   induction np generalizing offset with
-  | nil => simp [NestedPairToDupletList_]
+  | nil => simp [LinkListToDupletList_]
   | cons n np' ih =>
     cases np' with
-    | nil => simp [NestedPairToDupletList_]
+    | nil => simp [LinkListToDupletList_]
     | cons m np'' =>
-      simp [NestedPairToDupletList_]
+      simp [LinkListToDupletList_]
       exact ih (offset + 1)

@@ -10,7 +10,7 @@ Require Import AssociativeNetworkConversions.
 Require Import AssociativeNetworkEquivalence.
 
 (* Лемма о сохранении длины кортежей ассоциативной сети *)
-Lemma TupleOfLinksDimensionPreserved : forall {l: nat} (t: TupleOfLinks l), List.length (TupleOfLinksToNestedPair t) = l.
+Lemma TupleOfLinksDimensionPreserved : forall {l: nat} (t: TupleOfLinks l), List.length (TupleOfLinksToLinkList t) = l.
 Proof.
   intros l t.
   induction t.
@@ -19,25 +19,25 @@ Proof.
 Qed.
 
 
-(* Лемма о взаимном обращении функций NestedPairToTupleOfLinksOption и TupleOfLinksToNestedPair
+(* Лемма о взаимном обращении функций LinkListToTupleOfLinksOption и TupleOfLinksToLinkList
 
-   NestedPairToTupleOfLinksInverse доказывает, что каждый кортеж TupleOfLinks без потери данных может быть преобразован в NestedPair
-   с помощью TupleOfLinksToNestedPair и обратно в TupleOfLinks с помощью NestedPairToTupleOfLinksOption.
+   LinkListToTupleOfLinksInverse доказывает, что каждый кортеж TupleOfLinks без потери данных может быть преобразован в LinkList
+   с помощью TupleOfLinksToLinkList и обратно в TupleOfLinks с помощью LinkListToTupleOfLinksOption.
 
-   В формальном виде forall n: nat, forall t: TupleOfLinks n, NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = Some t говорит о том,
+   В формальном виде forall n: nat, forall t: TupleOfLinks n, LinkListToTupleOfLinksOption n (TupleOfLinksToLinkList t) = Some t говорит о том,
    что для всякого натурального числа n и каждого кортежа TupleOfLinks длины n,
-   мы можем преобразовать TupleOfLinks в NestedPair с помощью TupleOfLinksToNestedPair,
-   затем обратно преобразовать результат в TupleOfLinks с помощью NestedPairToTupleOfLinksOption n,
+   мы можем преобразовать TupleOfLinks в LinkList с помощью TupleOfLinksToLinkList,
+   затем обратно преобразовать результат в TupleOfLinks с помощью LinkListToTupleOfLinksOption n,
    и в итоге получить тот же кортеж TupleOfLinks, что и в начале.
 
    Это свойство очень важно, потому что оно гарантирует,
-   что эти две функции образуют обратную пару на множестве преобразуемых кортежей TupleOfLinks и NestedPair.
+   что эти две функции образуют обратную пару на множестве преобразуемых кортежей TupleOfLinks и LinkList.
    Когда вы применяете обе функции к значениям в этом множестве, вы в итоге получаете исходное значение.
    Это означает, что никакая информация не теряется при преобразованиях,
-   так что можно свободно конвертировать между TupleOfLinks и NestedPair,
+   так что можно свободно конвертировать между TupleOfLinks и LinkList,
    если это требуется в реализации или доказательствах.
 *)
-Lemma NestedPairToTupleOfLinksInverse: forall n: nat, forall t: TupleOfLinks n, NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = Some t.
+Lemma LinkListToTupleOfLinksInverse: forall n: nat, forall t: TupleOfLinks n, LinkListToTupleOfLinksOption n (TupleOfLinksToLinkList t) = Some t.
 Proof.
   intros n.
   induction t as [| h n' t' IH].
@@ -50,8 +50,8 @@ Qed.
   Теорема обёртывания и восстановления ассоциативной сети кортежей:
 
   Пусть дана ассоциативная сеть кортежей длины n, обозначенная как anetvⁿ : Link → Vⁿ.
-  Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Link → NestedPair,
-  где NestedPair = {(∅,∅) | (l, np), l ∈ Link, np ∈ NestedPair}.
+  Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Link → LinkList,
+  где LinkList = {(∅,∅) | (l, np), l ∈ Link, np ∈ LinkList}.
   Затем определим обратное отображение из ассоциативной сети вложенных упорядоченных пар обратно
   в ассоциативную сеть кортежей длины n.
 
@@ -65,22 +65,22 @@ Qed.
   ∀ anetvⁿ : Link → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
 *)
 Theorem TupleFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkTupleFunction n),
-  TupleFunctionEquivalence anet (fun id => match NestedPairToTupleOfLinksOption n ((TupleFunctionToNestedPairFunction anet) id) with
+  TupleFunctionEquivalence anet (fun id => match LinkListToTupleOfLinksOption n ((TupleFunctionToLinkListFunction anet) id) with
   | Some t => t
   | None => anet id
   end).
 Proof.
   intros n net id.
-  unfold TupleFunctionToNestedPairFunction.
+  unfold TupleFunctionToLinkListFunction.
   simpl.
-  rewrite NestedPairToTupleOfLinksInverse.
+  rewrite LinkListToTupleOfLinksInverse.
   reflexivity.
 Qed.
 
 
-(* Лемма о сохранении длины списков NestedPair в ассоциативной сети дуплетов *)
-Lemma NestedPairDimensionPreserved : forall (offset: nat) (np: NestedPair),
-  length np = length (NestedPairToDupletList_ offset np).
+(* Лемма о сохранении длины списков LinkList в ассоциативной сети дуплетов *)
+Lemma LinkListDimensionPreserved : forall (offset: nat) (np: LinkList),
+  length np = length (LinkListToDupletList_ offset np).
 Proof.
   intros offset np.
   generalize dependent offset.

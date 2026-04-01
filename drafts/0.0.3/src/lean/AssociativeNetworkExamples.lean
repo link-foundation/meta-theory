@@ -10,17 +10,17 @@ import AssociativeNetworkConversions
 -- Трёхмерная ассоциативная сеть
 def complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
   fun id => match id with
-  | 0 => ⟨[0, 0, 0], by decide⟩
-  | 1 => ⟨[1, 1, 2], by decide⟩
-  | 2 => ⟨[2, 4, 0], by decide⟩
-  | 3 => ⟨[3, 0, 5], by decide⟩
-  | 4 => ⟨[4, 1, 1], by decide⟩
-  | _ => ⟨[0, 0, 0], by decide⟩
+  | 0 => #v[0, 0, 0]
+  | 1 => #v[1, 1, 2]
+  | 2 => #v[2, 4, 0]
+  | 3 => #v[3, 0, 5]
+  | 4 => #v[4, 1, 1]
+  | _ => #v[0, 0, 0]
 
 -- Кортежи ссылок
-def exampleTuple0 : TupleOfLinks 0 := ⟨[], by decide⟩
-def exampleTuple1 : TupleOfLinks 1 := ⟨[0], by decide⟩
-def exampleTuple4 : TupleOfLinks 4 := ⟨[3, 2, 1, 0], by decide⟩
+def exampleTuple0 : TupleOfLinks 0 := #v[]
+def exampleTuple1 : TupleOfLinks 1 := #v[0]
+def exampleTuple4 : TupleOfLinks 4 := #v[3, 2, 1, 0]
 
 -- Преобразование кортежей ссылок во вложенные упорядоченные пары (списки)
 def nestedPair0 := TupleOfLinksToNestedPair exampleTuple0
@@ -92,18 +92,9 @@ def testDupletList := NestedPairListToDupletList testNestedPairList
 
 -- Вычисление преобразованной ассоциативной сети вложенных УП в ассоциативную сеть дуплетов
 #eval testDupletList
--- Ожидается результат:
--- [(121, 1), (21, 2), (1343, 2),
---  (12, 4), (23, 4),
---  (34, 5),
---  (121, 7), (21, 8), (1343, 8),
---  (12, 10), (23, 10),
---  (34, 11)]
 
 -- Вычисление преобразования ассоциативной сети вложенных УП в ассоциативную сеть дуплетов и обратно в testNestedPairList
 #eval DupletListToNestedPairList testDupletList
--- Ожидается результат:
--- [[121, 21, 1343], [12, 23], [34], [121, 21, 1343], [12, 23], [34]]
 
 -- Вычисление смещения вложенных УП в ассоциативной сети дуплетов по их порядковому номеру
 #eval DupletListOffsetNestedPair testDupletList 0 -- Ожидается результат: 0
@@ -117,23 +108,15 @@ def testDupletList := NestedPairListToDupletList testNestedPairList
 
 -- Определяем трёхмерную ассоциативную сеть как последовательность кортежей длины 3
 def testTupleList : AssociativeNetworkTupleList 3 :=
-  [⟨[0, 0, 0], by decide⟩, ⟨[1, 1, 2], by decide⟩, ⟨[2, 4, 0], by decide⟩,
-   ⟨[3, 0, 5], by decide⟩, ⟨[4, 1, 1], by decide⟩, ⟨[0, 0, 0], by decide⟩]
+  [#v[0, 0, 0], #v[1, 1, 2], #v[2, 4, 0], #v[3, 0, 5], #v[4, 1, 1], #v[0, 0, 0]]
 
 -- Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП
 def testTuplesToDupletList : AssociativeNetworkDupletList := TupleListToDupletList testTupleList
 
--- Вычисление трёхмерной ассоциативной сети преобразованной в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП
+-- Вычисление трёхмерной ассоциативной сети преобразованной в ассоциативную сеть дуплетов
 #eval testTuplesToDupletList
--- Ожидается результат:
--- [(0, 1), (0, 2), (0, 2),
---  (1, 4), (1, 5), (2, 5),
---  (2, 7), (4, 8), (0, 8),
---  (3, 10), (0, 11), (5, 11),
---  (4, 13), (1, 14), (1, 14),
---  (0, 16), (0, 17), (0, 17)]
 
--- Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП и обратно в трёхмерную ассоциативную сеть
+-- Преобразование и обратно в трёхмерную ассоциативную сеть
 def resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
   NestedPairListToTupleList (DupletListToNestedPairList testTuplesToDupletList)
 

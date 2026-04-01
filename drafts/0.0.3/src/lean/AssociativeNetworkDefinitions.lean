@@ -17,15 +17,6 @@ abbrev TupleOfLinks (n : Nat) := Vector Link n
 -- Значение TupleOfLinks по умолчанию
 def TupleOfLinksDefault (n : Nat) : TupleOfLinks n := Vector.replicate n LinkDefault
 
--- Множество всех ассоциаций: Association = Link × TupleOfLinks
-abbrev Association (n : Nat) := Link × TupleOfLinks n
-
--- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → TupleOfLinks}
-abbrev AssociativeNetworkTupleFunction (n : Nat) := Link → TupleOfLinks n
-
--- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности
-abbrev AssociativeNetworkTupleList (n : Nat) := List (TupleOfLinks n)
-
 -- Вложенные упорядоченные пары
 abbrev NestedPair := List Link
 
@@ -34,6 +25,15 @@ abbrev AssociativeNetworkNestedPairFunction := Link → NestedPair
 
 -- Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар
 abbrev AssociativeNetworkNestedPairList := List NestedPair
+
+-- Множество всех ассоциаций: Association = Link × TupleOfLinks
+abbrev Association (n : Nat) := Link × TupleOfLinks n
+
+-- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → TupleOfLinks}
+abbrev AssociativeNetworkTupleFunction (n : Nat) := Link → TupleOfLinks n
+
+-- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности
+abbrev AssociativeNetworkTupleList (n : Nat) := List (TupleOfLinks n)
 
 -- Дуплет ссылок
 abbrev Duplet := Link × Link

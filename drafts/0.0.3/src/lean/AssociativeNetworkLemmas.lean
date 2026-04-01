@@ -11,7 +11,7 @@ import AssociativeNetworkEquivalence
 -- Лемма о сохранении длины кортежей ассоциативной сети
 theorem TupleOfLinksDimensionPreserved {l : Nat} (t : TupleOfLinks l) :
     (TupleOfLinksToNestedPair t).length = l := by
-  simp [TupleOfLinksToNestedPair, Vector.toList_length]
+  simp [TupleOfLinksToNestedPair]
 
 -- Лемма о взаимном обращении функций NestedPairToTupleOfLinksOption и TupleOfLinksToNestedPair
 --
@@ -19,23 +19,10 @@ theorem TupleOfLinksDimensionPreserved {l : Nat} (t : TupleOfLinks l) :
 -- с помощью TupleOfLinksToNestedPair и обратно в TupleOfLinks с помощью NestedPairToTupleOfLinksOption.
 theorem NestedPairToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
     NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = some t := by
-  simp [NestedPairToTupleOfLinksOption, TupleOfLinksToNestedPair, Vector.toList_length]
+  simp [NestedPairToTupleOfLinksOption, TupleOfLinksToNestedPair]
 
 /-
   Теорема обёртывания и восстановления ассоциативной сети кортежей:
-
-  Пусть дана ассоциативная сеть кортежей длины n, обозначенная как anetvⁿ : Link → Vⁿ.
-  Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Link → NestedPair,
-  где NestedPair = {(∅,∅) | (l, np), l ∈ Link, np ∈ NestedPair}.
-  Затем определим обратное отображение из ассоциативной сети вложенных упорядоченных пар обратно
-  в ассоциативную сеть кортежей длины n.
-
-  Теорема утверждает:
-
-  Для любой ассоциативной сети кортежей длины n, anetvⁿ, применение операции преобразования
-  в ассоциативную сеть вложенных упорядоченных пар и обратное преобразование обратно
-  в ассоциативную сеть кортежей длины n обеспечивает восстановление исходной сети anetvⁿ.
-  Иначе говоря:
 
   ∀ anetvⁿ : Link → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
 -/

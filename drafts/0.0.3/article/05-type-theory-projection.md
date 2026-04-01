@@ -29,20 +29,20 @@ Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
 
-(* Множество ссылок на кортежи: L ⊆ ℕ₀ *)
+(* Ссылка (Reference) — уникальный идентификатор кортежа: R ⊆ ℕ₀ *)
 Definition Reference := nat.
 
 (* Значение Reference по умолчанию: ноль *)
 Definition ReferenceDefault : Reference := 0.
 
-(* Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfReferences ⊆ Lⁿ *)
+(* Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfReferences ⊆ Rⁿ *)
 Definition TupleOfReferences (n : nat) := t Reference n.
 
 (* Значение TupleOfReferences по умолчанию *)
 Definition TupleOfReferencesDefault (n : nat) : TupleOfReferences n := Vector.const ReferenceDefault n.
 
-(* Множество всех ассоциаций: Association = Reference × TupleOfReferences *)
-Definition Association (n : nat) := prod Reference (TupleOfReferences n).
+(* Множество всех связей: Link = Reference × TupleOfReferences *)
+Definition Link (n : nat) := prod Reference (TupleOfReferences n).
 
 (* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Reference → TupleOfReferences} *)
 Definition AssociativeNetworkTupleFunction (n : nat) := Reference -> TupleOfReferences n.
@@ -77,13 +77,13 @@ Definition AssociativeNetworkDupletList := list Duplet.
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/AssociativeNetworkDefinitions.lean)
 
 ```lean
--- Множество ссылок на кортежи: L ⊆ ℕ₀
+-- Ссылка (Reference) — уникальный идентификатор кортежа: R ⊆ ℕ₀
 abbrev Reference := Nat
 
 -- Значение Reference по умолчанию: ноль
 def ReferenceDefault : Reference := 0
 
--- Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfReferences ⊆ Lⁿ
+-- Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfReferences ⊆ Rⁿ
 abbrev TupleOfReferences (n : Nat) := Vector Reference n
 
 -- Значение TupleOfReferences по умолчанию
@@ -98,8 +98,8 @@ abbrev AssociativeNetworkReferenceListFunction := Reference → ReferenceList
 -- Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар
 abbrev AssociativeNetworkReferenceListList := List ReferenceList
 
--- Множество всех ассоциаций: Association = Reference × TupleOfReferences
-abbrev Association (n : Nat) := Reference × TupleOfReferences n
+-- Множество всех связей: Link = Reference × TupleOfReferences
+abbrev Link (n : Nat) := Reference × TupleOfReferences n
 
 -- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Reference → TupleOfReferences}
 abbrev AssociativeNetworkTupleFunction (n : Nat) := Reference → TupleOfReferences n

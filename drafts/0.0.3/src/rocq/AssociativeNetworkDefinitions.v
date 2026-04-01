@@ -6,21 +6,21 @@ Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
 
-(* Ссылка (Reference) — уникальный идентификатор кортежа: L ⊆ ℕ₀ *)
+(* Ссылка (Reference) — уникальный идентификатор кортежа: R ⊆ ℕ₀ *)
 Definition Reference := nat.
 
 (* Значение Reference по умолчанию: ноль *)
 Definition ReferenceDefault : Reference := 0.
 
-(* Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfReferences ⊆ Lⁿ *)
+(* Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfReferences ⊆ Rⁿ *)
 Definition TupleOfReferences (n : nat) := t Reference n.
 
 (* Значение TupleOfReferences по умолчанию *)
 Definition TupleOfReferencesDefault (n : nat) : TupleOfReferences n := Vector.const ReferenceDefault n.
 
-(* Множество всех ассоциаций: Association = Reference × TupleOfReferences
-   Association (связь) — это пара из ссылки и кортежа ссылок *)
-Definition Association (n : nat) := prod Reference (TupleOfReferences n).
+(* Множество всех связей: Link = Reference × TupleOfReferences
+   Link (связь) — это пара из ссылки и кортежа ссылок *)
+Definition Link (n : nat) := prod Reference (TupleOfReferences n).
 
 (* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Reference → TupleOfReferences} *)
 Definition AssociativeNetworkTupleFunction (n : nat) := Reference -> TupleOfReferences n.
@@ -28,7 +28,7 @@ Definition AssociativeNetworkTupleFunction (n : nat) := Reference -> TupleOfRefe
 (* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
 Definition AssociativeNetworkTupleList (n : nat) := list (TupleOfReferences n).
 
-(* Список ссылок (ранее NestedPair — вложенные упорядоченные пары): ReferenceList ⊆ List(L) *)
+(* Список ссылок (ранее NestedPair — вложенные упорядоченные пары): ReferenceList ⊆ List(R) *)
 Definition ReferenceList := list Reference.
 
 (* Ассоциативная сеть списков ссылок: anetl : Reference → ReferenceList *)

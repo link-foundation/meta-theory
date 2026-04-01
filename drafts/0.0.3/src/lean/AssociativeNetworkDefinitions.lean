@@ -5,19 +5,19 @@
   Lean 4 перевод AssociativeNetworkDefinitions.v (Rocq).
 -/
 
--- Ссылка (Reference) — уникальный идентификатор кортежа: L ⊆ ℕ₀
+-- Ссылка (Reference) — уникальный идентификатор кортежа: R ⊆ ℕ₀
 abbrev Reference := Nat
 
 -- Значение Reference по умолчанию: ноль
 def ReferenceDefault : Reference := 0
 
--- Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfReferences ⊆ Lⁿ
+-- Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfReferences ⊆ Rⁿ
 abbrev TupleOfReferences (n : Nat) := Vector Reference n
 
 -- Значение TupleOfReferences по умолчанию
 def TupleOfReferencesDefault (n : Nat) : TupleOfReferences n := Vector.replicate n ReferenceDefault
 
--- Список ссылок (ранее NestedPair — вложенные упорядоченные пары): ReferenceList ⊆ List(L)
+-- Список ссылок (ранее NestedPair — вложенные упорядоченные пары): ReferenceList ⊆ List(R)
 abbrev ReferenceList := List Reference
 
 -- Ассоциативная сеть списков ссылок: anetl : Reference → ReferenceList
@@ -26,8 +26,8 @@ abbrev AssociativeNetworkReferenceListFunction := Reference → ReferenceList
 -- Ассоциативная сеть списков ссылок в виде последовательности списков ссылок
 abbrev AssociativeNetworkReferenceListList := List ReferenceList
 
--- Множество всех ассоциаций: Association = Reference × TupleOfReferences
-abbrev Association (n : Nat) := Reference × TupleOfReferences n
+-- Множество всех связей: Link = Reference × TupleOfReferences
+abbrev Link (n : Nat) := Reference × TupleOfReferences n
 
 -- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Reference → TupleOfReferences}
 abbrev AssociativeNetworkTupleFunction (n : Nat) := Reference → TupleOfReferences n

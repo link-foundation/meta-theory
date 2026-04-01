@@ -1,12 +1,12 @@
 /-
-  AssociativeNetworkLemmas.lean
+  NetworkLemmas.lean
 
   Леммы и теоремы о свойствах преобразований сетей.
-  Lean 4 перевод AssociativeNetworkLemmas.v (Rocq).
+  Lean 4 перевод NetworkLemmas.v (Rocq).
 -/
-import AssociativeNetworkDefinitions
-import AssociativeNetworkConversions
-import AssociativeNetworkEquivalence
+import NetworkDefinitions
+import NetworkConversions
+import NetworkEquivalence
 
 -- Лемма о сохранении длины кортежей сети
 theorem TupleOfReferencesDimensionPreserved {l : Nat} (t : TupleOfReferences l) :
@@ -57,7 +57,7 @@ theorem ReferenceListToTupleOfReferencesInverse (n : Nat) (t : TupleOfReferences
 
   ∀ Nⁿ : Reference → Tⁿ, обратно(вперёд(Nⁿ)) = Nⁿ.
 -/
-theorem TupleFunctionEquivalenceAfterTransforms {n : Nat} (anet : AssociativeNetworkTupleFunction n) :
+theorem TupleFunctionEquivalenceAfterTransforms {n : Nat} (anet : NetworkTupleFunction n) :
     TupleFunctionEquivalence anet
       (fun id => match ReferenceListToTupleOfReferencesOption n ((TupleFunctionToReferenceListFunction anet) id) with
         | some t => t

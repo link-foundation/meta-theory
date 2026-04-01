@@ -47,8 +47,8 @@
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SequenceDefinitions.v)
 
 ```rocq
-Require Import AssociativeNetworkDefinitions.
-Require Import AssociativeNetworkConversions.
+Require Import NetworkDefinitions.
+Require Import NetworkConversions.
 
 (* Последовательность — это ссылка на корень дерева в сети *)
 Definition LinkSequence := Reference.
@@ -60,14 +60,14 @@ Inductive LinkTree : Type :=
 
 (* Запись дерева в сеть дуплетов *)
 Fixpoint TreeToDupletList_ (t : LinkTree) (offset : nat)
-    : AssociativeNetworkDupletList * nat := ...
+    : NetworkDupletList * nat := ...
 
 (* Получение ссылки на корень (= последовательность) *)
 Definition TreeToSequence (t : LinkTree) (offset : nat) : LinkSequence := ...
 
 (* Полное преобразование: список → сеть дуплетов + ссылка на корень *)
 Definition ListToSequence (l : list Reference) (offset : nat)
-    : option (LinkSequence * AssociativeNetworkDupletList) := ...
+    : option (LinkSequence * NetworkDupletList) := ...
 ```
 
 ##### Lean
@@ -75,8 +75,8 @@ Definition ListToSequence (l : list Reference) (offset : nat)
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/SequenceDefinitions.lean)
 
 ```lean
-import AssociativeNetworkDefinitions
-import AssociativeNetworkConversions
+import NetworkDefinitions
+import NetworkConversions
 
 -- Последовательность — это ссылка на корень дерева в сети
 abbrev LinkSequence := Reference
@@ -87,14 +87,14 @@ inductive LinkTree where
   | Node : LinkTree → LinkTree → LinkTree
 
 -- Запись дерева в сеть дуплетов
-def TreeToDupletList_ : LinkTree → Nat → AssociativeNetworkDupletList × Nat
+def TreeToDupletList_ : LinkTree → Nat → NetworkDupletList × Nat
 
 -- Получение ссылки на корень (= последовательность)
 def TreeToSequence (t : LinkTree) (offset : Nat) : LinkSequence
 
 -- Полное преобразование: список → сеть дуплетов + ссылка на корень
 def ListToSequence (l : List Reference) (offset : Nat)
-    : Option (LinkSequence × AssociativeNetworkDupletList)
+    : Option (LinkSequence × NetworkDupletList)
 ```
 
 #### Эквивалентность множеств и последовательностей
@@ -146,8 +146,8 @@ theorem set_sequence_equivalence (l : List Nat) :
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SetDefinitions.v)
 
 ```rocq
-Require Import AssociativeNetworkDefinitions.
-Require Import AssociativeNetworkConversions.
+Require Import NetworkDefinitions.
+Require Import NetworkConversions.
 Require Import SequenceDefinitions.
 Require Import SetSequenceEquivalence.
 
@@ -160,7 +160,7 @@ Definition IsValidSetTree (s : LinkTree) : Prop :=
 
 (* Преобразование списка в множество: ссылка на корень + сеть дуплетов *)
 Definition ListToSet (l : list Reference) (offset : nat)
-    : option (LinkSet * AssociativeNetworkDupletList) :=
+    : option (LinkSet * NetworkDupletList) :=
   let sorted := toOrderedUnique l in
   match ListToBalancedTree sorted with
   | None => None
@@ -173,8 +173,8 @@ Definition ListToSet (l : list Reference) (offset : nat)
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/SetDefinitions.lean)
 
 ```lean
-import AssociativeNetworkDefinitions
-import AssociativeNetworkConversions
+import NetworkDefinitions
+import NetworkConversions
 import SequenceDefinitions
 import SetSequenceEquivalence
 
@@ -187,7 +187,7 @@ def IsValidSetTree (s : LinkTree) : Prop :=
 
 -- Преобразование списка в множество: ссылка на корень + сеть дуплетов
 def ListToSet (l : List Reference) (offset : Nat)
-    : Option (LinkSet × AssociativeNetworkDupletList)
+    : Option (LinkSet × NetworkDupletList)
 ```
 
 #### Значение результатов

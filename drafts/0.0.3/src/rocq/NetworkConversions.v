@@ -5,7 +5,7 @@ Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
-Require Import AssociativeNetworkDefinitions.
+Require Import NetworkDefinitions.
 
 (* Функция преобразования TupleOfReferences в ReferenceList *)
 Fixpoint TupleOfReferencesToReferenceList {n : nat} (v : TupleOfReferences n) : ReferenceList :=
@@ -14,12 +14,12 @@ Fixpoint TupleOfReferencesToReferenceList {n : nat} (v : TupleOfReferences n) : 
   | Vector.cons _ h _ t => List.cons h (TupleOfReferencesToReferenceList t)
   end.
 
-(* Функция преобразования AssociativeNetworkTupleFunction в AssociativeNetworkReferenceListFunction *)
-Definition TupleFunctionToReferenceListFunction {n : nat} (a: AssociativeNetworkTupleFunction n) : AssociativeNetworkReferenceListFunction :=
+(* Функция преобразования NetworkTupleFunction в NetworkReferenceListFunction *)
+Definition TupleFunctionToReferenceListFunction {n : nat} (a: NetworkTupleFunction n) : NetworkReferenceListFunction :=
   fun id => TupleOfReferencesToReferenceList (a id).
 
-(* Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkReferenceListList *)
-Definition TupleListToReferenceListList {n: nat} (net: AssociativeNetworkTupleList n) : AssociativeNetworkReferenceListList :=
+(* Функция преобразования NetworkTupleList в NetworkReferenceListList *)
+Definition TupleListToReferenceListList {n: nat} (net: NetworkTupleList n) : NetworkReferenceListList :=
   map TupleOfReferencesToReferenceList net.
 
 (* Функция преобразования ReferenceList в TupleOfReferences, возвращающая option *)
@@ -41,34 +41,34 @@ Definition ReferenceListToTupleOfReferences (n: nat) (p: ReferenceList) : TupleO
   | Some t => t
   end.
 
-(* Функция преобразования AssociativeNetworkReferenceListFunction в AssociativeNetworkTupleFunction *)
-Definition ReferenceListFunctionToTupleFunction { n: nat } (net: AssociativeNetworkReferenceListFunction) : AssociativeNetworkTupleFunction n :=
+(* Функция преобразования NetworkReferenceListFunction в NetworkTupleFunction *)
+Definition ReferenceListFunctionToTupleFunction { n: nat } (net: NetworkReferenceListFunction) : NetworkTupleFunction n :=
   fun id => match ReferenceListToTupleOfReferencesOption n (net id) with
   | Some t => t
   | None => TupleOfReferencesDefault n
   end.
 
-(* Функция преобразования AssociativeNetworkReferenceListList в AssociativeNetworkTupleList *)
-Definition ReferenceListListToTupleList {n: nat} (net : AssociativeNetworkReferenceListList) : AssociativeNetworkTupleList n :=
+(* Функция преобразования NetworkReferenceListList в NetworkTupleList *)
+Definition ReferenceListListToTupleList {n: nat} (net : NetworkReferenceListList) : NetworkTupleList n :=
   map (ReferenceListToTupleOfReferences n) net.
 
-(* Функция преобразования ReferenceList в AssociativeNetworkDupletList со смещением индексации *)
-Fixpoint ReferenceListToDupletList_ (offset: nat) (np: ReferenceList) : AssociativeNetworkDupletList :=
+(* Функция преобразования ReferenceList в NetworkDupletList со смещением индексации *)
+Fixpoint ReferenceListToDupletList_ (offset: nat) (np: ReferenceList) : NetworkDupletList :=
   match np with
   | nil => nil
   | cons h nil => cons (h, offset) nil
   | cons h t => cons (h, S offset) (ReferenceListToDupletList_ (S offset) t)
   end.
 
-(* Функция преобразования ReferenceList в AssociativeNetworkDupletList *)
-Definition ReferenceListToDupletList (np: ReferenceList) : AssociativeNetworkDupletList := ReferenceListToDupletList_ 0 np.
+(* Функция преобразования ReferenceList в NetworkDupletList *)
+Definition ReferenceListToDupletList (np: ReferenceList) : NetworkDupletList := ReferenceListToDupletList_ 0 np.
 
-(* Функция добавления ReferenceList в хвост AssociativeNetworkDupletList *)
-Definition AddReferenceListToDupletList (anet: AssociativeNetworkDupletList) (np: ReferenceList) : AssociativeNetworkDupletList :=
+(* Функция добавления ReferenceList в хвост NetworkDupletList *)
+Definition AddReferenceListToDupletList (anet: NetworkDupletList) (np: ReferenceList) : NetworkDupletList :=
   app anet (ReferenceListToDupletList_ (length anet) np).
 
 (* Функция отрезает голову N² и возвращает хвост начиная с offset *)
-Fixpoint DupletListBehead (anet: AssociativeNetworkDupletList) (offset : nat) : AssociativeNetworkDupletList :=
+Fixpoint DupletListBehead (anet: NetworkDupletList) (offset : nat) : NetworkDupletList :=
   match offset with
   | 0 => anet
   | S n' =>
@@ -78,8 +78,8 @@ Fixpoint DupletListBehead (anet: AssociativeNetworkDupletList) (offset : nat) : 
   end
   end.
 
-(* Функция преобразования AssociativeNetworkDupletList в ReferenceList с индексацией в начале AssociativeNetworkDupletList начиная с offset *)
-Fixpoint DupletListToReferenceList_ (anet: AssociativeNetworkDupletList) (offset: nat) (index: nat): ReferenceList :=
+(* Функция преобразования NetworkDupletList в ReferenceList с индексацией в начале NetworkDupletList начиная с offset *)
+Fixpoint DupletListToReferenceList_ (anet: NetworkDupletList) (offset: nat) (index: nat): ReferenceList :=
   match anet with
   | nil => nil
   | cons (x, next_index) tail_anet =>
@@ -89,12 +89,12 @@ Fixpoint DupletListToReferenceList_ (anet: AssociativeNetworkDupletList) (offset
   DupletListToReferenceList_ tail_anet (S offset) index
   end.
 
-(* Функция чтения ReferenceList из AssociativeNetworkDupletList по индексу дуплета *)
-Definition DupletListReadReferenceList (anet: AssociativeNetworkDupletList) (index: nat) : ReferenceList :=
+(* Функция чтения ReferenceList из NetworkDupletList по индексу дуплета *)
+Definition DupletListReadReferenceList (anet: NetworkDupletList) (index: nat) : ReferenceList :=
   DupletListToReferenceList_ anet 0 index.
 
-(* Функция преобразования AssociativeNetworkDupletList в ReferenceList начиная с головы списка сети *)
-Definition DupletListToReferenceList (anet: AssociativeNetworkDupletList) : ReferenceList := DupletListReadReferenceList anet 0.
+(* Функция преобразования NetworkDupletList в ReferenceList начиная с головы списка сети *)
+Definition DupletListToReferenceList (anet: NetworkDupletList) : ReferenceList := DupletListReadReferenceList anet 0.
 
 (*
   Теперь всё готово для преобразования сети вложенных упорядоченных пар N^{list} : Reference → ReferenceList
@@ -105,23 +105,23 @@ Definition DupletListToReferenceList (anet: AssociativeNetworkDupletList) : Refe
   сети дуплетов, которая возвращает вложенную упорядоченную пару по её ссылке.
 *)
 
-(* Функция добавления AssociativeNetworkReferenceListList в AssociativeNetworkDupletList *)
-Fixpoint AddReferenceListListToDupletList (anetd: AssociativeNetworkDupletList) (anetl: AssociativeNetworkReferenceListList) : AssociativeNetworkDupletList :=
+(* Функция добавления NetworkReferenceListList в NetworkDupletList *)
+Fixpoint AddReferenceListListToDupletList (anetd: NetworkDupletList) (anetl: NetworkReferenceListList) : NetworkDupletList :=
   match anetl with
   | nil => anetd
   | cons h t => AddReferenceListListToDupletList (AddReferenceListToDupletList anetd h) t
   end.
 
-(* Функция преобразования AssociativeNetworkReferenceListList в AssociativeNetworkDupletList *)
-Definition ReferenceListListToDupletList (anetl: AssociativeNetworkReferenceListList) : AssociativeNetworkDupletList :=
+(* Функция преобразования NetworkReferenceListList в NetworkDupletList *)
+Definition ReferenceListListToDupletList (anetl: NetworkReferenceListList) : NetworkDupletList :=
   match anetl with
   | nil => nil
   | cons h t => AddReferenceListListToDupletList (ReferenceListToDupletList h) t
   end.
 
-(* Функция поиска ReferenceList в хвосте AssociativeNetworkDupletList начинающемуся с offset по её порядковому номеру.
+(* Функция поиска ReferenceList в хвосте NetworkDupletList начинающемуся с offset по её порядковому номеру.
    Возвращает offset ReferenceList. *)
-Fixpoint DupletListOffsetReferenceList_ (anet: AssociativeNetworkDupletList) (offset: nat) (index: nat) : nat :=
+Fixpoint DupletListOffsetReferenceList_ (anet: NetworkDupletList) (offset: nat) (index: nat) : nat :=
   match anet with
   | nil => offset + (length anet)
   | cons (_, next_index) tail_anet =>
@@ -135,12 +135,12 @@ Fixpoint DupletListOffsetReferenceList_ (anet: AssociativeNetworkDupletList) (of
   end
   end.
 
-(* Функция поиска ReferenceList в AssociativeNetworkDupletList по её порядковому номеру. Возвращает offset ReferenceList. *)
-Definition DupletListOffsetReferenceList (anet: AssociativeNetworkDupletList) (index: nat) : nat :=
+(* Функция поиска ReferenceList в NetworkDupletList по её порядковому номеру. Возвращает offset ReferenceList. *)
+Definition DupletListOffsetReferenceList (anet: NetworkDupletList) (index: nat) : nat :=
   DupletListOffsetReferenceList_ anet 0 index.
 
-(* Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkDupletList *)
-Definition TupleListToDupletList {n : nat} (anetv: AssociativeNetworkTupleList n) : AssociativeNetworkDupletList :=
+(* Функция преобразования NetworkTupleList в NetworkDupletList *)
+Definition TupleListToDupletList {n : nat} (anetv: NetworkTupleList n) : NetworkDupletList :=
   ReferenceListListToDupletList (TupleListToReferenceListList anetv).
 
 (*
@@ -152,8 +152,8 @@ Definition TupleListToDupletList {n : nat} (anetv: AssociativeNetworkTupleList n
   сети дуплетов, которая возвращает смещение вложенной УП по ссылке на неё.
 *)
 
-(* Функция отрезает первую ReferenceList из AssociativeNetworkDupletList и возвращает хвост *)
-Fixpoint DupletListBeheadReferenceList (anet: AssociativeNetworkDupletList) (offset: nat) : AssociativeNetworkDupletList :=
+(* Функция отрезает первую ReferenceList из NetworkDupletList и возвращает хвост *)
+Fixpoint DupletListBeheadReferenceList (anet: NetworkDupletList) (offset: nat) : NetworkDupletList :=
   match anet with
   | nil => nil
   | cons (_, next_index) tail_anet =>
@@ -163,8 +163,8 @@ Fixpoint DupletListBeheadReferenceList (anet: AssociativeNetworkDupletList) (off
   DupletListBeheadReferenceList tail_anet (S offset)
   end.
 
-(* Функция преобразования ReferenceList и AssociativeNetworkDupletList со смещения offset в AssociativeNetworkReferenceListList *)
-Fixpoint DupletListToReferenceListList_ (anetd: AssociativeNetworkDupletList) (np: ReferenceList) (offset: nat) : AssociativeNetworkReferenceListList :=
+(* Функция преобразования ReferenceList и NetworkDupletList со смещения offset в NetworkReferenceListList *)
+Fixpoint DupletListToReferenceListList_ (anetd: NetworkDupletList) (np: ReferenceList) (offset: nat) : NetworkReferenceListList :=
   match anetd with
   | nil => nil (* отбрасываем ReferenceList даже если она недостроена *)
   | cons (x, next_index) tail_anet =>
@@ -174,6 +174,6 @@ Fixpoint DupletListToReferenceListList_ (anetd: AssociativeNetworkDupletList) (n
   DupletListToReferenceListList_ tail_anet (app np (cons x nil)) (S offset)
   end.
 
-(* Функция преобразования AssociativeNetworkDupletList в AssociativeNetworkReferenceListList *)
-Definition DupletListToReferenceListList (anetd: AssociativeNetworkDupletList) : AssociativeNetworkReferenceListList :=
+(* Функция преобразования NetworkDupletList в NetworkReferenceListList *)
+Definition DupletListToReferenceListList (anetd: NetworkDupletList) : NetworkReferenceListList :=
   DupletListToReferenceListList_ anetd nil ReferenceDefault.

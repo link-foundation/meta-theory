@@ -23,19 +23,19 @@ Definition TupleOfReferencesDefault (n : nat) : TupleOfReferences n := Vector.co
 Definition Link (n : nat) := prod Reference (TupleOfReferences n).
 
 (* Сеть кортежей длины n (или n-мерная сеть) из семейства функций {Nⁿ : Reference → TupleOfReferences} *)
-Definition AssociativeNetworkTupleFunction (n : nat) := Reference -> TupleOfReferences n.
+Definition NetworkTupleFunction (n : nat) := Reference -> TupleOfReferences n.
 
 (* Сеть кортежей длины n (или n-мерная сеть) в виде последовательности *)
-Definition AssociativeNetworkTupleList (n : nat) := list (TupleOfReferences n).
+Definition NetworkTupleList (n : nat) := list (TupleOfReferences n).
 
 (* Список ссылок: ReferenceList ⊆ List(R) *)
 Definition ReferenceList := list Reference.
 
 (* Сеть списков ссылок: N^{list} : Reference → ReferenceList *)
-Definition AssociativeNetworkReferenceListFunction := Reference -> ReferenceList.
+Definition NetworkReferenceListFunction := Reference -> ReferenceList.
 
 (* Сеть списков ссылок в виде последовательности списков ссылок *)
-Definition AssociativeNetworkReferenceListList := list ReferenceList.
+Definition NetworkReferenceListList := list ReferenceList.
 
 (* Дуплет ссылок: упорядоченная пара (Reference, Reference).
    В нотации связей (https://github.com/link-foundation/links-notation):
@@ -46,7 +46,7 @@ Definition Duplet := prod Reference Reference.
 Definition DupletDefault : Duplet := (ReferenceDefault, ReferenceDefault).
 
 (* Сеть дуплетов (или двумерная сеть): N² : Reference → Reference² *)
-Definition AssociativeNetworkDupletFunction := Reference -> Duplet.
+Definition NetworkDupletFunction := Reference -> Duplet.
 
 (* Сеть дуплетов (или двумерная сеть) в виде последовательности дуплетов *)
-Definition AssociativeNetworkDupletList := list Duplet.
+Definition NetworkDupletList := list Duplet.

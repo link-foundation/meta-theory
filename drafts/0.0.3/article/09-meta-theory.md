@@ -26,7 +26,7 @@
 
 **Уровень 3 (мета-определения через множества):**
 
-> $\displaystyle MetaReference := Reference, \quad MetaDuplet := MetaReference \times MetaReference, \quad MetaAssociativeNetwork : MetaReference \to MetaDuplet$
+> $\displaystyle MetaReference := Reference, \quad MetaDuplet := MetaReference \times MetaReference, \quad MetaNetwork : MetaReference \to MetaDuplet$
 
 Мета-ссылка — это элемент множества, хранимого в сети. Мета-дуплет — пара мета-ссылок. Мета-сеть — функция из мета-ссылок в мета-дуплеты.
 
@@ -39,7 +39,7 @@
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/MetaDefinitions.v)
 
 ```rocq
-Require Import AssociativeNetworkDefinitions.
+Require Import NetworkDefinitions.
 Require Import SequenceDefinitions.
 Require Import SetDefinitions.
 Require Import SetSequenceEquivalence.
@@ -54,21 +54,21 @@ Definition MetaReferenceSpace := LinkSet.
 Definition MetaDuplet := prod MetaReference MetaReference.
 
 (* Мета-сеть *)
-Definition MetaAssociativeNetwork := MetaReference -> MetaDuplet.
+Definition MetaNetwork := MetaReference -> MetaDuplet.
 
 (* Мета-сеть в виде последовательности мета-дуплетов *)
-Definition MetaAssociativeNetworkList := list MetaDuplet.
+Definition MetaNetworkList := list MetaDuplet.
 
 (* Создание мета-пространства ссылок в сети *)
 Definition MakeMetaReferenceSpace (size : nat) (offset : nat)
-    : option (MetaReferenceSpace * AssociativeNetworkDupletList) :=
+    : option (MetaReferenceSpace * NetworkDupletList) :=
   ListToSet (makeMetaReferenceSpace_ size) offset.
 
 (* ОСНОВНАЯ ТЕОРЕМА МЕТА-ТЕОРИИ:
    Любая мета-сеть может быть представлена
    как обычная сеть дуплетов *)
 Theorem meta_network_is_duplet_network :
-  forall (net : MetaAssociativeNetworkList),
+  forall (net : MetaNetworkList),
     MetaNetworkToDupletList net = net.
 
 (* Мета-пространство ссылок содержит упорядоченные уникальные элементы *)
@@ -81,7 +81,7 @@ Theorem meta_reference_space_elements_valid : forall (size : nat),
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/MetaDefinitions.lean)
 
 ```lean
-import AssociativeNetworkDefinitions
+import NetworkDefinitions
 import SequenceDefinitions
 import SetDefinitions
 import SetSequenceEquivalence
@@ -96,16 +96,16 @@ abbrev MetaReferenceSpace := LinkSet
 abbrev MetaDuplet := MetaReference × MetaReference
 
 -- Мета-сеть
-abbrev MetaAssociativeNetwork := MetaReference → MetaDuplet
+abbrev MetaNetwork := MetaReference → MetaDuplet
 
 -- Мета-сеть в виде последовательности мета-дуплетов
-abbrev MetaAssociativeNetworkList := List MetaDuplet
+abbrev MetaNetworkList := List MetaDuplet
 
 -- ОСНОВНАЯ ТЕОРЕМА МЕТА-ТЕОРИИ:
 -- Любая мета-сеть может быть представлена
 -- как обычная сеть дуплетов
 theorem meta_network_is_duplet_network :
-    ∀ (net : MetaAssociativeNetworkList),
+    ∀ (net : MetaNetworkList),
       MetaNetworkToDupletList net = net
 
 -- Мета-пространство ссылок содержит упорядоченные уникальные элементы

@@ -1,14 +1,14 @@
 /-
-  AssociativeNetworkExamples.lean
+  NetworkExamples.lean
 
   Практические примеры и тесты преобразований сетей.
-  Lean 4 перевод AssociativeNetworkExamples.v (Rocq).
+  Lean 4 перевод NetworkExamples.v (Rocq).
 -/
-import AssociativeNetworkDefinitions
-import AssociativeNetworkConversions
+import NetworkDefinitions
+import NetworkConversions
 
 -- Трёхмерная сеть
-def complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
+def complexExampleNetwork : NetworkTupleFunction 3 :=
   fun id => match id with
   | 0 => #v[0, 0, 0]
   | 1 => #v[1, 1, 2]
@@ -40,7 +40,7 @@ def nestedPair4 := TupleOfReferencesToReferenceList exampleTuple4
 #eval (TupleFunctionToReferenceListFunction complexExampleNetwork) 5 -- Ожидается результат: [0, 0, 0]
 
 -- Сеть вложенных упорядоченных пар
-def testPairsNetwork : AssociativeNetworkReferenceListFunction :=
+def testPairsNetwork : NetworkReferenceListFunction :=
   fun id => match id with
   | 0 => [5, 0, 8]
   | 1 => [7, 1, 2]
@@ -50,7 +50,7 @@ def testPairsNetwork : AssociativeNetworkReferenceListFunction :=
   | _ => [0, 0, 0]
 
 -- Преобразованная сеть вложенных УП в трёхмерную сеть (размерность должна совпадать)
-def testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
+def testTuplesNetwork : NetworkTupleFunction 3 :=
   ReferenceListFunctionToTupleFunction testPairsNetwork
 
 -- Вычисление значений преобразованной функции сети вложенных УП
@@ -84,7 +84,7 @@ def testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
 -- Ожидается результат: [12, 23, 34]
 
 -- Определяем сеть вложенных УП
-def testReferenceListList : AssociativeNetworkReferenceListList :=
+def testReferenceListList : NetworkReferenceListList :=
   [[121, 21, 1343], [12, 23], [34], [121, 21, 1343], [12, 23], [34]]
 
 -- Преобразованная сеть вложенных УП в сеть дуплетов
@@ -107,17 +107,17 @@ def testDupletList := ReferenceListListToDupletList testReferenceListList
 #eval DupletListOffsetReferenceList testDupletList 7 -- Ожидается результат: 12
 
 -- Определяем трёхмерную сеть как последовательность кортежей длины 3
-def testTupleList : AssociativeNetworkTupleList 3 :=
+def testTupleList : NetworkTupleList 3 :=
   [#v[0, 0, 0], #v[1, 1, 2], #v[2, 4, 0], #v[3, 0, 5], #v[4, 1, 1], #v[0, 0, 0]]
 
 -- Преобразованная трёхмерная сеть в сеть дуплетов через сеть вложенных УП
-def testTuplesToDupletList : AssociativeNetworkDupletList := TupleListToDupletList testTupleList
+def testTuplesToDupletList : NetworkDupletList := TupleListToDupletList testTupleList
 
 -- Вычисление трёхмерной сети преобразованной в сеть дуплетов
 #eval testTuplesToDupletList
 
 -- Преобразование и обратно в трёхмерную сеть
-def resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
+def resultTuplesNetwork : NetworkTupleList 3 :=
   ReferenceListListToTupleList (DupletListToReferenceListList testTuplesToDupletList)
 
 -- Итоговая проверка эквивалентности сетей

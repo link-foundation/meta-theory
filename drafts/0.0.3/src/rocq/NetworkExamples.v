@@ -5,15 +5,15 @@ Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
-Require Import AssociativeNetworkDefinitions.
-Require Import AssociativeNetworkConversions.
+Require Import NetworkDefinitions.
+Require Import NetworkConversions.
 
 (* Нотация записи списков *)
 Notation "{ }" := (nil) (at level 0).
 Notation "{ x , .. , y }" := (cons x .. (cons y nil) ..) (at level 0).
 
 (* Трёхмерная сеть *)
-Definition complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
+Definition complexExampleNetwork : NetworkTupleFunction 3 :=
   fun id => match id with
   | 0 => [0; 0; 0]
   | 1 => [1; 1; 2]
@@ -46,7 +46,7 @@ Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 4. (* Ож�
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 5. (* Ожидается результат: {0, 0, 0} *)
 
 (* Сеть вложенных упорядоченных пар *)
-Definition testPairsNetwork : AssociativeNetworkReferenceListFunction :=
+Definition testPairsNetwork : NetworkReferenceListFunction :=
   fun id => match id with
   | 0 => {5, 0, 8}
   | 1 => {7, 1, 2}
@@ -57,7 +57,7 @@ Definition testPairsNetwork : AssociativeNetworkReferenceListFunction :=
   end.
 
 (* Преобразованная сеть вложенных УП в трёхмерную сеть (размерность должна совпадать) *)
-Definition testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
+Definition testTuplesNetwork : NetworkTupleFunction 3 :=
   ReferenceListFunctionToTupleFunction testPairsNetwork.
 
 (* Вычисление значений преобразованной функции сети вложенных УП *)
@@ -122,11 +122,11 @@ Compute DupletListOffsetReferenceList testDupletList 6. (* Ожидается р
 Compute DupletListOffsetReferenceList testDupletList 7. (* Ожидается результат: 12 *)
 
 (* Определяем трёхмерную сеть как последовательность кортежей длины 3 *)
-Definition testTupleList : AssociativeNetworkTupleList 3 :=
+Definition testTupleList : NetworkTupleList 3 :=
   { [0; 0; 0], [1; 1; 2], [2; 4; 0], [3; 0; 5], [4; 1; 1], [0; 0; 0] }.
 
 (* Преобразованная трёхмерная сеть в сеть дуплетов через сеть вложенных УП *)
-Definition testTuplesToDupletList : AssociativeNetworkDupletList := TupleListToDupletList testTupleList.
+Definition testTuplesToDupletList : NetworkDupletList := TupleListToDupletList testTupleList.
 
 (* Вычисление трёхмерной сети преобразованной в сеть дуплетов через сеть вложенных УП *)
 Compute testTuplesToDupletList.
@@ -139,7 +139,7 @@ Compute testTuplesToDupletList.
   (0, 16), (0, 17), (0, 17)} *)
 
 (* Преобразованная трёхмерная сеть в сеть дуплетов через сеть вложенных УП и обратно в трёхмерную сеть *)
-Definition resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
+Definition resultTuplesNetwork : NetworkTupleList 3 :=
   ReferenceListListToTupleList (DupletListToReferenceListList testTuplesToDupletList).
 
 (* Итоговая проверка эквивалентности сетей *)

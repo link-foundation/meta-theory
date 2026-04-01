@@ -17,8 +17,8 @@ Require Import Coq.Init.Nat.
 Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
-Require Import AssociativeNetworkDefinitions.
-Require Import AssociativeNetworkConversions.
+Require Import NetworkDefinitions.
+Require Import NetworkConversions.
 Require Import SequenceDefinitions.
 Require Import SetSequenceEquivalence.
 
@@ -41,7 +41,7 @@ Definition SingletonSet (value : Reference) : LinkSet := value.
     построение сбалансированного дерева и запись в сеть.
     Возвращает ссылку на корень (= множество) и сеть дуплетов. *)
 Definition ListToSet (l : list Reference) (offset : nat)
-    : option (LinkSet * AssociativeNetworkDupletList) :=
+    : option (LinkSet * NetworkDupletList) :=
   let sorted := toOrderedUnique l in
   match ListToBalancedTree sorted with
   | None => None

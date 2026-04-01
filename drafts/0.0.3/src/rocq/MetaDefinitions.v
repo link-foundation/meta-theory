@@ -19,8 +19,8 @@ Require Import Coq.Init.Nat.
 Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
-Require Import AssociativeNetworkDefinitions.
-Require Import AssociativeNetworkConversions.
+Require Import NetworkDefinitions.
+Require Import NetworkConversions.
 Require Import SequenceDefinitions.
 Require Import SetDefinitions.
 Require Import SetSequenceEquivalence.
@@ -51,10 +51,10 @@ Definition MetaReferenceSpace := LinkSet.
 Definition MetaDuplet := prod MetaReference MetaReference.
 
 (** Мета-сеть: функция из мета-ссылок в мета-дуплеты *)
-Definition MetaAssociativeNetwork := MetaReference -> MetaDuplet.
+Definition MetaNetwork := MetaReference -> MetaDuplet.
 
 (** Мета-сеть в виде последовательности мета-дуплетов *)
-Definition MetaAssociativeNetworkList := list MetaDuplet.
+Definition MetaNetworkList := list MetaDuplet.
 
 (**
   Ключевая конструкция: определение множества мета-ссылок
@@ -74,13 +74,13 @@ Fixpoint makeMetaReferenceSpace_ (n : nat) : list Reference :=
 
 (** Создание мета-пространства ссылок — множество в сети *)
 Definition MakeMetaReferenceSpace (size : nat) (offset : nat)
-    : option (MetaReferenceSpace * AssociativeNetworkDupletList) :=
+    : option (MetaReferenceSpace * NetworkDupletList) :=
   ListToSet (makeMetaReferenceSpace_ size) offset.
 
 (** * Определение мета-сети через последовательности *)
 
 (** Преобразование мета-сети в сеть дуплетов *)
-Definition MetaNetworkToDupletList (net : MetaAssociativeNetworkList) : AssociativeNetworkDupletList :=
+Definition MetaNetworkToDupletList (net : MetaNetworkList) : NetworkDupletList :=
   net.
 
 (**
@@ -94,7 +94,7 @@ Definition MetaNetworkToDupletList (net : MetaAssociativeNetworkList) : Associat
   теория связей может определять свои термины через себя без противоречий.
 *)
 Theorem meta_network_is_duplet_network :
-  forall (net : MetaAssociativeNetworkList),
+  forall (net : MetaNetworkList),
     MetaNetworkToDupletList net = net.
 Proof.
   intro net.
@@ -118,11 +118,11 @@ Qed.
   Уровень 0 (базовый):
     Reference := ℕ₀
     Duplet := Reference × Reference
-    AssociativeNetwork := Reference → Duplet
+    Network := Reference → Duplet
 
   Уровень 1 (последовательности через связи):
     LinkSequence := Reference  (ссылка на корень дерева дуплетов в сети)
-    Дерево дуплетов хранится в AssociativeNetworkDupletList
+    Дерево дуплетов хранится в NetworkDupletList
     Варианты: сбалансированный, левая/правая лестница
 
   Уровень 2 (множества через последовательности):
@@ -131,7 +131,7 @@ Qed.
   Уровень 3 (мета-определения через множества):
     MetaReference := Reference
     MetaDuplet := MetaReference × MetaReference
-    MetaAssociativeNetwork := MetaReference → MetaDuplet
+    MetaNetwork := MetaReference → MetaDuplet
 
   Уровень 3 структурно идентичен Уровню 0,
   но определён через конструкции Уровней 1 и 2,
@@ -145,7 +145,7 @@ Compute MakeMetaReferenceSpace 4 10.
 (* Множество {0, 1, 2, 3, 4} в виде дуплетов в сети *)
 
 (** Пример: создание мета-сети *)
-Definition exampleMetaNetwork : MetaAssociativeNetworkList :=
+Definition exampleMetaNetwork : MetaNetworkList :=
   [(1, 2); (2, 3); (3, 1)].
 
 (** Преобразование мета-сети в дуплеты *)

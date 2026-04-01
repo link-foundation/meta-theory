@@ -7,11 +7,11 @@ package «meta-theory» where
 @[default_target]
 lean_lib «meta-theory» where
   roots := #[
-    `AssociativeNetworkDefinitions,
-    `AssociativeNetworkConversions,
-    `AssociativeNetworkEquivalence,
-    `AssociativeNetworkExamples,
-    `AssociativeNetworkLemmas,
+    `NetworkDefinitions,
+    `NetworkConversions,
+    `NetworkEquivalence,
+    `NetworkExamples,
+    `NetworkLemmas,
     `SetSequenceEquivalence,
     `SequenceDefinitions,
     `SetDefinitions,

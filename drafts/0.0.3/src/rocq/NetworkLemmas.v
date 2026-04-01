@@ -5,9 +5,9 @@ Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
-Require Import AssociativeNetworkDefinitions.
-Require Import AssociativeNetworkConversions.
-Require Import AssociativeNetworkEquivalence.
+Require Import NetworkDefinitions.
+Require Import NetworkConversions.
+Require Import NetworkEquivalence.
 
 (* Лемма о сохранении длины кортежей сети *)
 Lemma TupleOfReferencesDimensionPreserved : forall {l: nat} (t: TupleOfReferences l), List.length (TupleOfReferencesToReferenceList t) = l.
@@ -64,7 +64,7 @@ Qed.
 
   ∀ Nⁿ : Reference → Tⁿ, обратно(вперёд(Nⁿ)) = Nⁿ.
 *)
-Theorem TupleFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkTupleFunction n),
+Theorem TupleFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: NetworkTupleFunction n),
   TupleFunctionEquivalence anet (fun id => match ReferenceListToTupleOfReferencesOption n ((TupleFunctionToReferenceListFunction anet) id) with
   | Some t => t
   | None => anet id

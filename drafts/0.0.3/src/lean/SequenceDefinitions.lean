@@ -25,8 +25,8 @@
   Адаптировано из: https://github.com/linksplatform/Documentation/tree/main/doc/LinksTheoryManuscriptDraft/05%20Sequences
   См. также: https://github.com/linksplatform/Data.Doublets.Sequences/blob/main/csharp/Platform.Data.Doublets.Sequences/Converters/BalancedVariantConverter.cs
 -/
-import AssociativeNetworkDefinitions
-import AssociativeNetworkConversions
+import NetworkDefinitions
+import NetworkConversions
 
 -- * Последовательность — это ссылка на корень дерева в сети
 
@@ -49,7 +49,7 @@ inductive LinkTree where
     Каждый узел Node записывается как дуплет (ссылка_на_левое, ссылка_на_правое).
     Листья — это элементы последовательности (не записываются как отдельные дуплеты).
     Возвращает пару: (сеть дуплетов, следующее свободное смещение). -/
-def TreeToDupletList_ : LinkTree → Nat → AssociativeNetworkDupletList × Nat
+def TreeToDupletList_ : LinkTree → Nat → NetworkDupletList × Nat
   | .Leaf _, offset => ([], offset)
   | .Node l r, offset =>
     let left_root := match l with | .Leaf x => x | .Node _ _ => offset + 1
@@ -58,7 +58,7 @@ def TreeToDupletList_ : LinkTree → Nat → AssociativeNetworkDupletList × Nat
     let (right_net, right_next) := TreeToDupletList_ r left_next
     ((left_root, right_root) :: left_net ++ right_net, right_next)
 
-def TreeToDupletList (t : LinkTree) (offset : Nat) : AssociativeNetworkDupletList :=
+def TreeToDupletList (t : LinkTree) (offset : Nat) : NetworkDupletList :=
   (TreeToDupletList_ t offset).1
 
 /-- Получение ссылки на корень дерева (= последовательность) -/
@@ -118,7 +118,7 @@ def ListToBalancedTree (l : List Reference) (fuel : Nat := l.length + 1) : Optio
 
 /-- Преобразование списка в последовательность (ссылку на корень) и сеть -/
 def ListToSequence (l : List Reference) (offset : Nat)
-    : Option (LinkSequence × AssociativeNetworkDupletList) :=
+    : Option (LinkSequence × NetworkDupletList) :=
   match ListToBalancedTree l with
   | none => none
   | some t => some (TreeToSequence t offset, TreeToDupletList t offset)
@@ -131,7 +131,7 @@ def listGetD (l : List α) (n : Nat) (default : α) : α :=
   | _ :: rest, n + 1 => listGetD rest n default
 
 /-- Чтение последовательности из сети дуплетов -/
-def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Reference) (fuel : Nat)
+def ReadSequence_ (anet : NetworkDupletList) (root : Reference) (fuel : Nat)
     : List Reference :=
   match fuel with
   | 0 => []
@@ -142,7 +142,7 @@ def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Reference) (fuel
     else
       [root]
 
-def ReadSequence (anet : AssociativeNetworkDupletList) (root : LinkSequence) : List Reference :=
+def ReadSequence (anet : NetworkDupletList) (root : LinkSequence) : List Reference :=
   ReadSequence_ anet root (anet.length + 1)
 
 -- * Примеры

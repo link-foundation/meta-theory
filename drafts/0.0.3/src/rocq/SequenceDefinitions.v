@@ -31,8 +31,8 @@ Require Import Coq.Init.Nat.
 Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
-Require Import AssociativeNetworkDefinitions.
-Require Import AssociativeNetworkConversions.
+Require Import NetworkDefinitions.
+Require Import NetworkConversions.
 
 (** * Последовательность — это ссылка на корень дерева в сети *)
 
@@ -57,7 +57,7 @@ Inductive LinkTree : Type :=
     Листья — это элементы последовательности (не записываются как отдельные дуплеты).
     Возвращает пару: (сеть дуплетов, следующее свободное смещение). *)
 Fixpoint TreeToDupletList_ (t : LinkTree) (offset : nat)
-    : AssociativeNetworkDupletList * nat :=
+    : NetworkDupletList * nat :=
   match t with
   | Leaf _ => ([], offset)
   | Node l r =>
@@ -69,7 +69,7 @@ Fixpoint TreeToDupletList_ (t : LinkTree) (offset : nat)
     ((left_root, right_root) :: left_net ++ right_net, right_next)
   end.
 
-Definition TreeToDupletList (t : LinkTree) (offset : nat) : AssociativeNetworkDupletList :=
+Definition TreeToDupletList (t : LinkTree) (offset : nat) : NetworkDupletList :=
   fst (TreeToDupletList_ t offset).
 
 (** Получение ссылки на корень дерева (= последовательность) *)
@@ -145,14 +145,14 @@ Definition ListToBalancedTree (l : list Reference) : option LinkTree :=
 
 (** Преобразование списка в последовательность (ссылку на корень) и сеть *)
 Definition ListToSequence (l : list Reference) (offset : nat)
-    : option (LinkSequence * AssociativeNetworkDupletList) :=
+    : option (LinkSequence * NetworkDupletList) :=
   match ListToBalancedTree l with
   | None => None
   | Some t => Some (TreeToSequence t offset, TreeToDupletList t offset)
   end.
 
 (** Чтение последовательности из сети дуплетов *)
-Fixpoint ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Reference) (fuel : nat)
+Fixpoint ReadSequence_ (anet : NetworkDupletList) (root : Reference) (fuel : nat)
     : list Reference :=
   match fuel with
   | 0 => []
@@ -166,7 +166,7 @@ Fixpoint ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Reference) 
       [root]
   end.
 
-Definition ReadSequence (anet : AssociativeNetworkDupletList) (root : LinkSequence) : list Reference :=
+Definition ReadSequence (anet : NetworkDupletList) (root : LinkSequence) : list Reference :=
   ReadSequence_ anet root (S (length anet)).
 
 (** * Примеры *)

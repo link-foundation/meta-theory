@@ -1,10 +1,10 @@
--R . AssociativeNetwork
+-R . Network
 
-AssociativeNetworkDefinitions.v
-AssociativeNetworkConversions.v
-AssociativeNetworkEquivalence.v
-AssociativeNetworkExamples.v
-AssociativeNetworkLemmas.v
+NetworkDefinitions.v
+NetworkConversions.v
+NetworkEquivalence.v
+NetworkExamples.v
+NetworkLemmas.v
 SetSequenceEquivalence.v
 SequenceDefinitions.v
 SetDefinitions.v

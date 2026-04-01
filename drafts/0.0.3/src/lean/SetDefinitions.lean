@@ -11,8 +11,8 @@
   мы теперь определяем множества как особый вид последовательностей.
   Таким образом, множества также выражены исключительно через связи.
 -/
-import AssociativeNetworkDefinitions
-import AssociativeNetworkConversions
+import NetworkDefinitions
+import NetworkConversions
 import SequenceDefinitions
 import SetSequenceEquivalence
 
@@ -36,7 +36,7 @@ def SingletonSet (value : Reference) : LinkSet := value
     построение сбалансированного дерева и запись в сеть.
     Возвращает ссылку на корень (= множество) и сеть дуплетов. -/
 def ListToSet (l : List Reference) (offset : Nat)
-    : Option (LinkSet × AssociativeNetworkDupletList) :=
+    : Option (LinkSet × NetworkDupletList) :=
   let sorted := toOrderedUnique l
   match ListToBalancedTree sorted with
   | none => none

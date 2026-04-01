@@ -84,20 +84,28 @@ Definition ListToLeftStaircase (l : list Link) : option LinkTree :=
 
 (** Сбалансированный вариант: ((1, 2), (3, 4))
     Список делится пополам, каждая половина рекурсивно превращается в дерево.
-    Адаптировано из BalancedVariantConverter. *)
-Fixpoint ListToBalancedTree (l : list Link) : option LinkTree :=
-  match l with
-  | [] => None
-  | [x] => Some (Leaf x)
-  | _ =>
-    let mid := length l / 2 in
-    let left_part := firstn mid l in
-    let right_part := skipn mid l in
-    match ListToBalancedTree left_part, ListToBalancedTree right_part with
-    | Some lt, Some rt => Some (Node lt rt)
-    | _, _ => None
+    Адаптировано из BalancedVariantConverter.
+    Использует fuel-параметр для гарантии завершения. *)
+Fixpoint ListToBalancedTree_ (l : list Link) (fuel : nat) : option LinkTree :=
+  match fuel with
+  | 0 => None
+  | S fuel' =>
+    match l with
+    | [] => None
+    | [x] => Some (Leaf x)
+    | _ =>
+      let mid := length l / 2 in
+      let left_part := firstn mid l in
+      let right_part := skipn mid l in
+      match ListToBalancedTree_ left_part fuel', ListToBalancedTree_ right_part fuel' with
+      | Some lt, Some rt => Some (Node lt rt)
+      | _, _ => None
+      end
     end
   end.
+
+Definition ListToBalancedTree (l : list Link) : option LinkTree :=
+  ListToBalancedTree_ l (S (length l)).
 
 (** * Хранение дерева в ассоциативной сети дуплетов *)
 

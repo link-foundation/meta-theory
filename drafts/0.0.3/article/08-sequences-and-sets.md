@@ -47,6 +47,9 @@
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SequenceDefinitions.v)
 
 ```rocq
+Require Import AssociativeNetworkDefinitions.
+Require Import AssociativeNetworkConversions.
+
 (* Последовательность — это ссылка на корень дерева в сети *)
 Definition LinkSequence := Reference.
 
@@ -72,6 +75,9 @@ Definition ListToSequence (l : list Reference) (offset : nat)
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/SequenceDefinitions.lean)
 
 ```lean
+import AssociativeNetworkDefinitions
+import AssociativeNetworkConversions
+
 -- Последовательность — это ссылка на корень дерева в сети
 abbrev LinkSequence := Reference
 
@@ -140,6 +146,11 @@ theorem set_sequence_equivalence (l : List Nat) :
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SetDefinitions.v)
 
 ```rocq
+Require Import AssociativeNetworkDefinitions.
+Require Import AssociativeNetworkConversions.
+Require Import SequenceDefinitions.
+Require Import SetSequenceEquivalence.
+
 (* Множество ссылок — это ссылка на корень дерева в сети *)
 Definition LinkSet := Reference.
 
@@ -162,6 +173,11 @@ Definition ListToSet (l : list Reference) (offset : nat)
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/SetDefinitions.lean)
 
 ```lean
+import AssociativeNetworkDefinitions
+import AssociativeNetworkConversions
+import SequenceDefinitions
+import SetSequenceEquivalence
+
 -- Множество ссылок — это ссылка на корень дерева в сети
 abbrev LinkSet := Reference
 

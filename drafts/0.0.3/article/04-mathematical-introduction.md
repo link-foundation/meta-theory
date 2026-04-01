@@ -158,8 +158,8 @@ Definition emptyNetwork : AnyNetwork := mkAnyNetwork 0 nil.
 
 (* Пример: представление дуплетной сети N² размера 3 как элемента 𝒩 *)
 Definition exampleAnyNetwork : AnyNetwork :=
-  mkAnyNetwork 2 (([1; 1] : ReferenceList) :: ([2; 2] : ReferenceList)
-    :: ([1; 2] : ReferenceList) :: nil).
+  mkAnyNetwork 2 ((cons 1 (cons 1 nil)) :: (cons 2 (cons 2 nil))
+    :: (cons 1 (cons 2 nil)) :: nil).
 ```
 
 ###### Lean

@@ -142,7 +142,7 @@ jobs:
       if: steps.check-rocq.outputs.has_files == 'true'
       uses: coq-community/docker-coq-action@v1
       with:
-        custom_image: 'rocq/rocq-prover:9.0'
+        custom_image: 'rocq/rocq-prover:9.1'
         custom_script: |
           startGroup "Rocq version"
             rocq --version

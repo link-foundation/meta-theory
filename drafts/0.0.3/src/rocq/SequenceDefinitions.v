@@ -42,14 +42,14 @@ Definition Sequence := LinkTree.
 Fixpoint TreeToList (t : LinkTree) : list Link :=
   match t with
   | Leaf x => [x]
-  | Node left right => TreeToList left ++ TreeToList right
+  | Node l r => TreeToList l ++ TreeToList r
   end.
 
 (** Длина последовательности (количество листьев) *)
 Fixpoint TreeLength (t : LinkTree) : nat :=
   match t with
   | Leaf _ => 1
-  | Node left right => TreeLength left + TreeLength right
+  | Node l r => TreeLength l + TreeLength r
   end.
 
 (** * Алгоритмы создания последовательностей *)
@@ -109,9 +109,9 @@ Fixpoint TreeToDupletList_ (t : LinkTree) (offset : nat)
     : AssociativeNetworkDupletList * nat :=
   match t with
   | Leaf x => ([(x, x)], S offset)
-  | Node left right =>
-    let '(left_net, left_next) := TreeToDupletList_ left (S offset) in
-    let '(right_net, right_next) := TreeToDupletList_ right left_next in
+  | Node l r =>
+    let '(left_net, left_next) := TreeToDupletList_ l (S offset) in
+    let '(right_net, right_next) := TreeToDupletList_ r left_next in
     ((S offset, left_next) :: left_net ++ right_net, right_next)
   end.
 

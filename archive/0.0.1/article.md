@@ -8,9 +8,9 @@
 
 **Published:** April 1, 2024 (updated March 30, 2025)
 
-**Reading time: 24 мин | Difficulty: Сложный | Views: 10566**
+**Reading time: 24 мин | Difficulty: Сложный | Views: 10574**
 
-**Hubs:** Блог компании Deep.Foundation, Open source, Программирование, Математика, Data Engineering
+**Hubs:** Блог компании Deep.Foundation, Математика, Программирование, Open source, Data Engineering
 
 **Tags:** математика, теория графов, теория множеств, реляционная алгебра, теория типов, теория связей, метатеория, теория отношений, ассоциативная теория, ассоциативная модель данных
 
@@ -910,8 +910,8 @@ Deep позволяет делать весь софт на планете со�
 
 **Tags:** математика, теория графов, теория множеств, реляционная алгебра, теория типов, теория связей, метатеория, теория отношений, ассоциативная теория, ассоциативная модель данных
 
-**Hubs:** [Блог компании Deep.Foundation](https://habr.com/ru/companies/deepfoundation/articles/), [Open source](https://habr.com/ru/hubs/open_source/), [Программирование](https://habr.com/ru/hubs/programming/), [Математика](https://habr.com/ru/hubs/maths/), [Data Engineering](https://habr.com/ru/hubs/data_engineering/)
+**Hubs:** [Блог компании Deep.Foundation](https://habr.com/ru/companies/deepfoundation/articles/), [Математика](https://habr.com/ru/hubs/maths/), [Программирование](https://habr.com/ru/hubs/programming/), [Open source](https://habr.com/ru/hubs/open_source/), [Data Engineering](https://habr.com/ru/hubs/data_engineering/)
 
-**Votes: +14 | Views: 10566**
+**Votes: +14 | Views: 10574**
 
 **Author:** [Константин Дьяченко (Konard)](https://habr.com/ru/users/Konard/)

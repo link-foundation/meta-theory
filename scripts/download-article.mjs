@@ -49,7 +49,7 @@ function parseArgs() {
     all: false,
     dryRun: false,
     verbose: false,
-    outputFile: 'article.md'  // Default output file, can be changed with --downloaded
+    outputFile: 'article.md'
   };
 
   for (const arg of args) {
@@ -59,8 +59,6 @@ function parseArgs() {
       options.dryRun = true;
     } else if (arg === '--verbose' || arg === '-v') {
       options.verbose = true;
-    } else if (arg === '--downloaded') {
-      options.outputFile = 'downloaded.md';
     } else if (!arg.startsWith('-')) {
       options.version = arg;
     }
@@ -1099,14 +1097,12 @@ Usage: node scripts/download-article.mjs [version] [options]
 
 Options:
   --all         Download all articles
-  --downloaded  Save as downloaded.md instead of article.md
   --dry-run     Show what would be done without making changes
   --verbose     Show detailed output
 
 Examples:
   node scripts/download-article.mjs 0.0.1
   node scripts/download-article.mjs --all
-  node scripts/download-article.mjs --all --downloaded
   node scripts/download-article.mjs 0.0.2 --dry-run
 `);
     process.exit(0);

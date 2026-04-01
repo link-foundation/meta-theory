@@ -33,8 +33,7 @@ function parseArgs() {
   const options = {
     version: null,
     all: false,
-    verbose: false,
-    downloaded: false  // Verify downloaded.md instead of article.md
+    verbose: false
   };
 
   for (const arg of args) {
@@ -42,8 +41,6 @@ function parseArgs() {
       options.all = true;
     } else if (arg === '--verbose' || arg === '-v') {
       options.verbose = true;
-    } else if (arg === '--downloaded') {
-      options.downloaded = true;
     } else if (!arg.startsWith('-')) {
       options.version = arg;
     }
@@ -504,10 +501,9 @@ function verifyMarkdownContent(article, webContent, markdownText, verbose = fals
 /**
  * Verify a single article
  */
-async function verifyArticle(article, verbose = false, verifyDownloaded = false) {
+async function verifyArticle(article, verbose = false) {
   const archivePath = join(ROOT_DIR, article.archivePath);
-  const markdownFileName = verifyDownloaded ? 'downloaded.md' : article.markdownFile;
-  const markdownPath = join(archivePath, markdownFileName);
+  const markdownPath = join(archivePath, article.markdownFile);
 
   console.log(`\n📋 Verifying ${article.title} (${article.version})`);
   console.log('='.repeat(70));
@@ -582,14 +578,12 @@ Usage: node scripts/verify.mjs [version] [options]
 
 Options:
   --all         Verify all articles
-  --downloaded  Verify downloaded.md instead of article.md
   --verbose     Show detailed verification output
 
 Examples:
   node scripts/verify.mjs 0.0.2
   node scripts/verify.mjs --all
   node scripts/verify.mjs 0.0.2 --verbose
-  node scripts/verify.mjs --all --downloaded
 `);
     process.exit(0);
   }
@@ -604,16 +598,13 @@ Examples:
 
   console.log('🚀 Article Verification Script');
   console.log('==============================');
-  if (options.downloaded) {
-    console.log('📄 Verifying downloaded.md files\n');
-  }
 
   let allPassed = true;
   const results = [];
 
   for (const article of articles) {
     try {
-      const success = await verifyArticle(article, options.verbose, options.downloaded);
+      const success = await verifyArticle(article, options.verbose);
       results.push({ article, success });
       if (!success) allPassed = false;
     } catch (error) {

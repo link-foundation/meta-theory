@@ -205,7 +205,7 @@ async function processArticle(article, options) {
 
   if (externalImages.length === 0) {
     console.log('   ✅ No external images to download - article already uses local images or has no images');
-    return { success: true, downloaded: 0 };
+    return { success: true, downloaded: 0, total: 0 };
   }
 
   console.log(`   Found ${externalImages.length} external images to download`);

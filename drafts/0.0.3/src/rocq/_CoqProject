@@ -5,3 +5,7 @@ AssociativeNetworkConversions.v
 AssociativeNetworkEquivalence.v
 AssociativeNetworkExamples.v
 AssociativeNetworkLemmas.v
+SetSequenceEquivalence.v
+SequenceDefinitions.v
+SetDefinitions.v
+MetaDefinitions.v

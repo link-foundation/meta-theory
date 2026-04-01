@@ -11,5 +11,9 @@ lean_lib «meta-theory» where
     `AssociativeNetworkConversions,
     `AssociativeNetworkEquivalence,
     `AssociativeNetworkExamples,
-    `AssociativeNetworkLemmas
+    `AssociativeNetworkLemmas,
+    `SetSequenceEquivalence,
+    `SequenceDefinitions,
+    `SetDefinitions,
+    `MetaDefinitions
   ]

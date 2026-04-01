@@ -26,7 +26,7 @@
 
 **Уровень 3 (мета-определения через множества):**
 
-> $\displaystyle MetaLink := Reference, \quad MetaDuplet := MetaLink \times MetaLink, \quad MetaAssociativeNetwork : MetaLink \to MetaDuplet$
+> $\displaystyle MetaReference := Reference, \quad MetaDuplet := MetaReference \times MetaReference, \quad MetaAssociativeNetwork : MetaReference \to MetaDuplet$
 
 Мета-ссылка — это элемент множества, хранимого в ассоциативной сети. Мета-дуплет — пара мета-ссылок. Мета-ассоциативная сеть — функция из мета-ссылок в мета-дуплеты.
 
@@ -45,24 +45,24 @@ Require Import SetDefinitions.
 Require Import SetSequenceEquivalence.
 
 (* Мета-ссылка: элемент множества, определённого через связи-дуплеты *)
-Definition MetaLink := Reference.
+Definition MetaReference := Reference.
 
 (* Мета-пространство ссылок: ссылка на корень дерева в ассоциативной сети *)
-Definition MetaLinkSpace := LinkSet.
+Definition MetaReferenceSpace := LinkSet.
 
 (* Мета-дуплет: пара мета-ссылок *)
-Definition MetaDuplet := prod MetaLink MetaLink.
+Definition MetaDuplet := prod MetaReference MetaReference.
 
 (* Мета-ассоциативная сеть *)
-Definition MetaAssociativeNetwork := MetaLink -> MetaDuplet.
+Definition MetaAssociativeNetwork := MetaReference -> MetaDuplet.
 
 (* Мета-ассоциативная сеть в виде последовательности мета-дуплетов *)
 Definition MetaAssociativeNetworkList := list MetaDuplet.
 
 (* Создание мета-пространства ссылок в ассоциативной сети *)
-Definition MakeMetaLinkSpace (size : nat) (offset : nat)
-    : option (MetaLinkSpace * AssociativeNetworkDupletList) :=
-  ListToSet (makeMetaLinkSpace_ size) offset.
+Definition MakeMetaReferenceSpace (size : nat) (offset : nat)
+    : option (MetaReferenceSpace * AssociativeNetworkDupletList) :=
+  ListToSet (makeMetaReferenceSpace_ size) offset.
 
 (* ОСНОВНАЯ ТЕОРЕМА МЕТА-ТЕОРИИ:
    Любая мета-ассоциативная сеть может быть представлена
@@ -72,8 +72,8 @@ Theorem meta_network_is_duplet_network :
     MetaNetworkToDupletList net = net.
 
 (* Мета-пространство ссылок содержит упорядоченные уникальные элементы *)
-Theorem meta_link_space_elements_valid : forall (size : nat),
-  IsOrderedUniqueSequence (toOrderedUnique (makeMetaLinkSpace_ size)).
+Theorem meta_reference_space_elements_valid : forall (size : nat),
+  IsOrderedUniqueSequence (toOrderedUnique (makeMetaReferenceSpace_ size)).
 ```
 
 ##### Lean
@@ -87,16 +87,16 @@ import SetDefinitions
 import SetSequenceEquivalence
 
 -- Мета-ссылка: элемент множества, определённого через связи-дуплеты
-abbrev MetaLink := Reference
+abbrev MetaReference := Reference
 
 -- Мета-пространство ссылок: ссылка на корень дерева в ассоциативной сети
-abbrev MetaLinkSpace := LinkSet
+abbrev MetaReferenceSpace := LinkSet
 
 -- Мета-дуплет: пара мета-ссылок
-abbrev MetaDuplet := MetaLink × MetaLink
+abbrev MetaDuplet := MetaReference × MetaReference
 
 -- Мета-ассоциативная сеть
-abbrev MetaAssociativeNetwork := MetaLink → MetaDuplet
+abbrev MetaAssociativeNetwork := MetaReference → MetaDuplet
 
 -- Мета-ассоциативная сеть в виде последовательности мета-дуплетов
 abbrev MetaAssociativeNetworkList := List MetaDuplet
@@ -109,8 +109,8 @@ theorem meta_network_is_duplet_network :
       MetaNetworkToDupletList net = net
 
 -- Мета-пространство ссылок содержит упорядоченные уникальные элементы
-theorem meta_link_space_elements_valid (size : Nat) :
-    IsOrderedUniqueSequence (toOrderedUnique (makeMetaLinkSpace_ size))
+theorem meta_reference_space_elements_valid (size : Nat) :
+    IsOrderedUniqueSequence (toOrderedUnique (makeMetaReferenceSpace_ size))
 ```
 
 #### Последствия и перспективы

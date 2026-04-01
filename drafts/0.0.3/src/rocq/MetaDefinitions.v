@@ -28,12 +28,12 @@ Require Import SetSequenceEquivalence.
 (** * Мета-определения: ссылки через последовательности и множества *)
 
 (**
-  Мета-ссылка (MetaLink) — это элемент множества ссылок,
+  Мета-ссылка (MetaReference) — это элемент множества ссылок,
   определённого как упорядоченное уникальное дерево связей-дуплетов
   в ассоциативной сети.
 
   В исходном определении: Reference := ℕ₀ (натуральное число)
-  В мета-определении: MetaLink — это лист дерева, хранимого в сети,
+  В мета-определении: MetaReference — это лист дерева, хранимого в сети,
   где LinkSet — это Reference (ссылка на корень дерева в сети).
 
   Таким образом, мета-ссылка определена через связи, которые определены
@@ -41,17 +41,17 @@ Require Import SetSequenceEquivalence.
 *)
 
 (** Мета-ссылка: элемент множества, определённого через деревья связей *)
-Definition MetaLink := Reference.
+Definition MetaReference := Reference.
 
 (** Мета-пространство ссылок: множество всех допустимых мета-ссылок,
     представленное как ссылка на корень дерева в ассоциативной сети *)
-Definition MetaLinkSpace := LinkSet.
+Definition MetaReferenceSpace := LinkSet.
 
 (** Мета-дуплет: пара мета-ссылок — это связь-дуплет *)
-Definition MetaDuplet := prod MetaLink MetaLink.
+Definition MetaDuplet := prod MetaReference MetaReference.
 
 (** Мета-ассоциативная сеть: функция из мета-ссылок в мета-дуплеты *)
-Definition MetaAssociativeNetwork := MetaLink -> MetaDuplet.
+Definition MetaAssociativeNetwork := MetaReference -> MetaDuplet.
 
 (** Мета-ассоциативная сеть в виде последовательности мета-дуплетов *)
 Definition MetaAssociativeNetworkList := list MetaDuplet.
@@ -66,16 +66,16 @@ Definition MetaAssociativeNetworkList := list MetaDuplet.
 *)
 
 (** Создание списка мета-ссылок заданного размера *)
-Fixpoint makeMetaLinkSpace_ (n : nat) : list Reference :=
+Fixpoint makeMetaReferenceSpace_ (n : nat) : list Reference :=
   match n with
   | 0 => [0]
-  | S n' => makeMetaLinkSpace_ n' ++ [S n']
+  | S n' => makeMetaReferenceSpace_ n' ++ [S n']
   end.
 
 (** Создание мета-пространства ссылок — множество в ассоциативной сети *)
-Definition MakeMetaLinkSpace (size : nat) (offset : nat)
-    : option (MetaLinkSpace * AssociativeNetworkDupletList) :=
-  ListToSet (makeMetaLinkSpace_ size) offset.
+Definition MakeMetaReferenceSpace (size : nat) (offset : nat)
+    : option (MetaReferenceSpace * AssociativeNetworkDupletList) :=
+  ListToSet (makeMetaReferenceSpace_ size) offset.
 
 (** * Определение мета-ассоциативной сети через последовательности *)
 
@@ -103,8 +103,8 @@ Proof.
 Qed.
 
 (** Мета-пространство ссылок содержит упорядоченные уникальные элементы *)
-Theorem meta_link_space_elements_valid : forall (size : nat),
-  IsOrderedUniqueSequence (toOrderedUnique (makeMetaLinkSpace_ size)).
+Theorem meta_reference_space_elements_valid : forall (size : nat),
+  IsOrderedUniqueSequence (toOrderedUnique (makeMetaReferenceSpace_ size)).
 Proof.
   intro size.
   apply toOrderedUnique_is_ascending.
@@ -129,9 +129,9 @@ Qed.
     LinkSet := Reference  (ссылка на корень, с инвариантом IsOrderedUniqueSequence на листьях)
 
   Уровень 3 (мета-определения через множества):
-    MetaLink := Reference
-    MetaDuplet := MetaLink × MetaLink
-    MetaAssociativeNetwork := MetaLink → MetaDuplet
+    MetaReference := Reference
+    MetaDuplet := MetaReference × MetaReference
+    MetaAssociativeNetwork := MetaReference → MetaDuplet
 
   Уровень 3 структурно идентичен Уровню 0,
   но определён через конструкции Уровней 1 и 2,
@@ -141,7 +141,7 @@ Qed.
 *)
 
 (** Пример: создание мета-пространства из 5 ссылок *)
-Compute MakeMetaLinkSpace 4 10.
+Compute MakeMetaReferenceSpace 4 10.
 (* Множество {0, 1, 2, 3, 4} в виде дуплетов в ассоциативной сети *)
 
 (** Пример: создание мета-ассоциативной сети *)
@@ -155,6 +155,6 @@ Compute MetaNetworkToDupletList exampleMetaNetwork.
 (** * Проверки верификации *)
 
 Check meta_network_is_duplet_network.
-Check meta_link_space_elements_valid.
+Check meta_reference_space_elements_valid.
 
 (** Все мета-определения успешно верифицированы! *)

@@ -56,7 +56,7 @@ The mathematical notation issue arose from using links-notation format `(id: fro
 - `LinkTree` — tree structure for links (associations)
 - `LinkSequence := Reference` — sequence identified by a reference to tree root
 - `LinkSet := Reference` — set identified by a reference to tree root
-- `MetaLink := Reference` — meta-link is a reference
+- `MetaReference := Reference` — meta-reference is a reference (MetaLink would be a Link/Association at meta level)
 - `Association` — kept as is (conceptually = Link)
 
 #### Notation Fix
@@ -77,7 +77,7 @@ All 9 Rocq files and 5 Lean files updated with `Reference` terminology:
 - `AssociativeNetworkLemmas.{v,lean}` — theorem names and comments
 - `SequenceDefinitions.{v,lean}` — `LinkSequence := Reference`
 - `SetDefinitions.{v,lean}` — `LinkSet := Reference`
-- `MetaDefinitions.{v,lean}` — `MetaLink := Reference`
+- `MetaDefinitions.{v,lean}` — `MetaReference := Reference`
 
 ### Article (4 files)
 - `04-mathematical-introduction.md` — `RL` (ReferenceList) formula

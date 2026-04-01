@@ -115,6 +115,22 @@ Research into existing tools that could help with Habr-to-markdown conversion:
 
 The current custom Playwright-based approach in `download-article.mjs` is well-suited for Habr's specific needs (formula extraction from `img.formula` `source` attributes, figure captions, blockquote grouping). Generic tools like Turndown would need significant customization to match this level of accuracy.
 
+## Notable Findings from Screenshot Comparison
+
+### Pre-existing bug in article 0.0.1 (line 662)
+
+The Coq code in the original Habr article contains a corrupted line where a GitHub URL is concatenated with code:
+
+```coq
+| None => anet idhttps://github.com/deep-foundation
+```
+
+This was verified to exist in the original Habr page — it is **not** a scraping artifact. The correct Coq code should likely be `anet id` without the URL. This is a bug in the source article on Habr, faithfully preserved in the archive.
+
+### "LinksPlatfrom" typo (articles 0.0.1 and 0.0.2)
+
+Both articles contain the heading "LinksPlatfrom" (missing 'l' in "Platform"). This typo exists in the original Habr articles and is faithfully preserved.
+
 ## Key Technical Insights
 
 1. **Dynamic metadata is the only source of article.md vs downloaded.md drift.** The download script produces byte-identical content for all static article elements (text, headings, code blocks, formulas, figures, links).
@@ -124,3 +140,5 @@ The current custom Playwright-based approach in `download-article.mjs` is well-s
 3. **The `--downloaded` flag workflow is unnecessary.** Since the download script already defaults to `article.md`, running `node scripts/download-article.mjs --all` directly updates the canonical files.
 
 4. **Habr formula extraction via `img.formula[source]` is reliable.** The custom approach of reading LaTeX source from the `source` attribute of formula images produces accurate results that match the original rendering.
+
+5. **Original Habr articles contain pre-existing bugs** (concatenated URL in Coq code, "LinksPlatfrom" typo) which the download script correctly preserves for archival accuracy.

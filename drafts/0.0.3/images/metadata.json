@@ -1,0 +1,67 @@
+[
+  {
+    "figureNum": 1,
+    "filename": "figure-1.png",
+    "caption": "Figure 1. A table is described by a relation, which is represented as a set of rows , belonging to a Cartesian product ."
+  },
+  {
+    "figureNum": 2,
+    "filename": "figure-2.png",
+    "caption": "Figure 2. Comparison of the relational model and the associative model of data (the original model proposed by Simon Williams was simplified by us twice) [3]. In other words, representing all data in the relational model requires a multitude of tables — one for each data type — whereas in the associative model, it turned out that initially just two tables were sufficient (items and links), and eventually just a single table  (links) of triplet-links or doublet-links was enough."
+  },
+  {
+    "figureNum": 3,
+    "filename": "figure-3.png",
+    "caption": "Figure 3. Comparison of the graph theory and the links theory. A vertex is equivalent to a self-referential link — a link that begins and ends in itself. A directed edge is represented as a directed doublet-links, while an undirected edge is represented as a pair of directed doublet-links in both opposite directions. In other words, while graph theory requires two types of entities — vertices and edges — in the links theory only links (which most closely resemble edges) are necessary."
+  },
+  {
+    "figureNum": 4,
+    "filename": "figure-4.png",
+    "caption": "Figure 4. A matrix representing the Cartesian product of the set {1, 2} with itself. Here we see that links with two references to links can have only 4 possible values."
+  },
+  {
+    "figureNum": 5,
+    "filename": "figure-5.png",
+    "caption": "Figure 5. A table of rows containing all possible variants of link values for a network with two links; these variants are obtained using the Cartesian product of {1, 2} with itself."
+  },
+  {
+    "figureNum": 6,
+    "filename": "figure-6.png",
+    "caption": "Figure 6. A network of three links. The representation of the duplet‑links network resembles a graph, but we refer to this visualization as a network of links. The first and second links have a similar structure — that is, both begin from themselves and end in themselves. As a result, instead of the traditional depiction of a vertex as a point in graph theory, we get a graphical representation of a closed self‑referential arrow that resembles an infinity symbol."
+  },
+  {
+    "figureNum": 7,
+    "filename": "figure-7.png",
+    "caption": "Figure 7. This is a graphical representation of the Cartesian product in the form of a matrix, which displays all possible link values. The links that define a specific network are highlighted in orange. In other words, out of 9 possible link value variants, only 3 links are selected, corresponding to the size of the set L."
+  },
+  {
+    "figureNum": 8,
+    "filename": "figure-8.png",
+    "caption": "Figure 8. A three-dimensional cube-matrix that represents all possible values of a triplet-link. Such a cube is obtained by recursively taking the Cartesian product of the set {1, 2} with itself, i.e., { 1, 2 } × { 1, 2 } × { 1, 2 }."
+  },
+  {
+    "figureNum": 9,
+    "filename": "figure-9.png",
+    "caption": "Figure 9. A table of all possible variants of triplet-link values that can be obtained by taking the Cartesian product of the set { 1, 2 } with itself recursively, i.e., { 1, 2 } × { 1, 2 } × { 1, 2 }. Note: The first reference can be interpreted as the beginning, the second as the type, and the third as the end; the user determines how to interpret the components of the reference vector in accordance with the task at hand."
+  },
+  {
+    "figureNum": 10,
+    "filename": "figure-10.jpg",
+    "caption": "Figure 10. An associative triplet network represented as a colored directed graph. In this associative network, there are 4 triplet-links corresponding to the function defined above. The nodes correspond to links, and the edge colors correspond to references to links as shown in Figure 9 (red – from, blue – type, green – to)."
+  },
+  {
+    "figureNum": 11,
+    "filename": "figure-11.png",
+    "caption": "Figure 11. In this image you can see creation of two links (1: 1 1) and (2: 2 2); update of first link to (1: 1 2); update/substitution using variables to swap sources and targets of each link; and a deletion of all links using (* *) pattern."
+  },
+  {
+    "figureNum": 12,
+    "filename": "figure-12.png",
+    "caption": "Figure 12. Link blueprint designer build on top of a configurable spline: konard.github.io/links-visuals/blueprint.html (move control points of spline that represents the link)"
+  },
+  {
+    "figureNum": 13,
+    "filename": "figure-13.jpg",
+    "caption": "Figure 13. H-tree like fractal build using links represented by straight arrows: konard.github.io/links-visuals/H-fractal.html (click at any place to iterate the fractal)"
+  }
+]

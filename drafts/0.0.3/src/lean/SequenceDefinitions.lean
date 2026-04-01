@@ -120,6 +120,13 @@ def ListToSequence (l : List Link) (offset : Nat)
   | none => none
   | some t => some (TreeToSequence t offset, TreeToDupletList t offset)
 
+/-- Получение элемента списка по индексу с значением по умолчанию -/
+def listGetD (l : List α) (n : Nat) (default : α) : α :=
+  match l, n with
+  | [], _ => default
+  | x :: _, 0 => x
+  | _ :: rest, n + 1 => listGetD rest n default
+
 /-- Чтение последовательности из ассоциативной сети дуплетов -/
 def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Link) (fuel : Nat)
     : List Link :=
@@ -127,10 +134,8 @@ def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Link) (fuel : Na
   | 0 => []
   | fuel' + 1 =>
     if root < anet.length then
-      let d := anet.get! root
-      let l := d.1
-      let r := d.2
-      ReadSequence_ anet l fuel' ++ ReadSequence_ anet r fuel'
+      let d := listGetD anet root (0, 0)
+      ReadSequence_ anet d.1 fuel' ++ ReadSequence_ anet d.2 fuel'
     else
       [root]
 

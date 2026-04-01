@@ -25,7 +25,7 @@ theorem LinkListToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
 /-
   Теорема обёртывания и восстановления ассоциативной сети кортежей:
 
-  ∀ anetvⁿ : Link → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
+  ∀ anetvⁿ : Link → Tⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
 -/
 theorem TupleFunctionEquivalenceAfterTransforms {n : Nat} (anet : AssociativeNetworkTupleFunction n) :
     TupleFunctionEquivalence anet

@@ -20,7 +20,7 @@
 
 Формально:
 
-> $\displaystyle Sequence := Link$
+> $\displaystyle LinkSequence := Link$
 
 Последовательность идентифицируется ссылкой на корень дерева в ассоциативной сети.
 
@@ -45,7 +45,7 @@
 
 ```rocq
 (* Последовательность — это ссылка на корень дерева в ассоциативной сети *)
-Definition Sequence := Link.
+Definition LinkSequence := Link.
 
 (* Вспомогательное дерево для алгоритмов построения последовательностей *)
 Inductive LinkTree : Type :=
@@ -57,11 +57,11 @@ Fixpoint TreeToDupletList_ (t : LinkTree) (offset : nat)
     : AssociativeNetworkDupletList * nat := ...
 
 (* Получение ссылки на корень (= последовательность) *)
-Definition TreeToSequence (t : LinkTree) (offset : nat) : Sequence := ...
+Definition TreeToSequence (t : LinkTree) (offset : nat) : LinkSequence := ...
 
 (* Полное преобразование: список → сеть дуплетов + ссылка на корень *)
 Definition ListToSequence (l : list Link) (offset : nat)
-    : option (Sequence * AssociativeNetworkDupletList) := ...
+    : option (LinkSequence * AssociativeNetworkDupletList) := ...
 ```
 
 ##### Lean
@@ -70,7 +70,7 @@ Definition ListToSequence (l : list Link) (offset : nat)
 
 ```lean
 -- Последовательность — это ссылка на корень дерева в ассоциативной сети
-abbrev Sequence := Link
+abbrev LinkSequence := Link
 
 /-- Вспомогательное дерево для алгоритмов построения последовательностей -/
 inductive LinkTree where
@@ -81,11 +81,11 @@ inductive LinkTree where
 def TreeToDupletList_ : LinkTree → Nat → AssociativeNetworkDupletList × Nat
 
 -- Получение ссылки на корень (= последовательность)
-def TreeToSequence (t : LinkTree) (offset : Nat) : Sequence
+def TreeToSequence (t : LinkTree) (offset : Nat) : LinkSequence
 
 -- Полное преобразование: список → сеть дуплетов + ссылка на корень
 def ListToSequence (l : List Link) (offset : Nat)
-    : Option (Sequence × AssociativeNetworkDupletList)
+    : Option (LinkSequence × AssociativeNetworkDupletList)
 ```
 
 #### Эквивалентность множеств и последовательностей

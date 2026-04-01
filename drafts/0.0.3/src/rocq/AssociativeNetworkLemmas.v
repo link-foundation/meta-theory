@@ -49,7 +49,7 @@ Qed.
 (*
   Теорема обёртывания и восстановления ассоциативной сети кортежей:
 
-  Пусть дана ассоциативная сеть кортежей длины n, обозначенная как anetvⁿ : Link → Vⁿ.
+  Пусть дана ассоциативная сеть кортежей длины n, обозначенная как anetvⁿ : Link → Tⁿ.
   Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Link → LinkList,
   где LinkList = {(∅,∅) | (l, np), l ∈ Link, np ∈ LinkList}.
   Затем определим обратное отображение из ассоциативной сети вложенных упорядоченных пар обратно
@@ -62,7 +62,7 @@ Qed.
   в ассоциативную сеть кортежей длины n обеспечивает восстановление исходной сети anetvⁿ.
   Иначе говоря:
 
-  ∀ anetvⁿ : Link → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
+  ∀ anetvⁿ : Link → Tⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
 *)
 Theorem TupleFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkTupleFunction n),
   TupleFunctionEquivalence anet (fun id => match LinkListToTupleOfLinksOption n ((TupleFunctionToLinkListFunction anet) id) with

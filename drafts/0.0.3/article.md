@@ -348,7 +348,7 @@ $NP$ — это множество вложенных упорядоченных
 
 #### Определения ассоциативных сетей
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-definitions.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/AssociativeNetworkDefinitions.v)
 
 ```rocq
 Require Import PeanoNat.
@@ -404,7 +404,7 @@ Definition ANetDl := list D.
 
 #### Функции преобразования ассоциативных сетей
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-conversions.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/AssociativeNetworkConversions.v)
 
 ```rocq
 (* Функция преобразования Vn в NP *)
@@ -581,7 +581,7 @@ Definition ANetDlToANetLl (anetd: ANetDl) : ANetLl :=
 
 #### Предикаты эквивалентности ассоциативных сетей
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-equivalence.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/AssociativeNetworkEquivalence.v)
 
 ```rocq
 (* Предикат эквивалентности двух ассоциативных сетей векторов длины n,
@@ -609,7 +609,7 @@ Definition ANetDl_equiv (anet1: ANetDl) (anet2: ANetDl) : Prop := anet1 = anet2.
 
 #### Леммы эквивалентности ассоциативных сетей
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-lemmas.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/AssociativeNetworkLemmas.v)
 
 ```rocq
 (* Лемма о сохранении длины векторов ассоциативной сети *)
@@ -697,7 +697,7 @@ Qed.
 
 #### Примеры преобразований между ассоциативными сетями
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-examples.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/AssociativeNetworkExamples.v)
 
 ```rocq
 (* Нотация записи списков *)

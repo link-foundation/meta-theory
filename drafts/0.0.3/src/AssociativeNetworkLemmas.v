@@ -5,9 +5,9 @@ Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
-Require Import associative-network-definitions.
-Require Import associative-network-conversions.
-Require Import associative-network-equivalence.
+Require Import AssociativeNetworkDefinitions.
+Require Import AssociativeNetworkConversions.
+Require Import AssociativeNetworkEquivalence.
 
 (* Лемма о сохранении длины векторов ассоциативной сети *)
 Lemma Vn_dim_preserved : forall {l: nat} (t: Vn l), List.length (VnToNP t) = l.

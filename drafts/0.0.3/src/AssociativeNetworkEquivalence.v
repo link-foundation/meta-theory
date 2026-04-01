@@ -5,8 +5,8 @@ Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
-Require Import associative-network-definitions.
-Require Import associative-network-conversions.
+Require Import AssociativeNetworkDefinitions.
+Require Import AssociativeNetworkConversions.
 
 (* Предикат эквивалентности двух ассоциативных сетей векторов длины n,
    anet1 и anet2 типа ANetVf.

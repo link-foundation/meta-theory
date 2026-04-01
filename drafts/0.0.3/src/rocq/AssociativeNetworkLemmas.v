@@ -9,7 +9,7 @@ Require Import AssociativeNetworkDefinitions.
 Require Import AssociativeNetworkConversions.
 Require Import AssociativeNetworkEquivalence.
 
-(* Лемма о сохранении длины кортежей ассоциативной сети *)
+(* Лемма о сохранении длины кортежей сети *)
 Lemma TupleOfReferencesDimensionPreserved : forall {l: nat} (t: TupleOfReferences l), List.length (TupleOfReferencesToReferenceList t) = l.
 Proof.
   intros l t.
@@ -47,22 +47,22 @@ Qed.
 
 
 (*
-  Теорема обёртывания и восстановления ассоциативной сети кортежей:
+  Теорема обёртывания и восстановления сети кортежей:
 
-  Пусть дана ассоциативная сеть кортежей длины n, обозначенная как anetvⁿ : Reference → Tⁿ.
-  Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Reference → ReferenceList,
+  Пусть дана сеть кортежей длины n, обозначенная как Nⁿ : Reference → Tⁿ.
+  Определим операцию отображения этой сети в сеть вложенных упорядоченных пар N^{list} : Reference → ReferenceList,
   где ReferenceList = {(∅,∅) | (l, np), l ∈ Reference, np ∈ ReferenceList}.
-  Затем определим обратное отображение из ассоциативной сети вложенных упорядоченных пар обратно
-  в ассоциативную сеть кортежей длины n.
+  Затем определим обратное отображение из сети вложенных упорядоченных пар обратно
+  в сеть кортежей длины n.
 
   Теорема утверждает:
 
-  Для любой ассоциативной сети кортежей длины n, anetvⁿ, применение операции преобразования
-  в ассоциативную сеть вложенных упорядоченных пар и обратное преобразование обратно
-  в ассоциативную сеть кортежей длины n обеспечивает восстановление исходной сети anetvⁿ.
+  Для любой сети кортежей длины n, Nⁿ, применение операции преобразования
+  в сеть вложенных упорядоченных пар и обратное преобразование обратно
+  в сеть кортежей длины n обеспечивает восстановление исходной сети Nⁿ.
   Иначе говоря:
 
-  ∀ anetvⁿ : Reference → Tⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
+  ∀ Nⁿ : Reference → Tⁿ, обратно(вперёд(Nⁿ)) = Nⁿ.
 *)
 Theorem TupleFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkTupleFunction n),
   TupleFunctionEquivalence anet (fun id => match ReferenceListToTupleOfReferencesOption n ((TupleFunctionToReferenceListFunction anet) id) with
@@ -78,7 +78,7 @@ Proof.
 Qed.
 
 
-(* Лемма о сохранении длины списков ReferenceList в ассоциативной сети дуплетов *)
+(* Лемма о сохранении длины списков ReferenceList в сети дуплетов *)
 Lemma ReferenceListDimensionPreserved : forall (offset: nat) (np: ReferenceList),
   length np = length (ReferenceListToDupletList_ offset np).
 Proof.

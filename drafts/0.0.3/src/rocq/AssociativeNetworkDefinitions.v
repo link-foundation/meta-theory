@@ -22,19 +22,19 @@ Definition TupleOfReferencesDefault (n : nat) : TupleOfReferences n := Vector.co
    Link (связь) — это пара из ссылки и кортежа ссылок *)
 Definition Link (n : nat) := prod Reference (TupleOfReferences n).
 
-(* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Reference → TupleOfReferences} *)
+(* Сеть кортежей длины n (или n-мерная сеть) из семейства функций {Nⁿ : Reference → TupleOfReferences} *)
 Definition AssociativeNetworkTupleFunction (n : nat) := Reference -> TupleOfReferences n.
 
-(* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
+(* Сеть кортежей длины n (или n-мерная сеть) в виде последовательности *)
 Definition AssociativeNetworkTupleList (n : nat) := list (TupleOfReferences n).
 
-(* Список ссылок (ранее NestedPair — вложенные упорядоченные пары): ReferenceList ⊆ List(R) *)
+(* Список ссылок: ReferenceList ⊆ List(R) *)
 Definition ReferenceList := list Reference.
 
-(* Ассоциативная сеть списков ссылок: anetl : Reference → ReferenceList *)
+(* Сеть списков ссылок: N^{list} : Reference → ReferenceList *)
 Definition AssociativeNetworkReferenceListFunction := Reference -> ReferenceList.
 
-(* Ассоциативная сеть списков ссылок в виде последовательности списков ссылок *)
+(* Сеть списков ссылок в виде последовательности списков ссылок *)
 Definition AssociativeNetworkReferenceListList := list ReferenceList.
 
 (* Дуплет ссылок: упорядоченная пара (Reference, Reference).
@@ -45,8 +45,8 @@ Definition Duplet := prod Reference Reference.
 (* Значение Duplet по умолчанию: пара из двух ReferenceDefault, используется для обозначения пустого дуплета *)
 Definition DupletDefault : Duplet := (ReferenceDefault, ReferenceDefault).
 
-(* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть): anetd : Reference → Reference² *)
+(* Сеть дуплетов (или двумерная сеть): N² : Reference → Reference² *)
 Definition AssociativeNetworkDupletFunction := Reference -> Duplet.
 
-(* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть) в виде последовательности дуплетов *)
+(* Сеть дуплетов (или двумерная сеть) в виде последовательности дуплетов *)
 Definition AssociativeNetworkDupletList := list Duplet.

@@ -1,13 +1,13 @@
 /-
   AssociativeNetworkExamples.lean
 
-  Практические примеры и тесты преобразований ассоциативных сетей.
+  Практические примеры и тесты преобразований сетей.
   Lean 4 перевод AssociativeNetworkExamples.v (Rocq).
 -/
 import AssociativeNetworkDefinitions
 import AssociativeNetworkConversions
 
--- Трёхмерная ассоциативная сеть
+-- Трёхмерная сеть
 def complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
   fun id => match id with
   | 0 => #v[0, 0, 0]
@@ -31,7 +31,7 @@ def nestedPair4 := TupleOfReferencesToReferenceList exampleTuple4
 #eval nestedPair1 -- Ожидается результат: [0]
 #eval nestedPair4 -- Ожидается результат: [3, 2, 1, 0]
 
--- Вычисление значений преобразованной функции трёхмерной ассоциативной сети
+-- Вычисление значений преобразованной функции трёхмерной сети
 #eval (TupleFunctionToReferenceListFunction complexExampleNetwork) 0 -- Ожидается результат: [0, 0, 0]
 #eval (TupleFunctionToReferenceListFunction complexExampleNetwork) 1 -- Ожидается результат: [1, 1, 2]
 #eval (TupleFunctionToReferenceListFunction complexExampleNetwork) 2 -- Ожидается результат: [2, 4, 0]
@@ -39,7 +39,7 @@ def nestedPair4 := TupleOfReferencesToReferenceList exampleTuple4
 #eval (TupleFunctionToReferenceListFunction complexExampleNetwork) 4 -- Ожидается результат: [4, 1, 1]
 #eval (TupleFunctionToReferenceListFunction complexExampleNetwork) 5 -- Ожидается результат: [0, 0, 0]
 
--- Ассоциативная сеть вложенных упорядоченных пар
+-- Сеть вложенных упорядоченных пар
 def testPairsNetwork : AssociativeNetworkReferenceListFunction :=
   fun id => match id with
   | 0 => [5, 0, 8]
@@ -49,11 +49,11 @@ def testPairsNetwork : AssociativeNetworkReferenceListFunction :=
   | 4 => [4, 2, 1]
   | _ => [0, 0, 0]
 
--- Преобразованная ассоциативная сеть вложенных УП в трёхмерную ассоциативную сеть (размерность должна совпадать)
+-- Преобразованная сеть вложенных УП в трёхмерную сеть (размерность должна совпадать)
 def testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
   ReferenceListFunctionToTupleFunction testPairsNetwork
 
--- Вычисление значений преобразованной функции ассоциативной сети вложенных УП
+-- Вычисление значений преобразованной функции сети вложенных УП
 #eval (testTuplesNetwork 0).toList -- Ожидается результат: [5, 0, 8]
 #eval (testTuplesNetwork 1).toList -- Ожидается результат: [7, 1, 2]
 #eval (testTuplesNetwork 2).toList -- Ожидается результат: [2, 4, 5]
@@ -61,42 +61,42 @@ def testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
 #eval (testTuplesNetwork 4).toList -- Ожидается результат: [4, 2, 1]
 #eval (testTuplesNetwork 5).toList -- Ожидается результат: [0, 0, 0]
 
--- Преобразование вложенных УП в ассоциативную сеть дуплетов
+-- Преобразование вложенных УП в сеть дуплетов
 #eval ReferenceListToDupletList [121, 21, 1343]
 -- Должно вернуть: [(121, 1), (21, 2), (1343, 2)]
 
--- Добавление вложенных УП в ассоциативную сеть дуплетов
+-- Добавление вложенных УП в сеть дуплетов
 #eval AddReferenceListToDupletList [(121, 1), (21, 2), (1343, 2)] [12, 23, 34]
 -- Ожидается результат: [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)]
 
--- Преобразование ассоциативной сети дуплетов во вложенные УП
+-- Преобразование сети дуплетов во вложенные УП
 #eval DupletListToReferenceList [(121, 1), (21, 2), (1343, 2)]
 -- Ожидается результат: [121, 21, 1343]
 
 #eval DupletListToReferenceList [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)]
 -- Ожидается результат: [121, 21, 1343]
 
--- Чтение вложенных УП из ассоциативной сети дуплетов по индексу дуплета — начала вложенных УП
+-- Чтение вложенных УП из сети дуплетов по индексу дуплета — начала вложенных УП
 #eval DupletListReadReferenceList [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)] 0
 -- Ожидается результат: [121, 21, 1343]
 
 #eval DupletListReadReferenceList [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)] 3
 -- Ожидается результат: [12, 23, 34]
 
--- Определяем ассоциативную сеть вложенных УП
+-- Определяем сеть вложенных УП
 def testReferenceListList : AssociativeNetworkReferenceListList :=
   [[121, 21, 1343], [12, 23], [34], [121, 21, 1343], [12, 23], [34]]
 
--- Преобразованная ассоциативная сеть вложенных УП в ассоциативную сеть дуплетов
+-- Преобразованная сеть вложенных УП в сеть дуплетов
 def testDupletList := ReferenceListListToDupletList testReferenceListList
 
--- Вычисление преобразованной ассоциативной сети вложенных УП в ассоциативную сеть дуплетов
+-- Вычисление преобразованной сети вложенных УП в сеть дуплетов
 #eval testDupletList
 
--- Вычисление преобразования ассоциативной сети вложенных УП в ассоциативную сеть дуплетов и обратно в testReferenceListList
+-- Вычисление преобразования сети вложенных УП в сеть дуплетов и обратно в testReferenceListList
 #eval DupletListToReferenceListList testDupletList
 
--- Вычисление смещения вложенных УП в ассоциативной сети дуплетов по их порядковому номеру
+-- Вычисление смещения вложенных УП в сети дуплетов по их порядковому номеру
 #eval DupletListOffsetReferenceList testDupletList 0 -- Ожидается результат: 0
 #eval DupletListOffsetReferenceList testDupletList 1 -- Ожидается результат: 3
 #eval DupletListOffsetReferenceList testDupletList 2 -- Ожидается результат: 5
@@ -106,21 +106,21 @@ def testDupletList := ReferenceListListToDupletList testReferenceListList
 #eval DupletListOffsetReferenceList testDupletList 6 -- Ожидается результат: 12
 #eval DupletListOffsetReferenceList testDupletList 7 -- Ожидается результат: 12
 
--- Определяем трёхмерную ассоциативную сеть как последовательность кортежей длины 3
+-- Определяем трёхмерную сеть как последовательность кортежей длины 3
 def testTupleList : AssociativeNetworkTupleList 3 :=
   [#v[0, 0, 0], #v[1, 1, 2], #v[2, 4, 0], #v[3, 0, 5], #v[4, 1, 1], #v[0, 0, 0]]
 
--- Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП
+-- Преобразованная трёхмерная сеть в сеть дуплетов через сеть вложенных УП
 def testTuplesToDupletList : AssociativeNetworkDupletList := TupleListToDupletList testTupleList
 
--- Вычисление трёхмерной ассоциативной сети преобразованной в ассоциативную сеть дуплетов
+-- Вычисление трёхмерной сети преобразованной в сеть дуплетов
 #eval testTuplesToDupletList
 
--- Преобразование и обратно в трёхмерную ассоциативную сеть
+-- Преобразование и обратно в трёхмерную сеть
 def resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
   ReferenceListListToTupleList (DupletListToReferenceListList testTuplesToDupletList)
 
--- Итоговая проверка эквивалентности ассоциативных сетей
+-- Итоговая проверка эквивалентности сетей
 #eval resultTuplesNetwork.map (·.toList)
 -- Ожидается результат:
 -- [[0, 0, 0], [1, 1, 2], [2, 4, 0], [3, 0, 5], [4, 1, 1], [0, 0, 0]]

@@ -6,7 +6,7 @@
 
 Решение применить Rocq для описания теории связей в рамках теории типов было обусловлено необходимостью строгой формализации доказательств и гарантирования логической корректности в рамках разработки теории связей. Использование Rocq позволяет выразить свойства и операции над связями в точных и надёжных терминах, благодаря системе типов Rocq и мощным средствам для создания и проверки доказательств.
 
-В преддверии обширной работы по доказательству эквивалентности реляционной модели и ассоциативной сети дуплетов, мы представляем в этом разделе начальные шаги, выполненные с использованием систем доказательств Rocq и Lean. На первом этапе стоит задача формализации структур ассоциативных сетей через определения базовых типов, функций и структур.
+В преддверии обширной работы по доказательству эквивалентности реляционной модели и сети дуплетов, мы представляем в этом разделе начальные шаги, выполненные с использованием систем доказательств Rocq и Lean. На первом этапе стоит задача формализации структур сетей через определения базовых типов, функций и структур.
 
 #### О Lean
 
@@ -14,7 +14,7 @@
 
 Использование Lean в дополнение к Rocq позволяет обеспечить более широкую верифицируемость теории связей, а также делает формализацию доступной для более широкой аудитории математиков и разработчиков, знакомых с экосистемой Lean.
 
-#### Определения ассоциативных сетей
+#### Определения сетей
 
 ##### Rocq
 
@@ -44,19 +44,19 @@ Definition TupleOfReferencesDefault (n : nat) : TupleOfReferences n := Vector.co
 (* Множество всех связей: Link = Reference × TupleOfReferences *)
 Definition Link (n : nat) := prod Reference (TupleOfReferences n).
 
-(* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Reference → TupleOfReferences} *)
+(* Сеть кортежей длины n (или n-мерная сеть) из семейства функций {Nⁿ : Reference → TupleOfReferences} *)
 Definition AssociativeNetworkTupleFunction (n : nat) := Reference -> TupleOfReferences n.
 
-(* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
+(* Сеть кортежей длины n (или n-мерная сеть) в виде последовательности *)
 Definition AssociativeNetworkTupleList (n : nat) := list (TupleOfReferences n).
 
 (* Вложенные упорядоченные пары *)
 Definition ReferenceList := list Reference.
 
-(* Ассоциативная сеть вложенных упорядоченных пар: anetl : Reference → ReferenceList *)
+(* Сеть вложенных упорядоченных пар: N^{list} : Reference → ReferenceList *)
 Definition AssociativeNetworkReferenceListFunction := Reference -> ReferenceList.
 
-(* Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар *)
+(* Сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар *)
 Definition AssociativeNetworkReferenceListList := list ReferenceList.
 
 (* Дуплет ссылок *)
@@ -65,10 +65,10 @@ Definition Duplet := prod Reference Reference.
 (* Значение Duplet по умолчанию: пара из двух ReferenceDefault, используется для обозначения пустого дуплета *)
 Definition DupletDefault : Duplet := (ReferenceDefault, ReferenceDefault).
 
-(* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть): anetd : Reference → Reference² *)
+(* Сеть дуплетов (или двумерная сеть): N² : Reference → Reference² *)
 Definition AssociativeNetworkDupletFunction := Reference -> Duplet.
 
-(* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть) в виде последовательности дуплетов *)
+(* Сеть дуплетов (или двумерная сеть) в виде последовательности дуплетов *)
 Definition AssociativeNetworkDupletList := list Duplet.
 ```
 
@@ -92,19 +92,19 @@ def TupleOfReferencesDefault (n : Nat) : TupleOfReferences n := Vector.replicate
 -- Вложенные упорядоченные пары
 abbrev ReferenceList := List Reference
 
--- Ассоциативная сеть вложенных упорядоченных пар: anetl : Reference → ReferenceList
+-- Сеть вложенных упорядоченных пар: N^{list} : Reference → ReferenceList
 abbrev AssociativeNetworkReferenceListFunction := Reference → ReferenceList
 
--- Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар
+-- Сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар
 abbrev AssociativeNetworkReferenceListList := List ReferenceList
 
 -- Множество всех связей: Link = Reference × TupleOfReferences
 abbrev Link (n : Nat) := Reference × TupleOfReferences n
 
--- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Reference → TupleOfReferences}
+-- Сеть кортежей длины n (или n-мерная сеть) из семейства функций {Nⁿ : Reference → TupleOfReferences}
 abbrev AssociativeNetworkTupleFunction (n : Nat) := Reference → TupleOfReferences n
 
--- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности
+-- Сеть кортежей длины n (или n-мерная сеть) в виде последовательности
 abbrev AssociativeNetworkTupleList (n : Nat) := List (TupleOfReferences n)
 
 -- Дуплет ссылок
@@ -113,14 +113,14 @@ abbrev Duplet := Reference × Reference
 -- Значение Duplet по умолчанию: пара из двух ReferenceDefault, используется для обозначения пустого дуплета
 def DupletDefault : Duplet := (ReferenceDefault, ReferenceDefault)
 
--- Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть): anetd : Reference → Reference²
+-- Сеть дуплетов (или двумерная сеть): N² : Reference → Reference²
 abbrev AssociativeNetworkDupletFunction := Reference → Duplet
 
--- Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть) в виде последовательности дуплетов
+-- Сеть дуплетов (или двумерная сеть) в виде последовательности дуплетов
 abbrev AssociativeNetworkDupletList := List Duplet
 ```
 
-#### Функции преобразования ассоциативных сетей
+#### Функции преобразования сетей
 
 ##### Rocq
 
@@ -213,16 +213,16 @@ Fixpoint DupletListToReferenceList_ (anet: AssociativeNetworkDupletList) (offset
 Definition DupletListReadReferenceList (anet: AssociativeNetworkDupletList) (index: nat) : ReferenceList :=
   DupletListToReferenceList_ anet 0 index.
 
-(* Функция преобразования AssociativeNetworkDupletList в ReferenceList начиная с головы списка ассоциативной сети *)
+(* Функция преобразования AssociativeNetworkDupletList в ReferenceList начиная с головы списка сети *)
 Definition DupletListToReferenceList (anet: AssociativeNetworkDupletList) : ReferenceList := DupletListReadReferenceList anet 0.
 
 (*
-  Теперь всё готово для преобразования ассоциативной сети вложенных упорядоченных пар anetl : Reference → ReferenceList
-  в ассоциативную сеть дуплетов anetd : Reference → Reference².
+  Теперь всё готово для преобразования сети вложенных упорядоченных пар N^{list} : Reference → ReferenceList
+  в сеть дуплетов N² : Reference → Reference².
 
   Данное преобразование можно делать по-разному: с сохранением исходных ссылок на кортежи
   либо с переиндексацией. Переиндексацию можно не делать, если написать дополнительную функцию для
-  ассоциативной сети дуплетов, которая возвращает вложенную упорядоченную пару по её ссылке.
+  сети дуплетов, которая возвращает вложенную упорядоченную пару по её ссылке.
 *)
 
 (* Функция добавления AssociativeNetworkReferenceListList в AssociativeNetworkDupletList *)
@@ -264,12 +264,12 @@ Definition TupleListToDupletList {n : nat} (anetv: AssociativeNetworkTupleList n
   ReferenceListListToDupletList (TupleListToReferenceListList anetv).
 
 (*
-  Теперь всё готово для преобразования ассоциативной сети дуплетов anetd : Reference → Reference²
-  в ассоциативную сеть вложенных упорядоченных пар anetl : Reference → ReferenceList.
+  Теперь всё готово для преобразования сети дуплетов N² : Reference → Reference²
+  в сеть вложенных упорядоченных пар N^{list} : Reference → ReferenceList.
 
   Данное преобразование будем делать с сохранением исходных ссылок на кортежи.
   Переиндексацию можно не делать, потому что есть функция DupletListOffsetReferenceList для
-  ассоциативной сети дуплетов, которая возвращает смещение вложенной УП по ссылке на неё.
+  сети дуплетов, которая возвращает смещение вложенной УП по ссылке на неё.
 *)
 
 (* Функция отрезает первую ReferenceList из AssociativeNetworkDupletList и возвращает хвост *)
@@ -290,7 +290,7 @@ Fixpoint DupletListToReferenceListList_ (anetd: AssociativeNetworkDupletList) (n
   | cons (x, next_index) tail_anet =>
   if offset =? next_index then (* конец ReferenceList, переходим к следующей ReferenceList *)
   cons (app np (cons x nil)) (DupletListToReferenceListList_ tail_anet nil (S offset))
-  else (* ещё не конец ReferenceList, парсим ассоциативную сеть дуплетов дальше *)
+  else (* ещё не конец ReferenceList, парсим сеть дуплетов дальше *)
   DupletListToReferenceListList_ tail_anet (app np (cons x nil)) (S offset)
   end.
 
@@ -435,14 +435,14 @@ def DupletListToReferenceListList (anetd : AssociativeNetworkDupletList) : Assoc
   DupletListToReferenceListList_ anetd [] ReferenceDefault
 ```
 
-#### Предикаты эквивалентности ассоциативных сетей
+#### Предикаты эквивалентности сетей
 
 ##### Rocq
 
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/AssociativeNetworkEquivalence.v)
 
 ```rocq
-(* Предикат эквивалентности двух ассоциативных сетей кортежей длины n,
+(* Предикат эквивалентности двух сетей кортежей длины n,
    anet1 и anet2 типа AssociativeNetworkTupleFunction.
 
    Данный предикат описывает свойство «эквивалентности» для таких сетей.
@@ -452,16 +452,16 @@ def DupletListToReferenceListList (anetd : AssociativeNetworkDupletList) : Assoc
 Definition TupleFunctionEquivalence {n: nat} (anet1: AssociativeNetworkTupleFunction n) (anet2: AssociativeNetworkTupleFunction n) : Prop :=
   forall id, anet1 id = anet2 id.
 
-(* Предикат эквивалентности двух ассоциативных сетей кортежей длины n,
+(* Предикат эквивалентности двух сетей кортежей длины n,
    anet1 и anet2 типа AssociativeNetworkTupleList.
 *)
 Definition TupleListEquivalence {n: nat} (anet1: AssociativeNetworkTupleList n) (anet2: AssociativeNetworkTupleList n) : Prop :=
   anet1 = anet2.
 
-(* Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletFunction *)
+(* Предикат эквивалентности для сетей дуплетов AssociativeNetworkDupletFunction *)
 Definition DupletFunctionEquivalence (anet1: AssociativeNetworkDupletFunction) (anet2: AssociativeNetworkDupletFunction) : Prop := forall id, anet1 id = anet2 id.
 
-(* Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletList *)
+(* Предикат эквивалентности для сетей дуплетов AssociativeNetworkDupletList *)
 Definition DupletListEquivalence (anet1: AssociativeNetworkDupletList) (anet2: AssociativeNetworkDupletList) : Prop := anet1 = anet2.
 ```
 
@@ -470,31 +470,31 @@ Definition DupletListEquivalence (anet1: AssociativeNetworkDupletList) (anet2: A
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/AssociativeNetworkEquivalence.lean)
 
 ```lean
--- Предикат эквивалентности двух ассоциативных сетей кортежей длины n
+-- Предикат эквивалентности двух сетей кортежей длины n
 def TupleFunctionEquivalence {n : Nat} (anet1 anet2 : AssociativeNetworkTupleFunction n) : Prop :=
   ∀ id, anet1 id = anet2 id
 
--- Предикат эквивалентности двух ассоциативных сетей кортежей длины n в виде списков
+-- Предикат эквивалентности двух сетей кортежей длины n в виде списков
 def TupleListEquivalence {n : Nat} (anet1 anet2 : AssociativeNetworkTupleList n) : Prop :=
   anet1 = anet2
 
--- Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletFunction
+-- Предикат эквивалентности для сетей дуплетов AssociativeNetworkDupletFunction
 def DupletFunctionEquivalence (anet1 anet2 : AssociativeNetworkDupletFunction) : Prop :=
   ∀ id, anet1 id = anet2 id
 
--- Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletList
+-- Предикат эквивалентности для сетей дуплетов AssociativeNetworkDupletList
 def DupletListEquivalence (anet1 anet2 : AssociativeNetworkDupletList) : Prop :=
   anet1 = anet2
 ```
 
-#### Леммы эквивалентности ассоциативных сетей
+#### Леммы эквивалентности сетей
 
 ##### Rocq
 
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/AssociativeNetworkLemmas.v)
 
 ```rocq
-(* Лемма о сохранении длины кортежей ассоциативной сети *)
+(* Лемма о сохранении длины кортежей сети *)
 Lemma TupleOfReferencesDimensionPreserved : forall {l: nat} (t: TupleOfReferences l), List.length (TupleOfReferencesToReferenceList t) = l.
 Proof.
   intros l t.
@@ -532,22 +532,22 @@ Qed.
 
 
 (*
-  Теорема обёртывания и восстановления ассоциативной сети кортежей:
+  Теорема обёртывания и восстановления сети кортежей:
 
-  Пусть дана ассоциативная сеть кортежей длины n, обозначенная как anetvⁿ : Reference → Tⁿ.
-  Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Reference → ReferenceList,
+  Пусть дана сеть кортежей длины n, обозначенная как Nⁿ : Reference → Tⁿ.
+  Определим операцию отображения этой сети в сеть вложенных упорядоченных пар N^{list} : Reference → ReferenceList,
   где ReferenceList = {(∅,∅) | (l, np), l ∈ Reference, np ∈ ReferenceList}.
-  Затем определим обратное отображение из ассоциативной сети вложенных упорядоченных пар обратно
-  в ассоциативную сеть кортежей длины n.
+  Затем определим обратное отображение из сети вложенных упорядоченных пар обратно
+  в сеть кортежей длины n.
 
   Теорема утверждает:
 
-  Для любой ассоциативной сети кортежей длины n, anetvⁿ, применение операции преобразования
-  в ассоциативную сеть вложенных упорядоченных пар и обратное преобразование обратно
-  в ассоциативную сеть кортежей длины n обеспечивает восстановление исходной сети anetvⁿ.
+  Для любой сети кортежей длины n, Nⁿ, применение операции преобразования
+  в сеть вложенных упорядоченных пар и обратное преобразование обратно
+  в сеть кортежей длины n обеспечивает восстановление исходной сети Nⁿ.
   Иначе говоря:
 
-  ∀ anetvⁿ : Reference → Tⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
+  ∀ Nⁿ : Reference → Tⁿ, обратно(вперёд(Nⁿ)) = Nⁿ.
 *)
 Theorem TupleFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkTupleFunction n),
   TupleFunctionEquivalence anet (fun id => match ReferenceListToTupleOfReferencesOption n ((TupleFunctionToReferenceListFunction anet) id) with
@@ -563,7 +563,7 @@ Proof.
 Qed.
 
 
-(* Лемма о сохранении длины списков ReferenceList в ассоциативной сети дуплетов *)
+(* Лемма о сохранении длины списков ReferenceList в сети дуплетов *)
 Lemma ReferenceListDimensionPreserved : forall (offset: nat) (np: ReferenceList),
   length np = length (ReferenceListToDupletList_ offset np).
 Proof.
@@ -582,7 +582,7 @@ Qed.
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/AssociativeNetworkLemmas.lean)
 
 ```lean
--- Лемма о сохранении длины кортежей ассоциативной сети
+-- Лемма о сохранении длины кортежей сети
 theorem TupleOfReferencesDimensionPreserved {l : Nat} (t : TupleOfReferences l) :
     (TupleOfReferencesToReferenceList t).length = l := by
   simp [TupleOfReferencesToReferenceList]
@@ -593,7 +593,7 @@ theorem ReferenceListToTupleOfReferencesInverse (n : Nat) (t : TupleOfReferences
   simp [ReferenceListToTupleOfReferencesOption, TupleOfReferencesToReferenceList]
   congr 1
 
--- Теорема обёртывания и восстановления ассоциативной сети кортежей
+-- Теорема обёртывания и восстановления сети кортежей
 theorem TupleFunctionEquivalenceAfterTransforms {n : Nat} (anet : AssociativeNetworkTupleFunction n) :
     TupleFunctionEquivalence anet
       (fun id => match ReferenceListToTupleOfReferencesOption n ((TupleFunctionToReferenceListFunction anet) id) with
@@ -603,7 +603,7 @@ theorem TupleFunctionEquivalenceAfterTransforms {n : Nat} (anet : AssociativeNet
   simp [TupleFunctionToReferenceListFunction]
   rw [ReferenceListToTupleOfReferencesInverse]
 
--- Лемма о сохранении длины списков ReferenceList в ассоциативной сети дуплетов
+-- Лемма о сохранении длины списков ReferenceList в сети дуплетов
 theorem ReferenceListDimensionPreserved (offset : Nat) (np : ReferenceList) :
     np.length = (ReferenceListToDupletList_ offset np).length := by
   induction np generalizing offset with
@@ -616,7 +616,7 @@ theorem ReferenceListDimensionPreserved (offset : Nat) (np : ReferenceList) :
       exact ih (offset + 1)
 ```
 
-#### Примеры преобразований между ассоциативными сетями
+#### Примеры преобразований между сетями
 
 ##### Rocq
 
@@ -627,7 +627,7 @@ theorem ReferenceListDimensionPreserved (offset : Nat) (np : ReferenceList) :
 Notation "{ }" := (nil) (at level 0).
 Notation "{ x , .. , y }" := (cons x .. (cons y nil) ..) (at level 0).
 
-(* Трёхмерная ассоциативная сеть *)
+(* Трёхмерная сеть *)
 Definition complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
   fun id => match id with
   | 0 => [0; 0; 0]
@@ -652,7 +652,7 @@ Compute nestedPair0. (* Ожидается результат: { } *)
 Compute nestedPair1. (* Ожидается результат: {0} *)
 Compute nestedPair4. (* Ожидается результат: {3, 2, 1, 0} *)
 
-(* Вычисление значений преобразованной функции трёхмерной ассоциативной сети *)
+(* Вычисление значений преобразованной функции трёхмерной сети *)
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 0. (* Ожидается результат: {0, 0, 0} *)
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 1. (* Ожидается результат: {1, 1, 2} *)
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 2. (* Ожидается результат: {2, 4, 0} *)
@@ -660,7 +660,7 @@ Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 3. (* Ож�
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 4. (* Ожидается результат: {4, 1, 1} *)
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 5. (* Ожидается результат: {0, 0, 0} *)
 
-(* Ассоциативная сеть вложенных упорядоченных пар *)
+(* Сеть вложенных упорядоченных пар *)
 Definition testPairsNetwork : AssociativeNetworkReferenceListFunction :=
   fun id => match id with
   | 0 => {5, 0, 8}
@@ -671,11 +671,11 @@ Definition testPairsNetwork : AssociativeNetworkReferenceListFunction :=
   | S _ => {0, 0, 0}
   end.
 
-(* Преобразованная ассоциативная сеть вложенных УП в трёхмерную ассоциативную сеть (размерность должна совпадать) *)
+(* Преобразованная сеть вложенных УП в трёхмерную сеть (размерность должна совпадать) *)
 Definition testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
   ReferenceListFunctionToTupleFunction testPairsNetwork.
 
-(* Вычисление значений преобразованной функции ассоциативной сети вложенных УП *)
+(* Вычисление значений преобразованной функции сети вложенных УП *)
 Compute testTuplesNetwork 0. (* Ожидается результат: [5; 0; 8] *)
 Compute testTuplesNetwork 1. (* Ожидается результат: [7; 1; 2] *)
 Compute testTuplesNetwork 2. (* Ожидается результат: [2; 4; 5] *)
@@ -683,35 +683,35 @@ Compute testTuplesNetwork 3. (* Ожидается результат: [3; 1; 5]
 Compute testTuplesNetwork 4. (* Ожидается результат: [4; 2; 1] *)
 Compute testTuplesNetwork 5. (* Ожидается результат: [0; 0; 0] *)
 
-(* Преобразование вложенных УП в ассоциативную сеть дуплетов *)
+(* Преобразование вложенных УП в сеть дуплетов *)
 Compute ReferenceListToDupletList { 121, 21, 1343 }.
 (* Должно вернуть: {(121, 1), (21, 2), (1343, 2)} *)
 
-(* Добавление вложенных УП в ассоциативную сеть дуплетов *)
+(* Добавление вложенных УП в сеть дуплетов *)
 Compute AddReferenceListToDupletList {(121, 1), (21, 2), (1343, 2)} {12, 23, 34}.
 (* Ожидается результат: {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} *)
 
-(* Преобразование ассоциативной сети дуплетов во вложенные УП *)
+(* Преобразование сети дуплетов во вложенные УП *)
 Compute DupletListToReferenceList {(121, 1), (21, 2), (1343, 2)}.
 (* Ожидается результат: {121, 21, 1343} *)
 
 Compute DupletListToReferenceList {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)}.
 (* Ожидается результат: {121, 21, 1343} *)
 
-(* Чтение вложенных УП из ассоциативной сети дуплетов по индексу дуплета — начала вложенных УП *)
+(* Чтение вложенных УП из сети дуплетов по индексу дуплета — начала вложенных УП *)
 Compute DupletListReadReferenceList {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} 0.
 (* Ожидается результат: {121, 21, 1343} *)
 
 Compute DupletListReadReferenceList {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} 3.
 (* Ожидается результат: {12, 23, 34} *)
 
-(* Определяем ассоциативную сеть вложенных УП *)
+(* Определяем сеть вложенных УП *)
 Definition testReferenceListList := { {121, 21, 1343}, {12, 23}, {34}, {121, 21, 1343}, {12, 23}, {34} }.
 
-(* Преобразованная ассоциативная сеть вложенных УП в ассоциативную сеть дуплетов *)
+(* Преобразованная сеть вложенных УП в сеть дуплетов *)
 Definition testDupletList := ReferenceListListToDupletList testReferenceListList.
 
-(* Вычисление преобразованной ассоциативной сети вложенных УП в ассоциативную сеть дуплетов *)
+(* Вычисление преобразованной сети вложенных УП в сеть дуплетов *)
 Compute testDupletList.
 (* Ожидается результат:
  {(121, 1), (21, 2), (1343, 2),
@@ -721,12 +721,12 @@ Compute testDupletList.
   (12, 10), (23, 10),
   (34, 11)} *)
 
-(* Вычисление преобразования ассоциативной сети вложенных УП в ассоциативную сеть дуплетов и обратно в testReferenceListList *)
+(* Вычисление преобразования сети вложенных УП в сеть дуплетов и обратно в testReferenceListList *)
 Compute DupletListToReferenceListList testDupletList.
 (* Ожидается результат:
   {{121, 21, 1343}, {12, 23}, {34}, {121, 21, 1343}, {12, 23}, {34}} *)
 
-(* Вычисление смещения вложенных УП в ассоциативной сети дуплетов по их порядковому номеру *)
+(* Вычисление смещения вложенных УП в сети дуплетов по их порядковому номеру *)
 Compute DupletListOffsetReferenceList testDupletList 0. (* Ожидается результат: 0 *)
 Compute DupletListOffsetReferenceList testDupletList 1. (* Ожидается результат: 3 *)
 Compute DupletListOffsetReferenceList testDupletList 2. (* Ожидается результат: 5 *)
@@ -736,14 +736,14 @@ Compute DupletListOffsetReferenceList testDupletList 5. (* Ожидается р
 Compute DupletListOffsetReferenceList testDupletList 6. (* Ожидается результат: 12 *)
 Compute DupletListOffsetReferenceList testDupletList 7. (* Ожидается результат: 12 *)
 
-(* Определяем трёхмерную ассоциативную сеть как последовательность кортежей длины 3 *)
+(* Определяем трёхмерную сеть как последовательность кортежей длины 3 *)
 Definition testTupleList : AssociativeNetworkTupleList 3 :=
   { [0; 0; 0], [1; 1; 2], [2; 4; 0], [3; 0; 5], [4; 1; 1], [0; 0; 0] }.
 
-(* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
+(* Преобразованная трёхмерная сеть в сеть дуплетов через сеть вложенных УП *)
 Definition testTuplesToDupletList : AssociativeNetworkDupletList := TupleListToDupletList testTupleList.
 
-(* Вычисление трёхмерной ассоциативной сети преобразованной в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
+(* Вычисление трёхмерной сети преобразованной в сеть дуплетов через сеть вложенных УП *)
 Compute testTuplesToDupletList.
 (* Ожидается результат:
 { (0, 1), (0, 2), (0, 2),
@@ -753,11 +753,11 @@ Compute testTuplesToDupletList.
   (4, 13), (1, 14), (1, 14),
   (0, 16), (0, 17), (0, 17)} *)
 
-(* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП и обратно в трёхмерную ассоциативную сеть *)
+(* Преобразованная трёхмерная сеть в сеть дуплетов через сеть вложенных УП и обратно в трёхмерную сеть *)
 Definition resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
   ReferenceListListToTupleList (DupletListToReferenceListList testTuplesToDupletList).
 
-(* Итоговая проверка эквивалентности ассоциативных сетей *)
+(* Итоговая проверка эквивалентности сетей *)
 Compute resultTuplesNetwork.
 (* Ожидается результат:
   { [0; 0; 0], [1; 1; 2], [2; 4; 0], [3; 0; 5], [4; 1; 1], [0; 0; 0] } *)
@@ -768,7 +768,7 @@ Compute resultTuplesNetwork.
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/AssociativeNetworkExamples.lean)
 
 ```lean
--- Трёхмерная ассоциативная сеть
+-- Трёхмерная сеть
 def complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
   fun id => match id with
   | 0 => #v[0, 0, 0]
@@ -778,32 +778,32 @@ def complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
   | 4 => #v[4, 1, 1]
   | _ => #v[0, 0, 0]
 
--- Преобразование вложенных УП в ассоциативную сеть дуплетов
+-- Преобразование вложенных УП в сеть дуплетов
 #eval ReferenceListToDupletList [121, 21, 1343]
 -- Должно вернуть: [(121, 1), (21, 2), (1343, 2)]
 
--- Добавление вложенных УП в ассоциативную сеть дуплетов
+-- Добавление вложенных УП в сеть дуплетов
 #eval AddReferenceListToDupletList [(121, 1), (21, 2), (1343, 2)] [12, 23, 34]
 -- Ожидается результат: [(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)]
 
--- Преобразование ассоциативной сети дуплетов во вложенные УП
+-- Преобразование сети дуплетов во вложенные УП
 #eval DupletListToReferenceList [(121, 1), (21, 2), (1343, 2)]
 -- Ожидается результат: [121, 21, 1343]
 
--- Определяем ассоциативную сеть вложенных УП
+-- Определяем сеть вложенных УП
 def testReferenceListList : AssociativeNetworkReferenceListList :=
   [[121, 21, 1343], [12, 23], [34], [121, 21, 1343], [12, 23], [34]]
 
--- Преобразование ассоциативной сети вложенных УП в ассоциативную сеть дуплетов и обратно
+-- Преобразование сети вложенных УП в сеть дуплетов и обратно
 #eval DupletListToReferenceListList (ReferenceListListToDupletList testReferenceListList)
 -- Ожидается результат:
 -- [[121, 21, 1343], [12, 23], [34], [121, 21, 1343], [12, 23], [34]]
 
--- Определяем трёхмерную ассоциативную сеть как последовательность кортежей длины 3
+-- Определяем трёхмерную сеть как последовательность кортежей длины 3
 def testTupleList : AssociativeNetworkTupleList 3 :=
   [#v[0, 0, 0], #v[1, 1, 2], #v[2, 4, 0], #v[3, 0, 5], #v[4, 1, 1], #v[0, 0, 0]]
 
--- Итоговая проверка эквивалентности ассоциативных сетей
+-- Итоговая проверка эквивалентности сетей
 def resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
   ReferenceListListToTupleList (DupletListToReferenceListList (TupleListToDupletList testTupleList))
 

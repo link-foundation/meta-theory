@@ -1,7 +1,7 @@
 /-
   AssociativeNetworkDefinitions.lean
 
-  Определения основных типов для ассоциативных сетей.
+  Определения основных типов для сетей.
   Lean 4 перевод AssociativeNetworkDefinitions.v (Rocq).
 -/
 
@@ -17,22 +17,22 @@ abbrev TupleOfReferences (n : Nat) := Vector Reference n
 -- Значение TupleOfReferences по умолчанию
 def TupleOfReferencesDefault (n : Nat) : TupleOfReferences n := Vector.replicate n ReferenceDefault
 
--- Список ссылок (ранее NestedPair — вложенные упорядоченные пары): ReferenceList ⊆ List(R)
+-- Список ссылок: ReferenceList ⊆ List(R)
 abbrev ReferenceList := List Reference
 
--- Ассоциативная сеть списков ссылок: anetl : Reference → ReferenceList
+-- Сеть списков ссылок: N^{list} : Reference → ReferenceList
 abbrev AssociativeNetworkReferenceListFunction := Reference → ReferenceList
 
--- Ассоциативная сеть списков ссылок в виде последовательности списков ссылок
+-- Сеть списков ссылок в виде последовательности списков ссылок
 abbrev AssociativeNetworkReferenceListList := List ReferenceList
 
 -- Множество всех связей: Link = Reference × TupleOfReferences
 abbrev Link (n : Nat) := Reference × TupleOfReferences n
 
--- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Reference → TupleOfReferences}
+-- Сеть кортежей длины n (или n-мерная сеть) из семейства функций {Nⁿ : Reference → TupleOfReferences}
 abbrev AssociativeNetworkTupleFunction (n : Nat) := Reference → TupleOfReferences n
 
--- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности
+-- Сеть кортежей длины n (или n-мерная сеть) в виде последовательности
 abbrev AssociativeNetworkTupleList (n : Nat) := List (TupleOfReferences n)
 
 -- Дуплет ссылок: упорядоченная пара (Reference, Reference).
@@ -43,8 +43,8 @@ abbrev Duplet := Reference × Reference
 -- Значение Duplet по умолчанию: пара из двух ReferenceDefault, используется для обозначения пустого дуплета
 def DupletDefault : Duplet := (ReferenceDefault, ReferenceDefault)
 
--- Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть): anetd : Reference → Reference²
+-- Сеть дуплетов (или двумерная сеть): N² : Reference → Reference²
 abbrev AssociativeNetworkDupletFunction := Reference → Duplet
 
--- Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть) в виде последовательности дуплетов
+-- Сеть дуплетов (или двумерная сеть) в виде последовательности дуплетов
 abbrev AssociativeNetworkDupletList := List Duplet

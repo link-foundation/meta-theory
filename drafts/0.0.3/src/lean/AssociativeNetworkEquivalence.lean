@@ -1,13 +1,13 @@
 /-
   AssociativeNetworkEquivalence.lean
 
-  Предикаты эквивалентности для различных представлений ассоциативных сетей.
+  Предикаты эквивалентности для различных представлений сетей.
   Lean 4 перевод AssociativeNetworkEquivalence.v (Rocq).
 -/
 import AssociativeNetworkDefinitions
 import AssociativeNetworkConversions
 
--- Предикат эквивалентности двух ассоциативных сетей кортежей длины n,
+-- Предикат эквивалентности двух сетей кортежей длины n,
 -- anet1 и anet2 типа AssociativeNetworkTupleFunction.
 --
 -- Данный предикат описывает свойство «эквивалентности» для таких сетей.
@@ -16,15 +16,15 @@ import AssociativeNetworkConversions
 def TupleFunctionEquivalence {n : Nat} (anet1 anet2 : AssociativeNetworkTupleFunction n) : Prop :=
   ∀ id, anet1 id = anet2 id
 
--- Предикат эквивалентности двух ассоциативных сетей кортежей длины n,
+-- Предикат эквивалентности двух сетей кортежей длины n,
 -- anet1 и anet2 типа AssociativeNetworkTupleList.
 def TupleListEquivalence {n : Nat} (anet1 anet2 : AssociativeNetworkTupleList n) : Prop :=
   anet1 = anet2
 
--- Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletFunction
+-- Предикат эквивалентности для сетей дуплетов AssociativeNetworkDupletFunction
 def DupletFunctionEquivalence (anet1 anet2 : AssociativeNetworkDupletFunction) : Prop :=
   ∀ id, anet1 id = anet2 id
 
--- Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletList
+-- Предикат эквивалентности для сетей дуплетов AssociativeNetworkDupletList
 def DupletListEquivalence (anet1 anet2 : AssociativeNetworkDupletList) : Prop :=
   anet1 = anet2

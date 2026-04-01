@@ -12,7 +12,7 @@ Require Import AssociativeNetworkConversions.
 Notation "{ }" := (nil) (at level 0).
 Notation "{ x , .. , y }" := (cons x .. (cons y nil) ..) (at level 0).
 
-(* Трёхмерная ассоциативная сеть *)
+(* Трёхмерная сеть *)
 Definition complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
   fun id => match id with
   | 0 => [0; 0; 0]
@@ -37,7 +37,7 @@ Compute nestedPair0. (* Ожидается результат: { } *)
 Compute nestedPair1. (* Ожидается результат: {0} *)
 Compute nestedPair4. (* Ожидается результат: {3, 2, 1, 0} *)
 
-(* Вычисление значений преобразованной функции трёхмерной ассоциативной сети *)
+(* Вычисление значений преобразованной функции трёхмерной сети *)
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 0. (* Ожидается результат: {0, 0, 0} *)
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 1. (* Ожидается результат: {1, 1, 2} *)
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 2. (* Ожидается результат: {2, 4, 0} *)
@@ -45,7 +45,7 @@ Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 3. (* Ож�
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 4. (* Ожидается результат: {4, 1, 1} *)
 Compute (TupleFunctionToReferenceListFunction complexExampleNetwork) 5. (* Ожидается результат: {0, 0, 0} *)
 
-(* Ассоциативная сеть вложенных упорядоченных пар *)
+(* Сеть вложенных упорядоченных пар *)
 Definition testPairsNetwork : AssociativeNetworkReferenceListFunction :=
   fun id => match id with
   | 0 => {5, 0, 8}
@@ -56,11 +56,11 @@ Definition testPairsNetwork : AssociativeNetworkReferenceListFunction :=
   | S _ => {0, 0, 0}
   end.
 
-(* Преобразованная ассоциативная сеть вложенных УП в трёхмерную ассоциативную сеть (размерность должна совпадать) *)
+(* Преобразованная сеть вложенных УП в трёхмерную сеть (размерность должна совпадать) *)
 Definition testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
   ReferenceListFunctionToTupleFunction testPairsNetwork.
 
-(* Вычисление значений преобразованной функции ассоциативной сети вложенных УП *)
+(* Вычисление значений преобразованной функции сети вложенных УП *)
 Compute testTuplesNetwork 0. (* Ожидается результат: [5; 0; 8] *)
 Compute testTuplesNetwork 1. (* Ожидается результат: [7; 1; 2] *)
 Compute testTuplesNetwork 2. (* Ожидается результат: [2; 4; 5] *)
@@ -68,35 +68,35 @@ Compute testTuplesNetwork 3. (* Ожидается результат: [3; 1; 5]
 Compute testTuplesNetwork 4. (* Ожидается результат: [4; 2; 1] *)
 Compute testTuplesNetwork 5. (* Ожидается результат: [0; 0; 0] *)
 
-(* Преобразование вложенных УП в ассоциативную сеть дуплетов *)
+(* Преобразование вложенных УП в сеть дуплетов *)
 Compute ReferenceListToDupletList { 121, 21, 1343 }.
 (* Должно вернуть: {(121, 1), (21, 2), (1343, 2)} *)
 
-(* Добавление вложенных УП в ассоциативную сеть дуплетов *)
+(* Добавление вложенных УП в сеть дуплетов *)
 Compute AddReferenceListToDupletList {(121, 1), (21, 2), (1343, 2)} {12, 23, 34}.
 (* Ожидается результат: {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} *)
 
-(* Преобразование ассоциативной сети дуплетов во вложенные УП *)
+(* Преобразование сети дуплетов во вложенные УП *)
 Compute DupletListToReferenceList {(121, 1), (21, 2), (1343, 2)}.
 (* Ожидается результат: {121, 21, 1343} *)
 
 Compute DupletListToReferenceList {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)}.
 (* Ожидается результат: {121, 21, 1343} *)
 
-(* Чтение вложенных УП из ассоциативной сети дуплетов по индексу дуплета — начала вложенных УП *)
+(* Чтение вложенных УП из сети дуплетов по индексу дуплета — начала вложенных УП *)
 Compute DupletListReadReferenceList {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} 0.
 (* Ожидается результат: {121, 21, 1343} *)
 
 Compute DupletListReadReferenceList {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} 3.
 (* Ожидается результат: {12, 23, 34} *)
 
-(* Определяем ассоциативную сеть вложенных УП *)
+(* Определяем сеть вложенных УП *)
 Definition testReferenceListList := { {121, 21, 1343}, {12, 23}, {34}, {121, 21, 1343}, {12, 23}, {34} }.
 
-(* Преобразованная ассоциативная сеть вложенных УП в ассоциативную сеть дуплетов *)
+(* Преобразованная сеть вложенных УП в сеть дуплетов *)
 Definition testDupletList := ReferenceListListToDupletList testReferenceListList.
 
-(* Вычисление преобразованной ассоциативной сети вложенных УП в ассоциативную сеть дуплетов *)
+(* Вычисление преобразованной сети вложенных УП в сеть дуплетов *)
 Compute testDupletList.
 (* Ожидается результат:
  {(121, 1), (21, 2), (1343, 2),
@@ -106,12 +106,12 @@ Compute testDupletList.
   (12, 10), (23, 10),
   (34, 11)} *)
 
-(* Вычисление преобразования ассоциативной сети вложенных УП в ассоциативную сеть дуплетов и обратно в testReferenceListList *)
+(* Вычисление преобразования сети вложенных УП в сеть дуплетов и обратно в testReferenceListList *)
 Compute DupletListToReferenceListList testDupletList.
 (* Ожидается результат:
   {{121, 21, 1343}, {12, 23}, {34}, {121, 21, 1343}, {12, 23}, {34}} *)
 
-(* Вычисление смещения вложенных УП в ассоциативной сети дуплетов по их порядковому номеру *)
+(* Вычисление смещения вложенных УП в сети дуплетов по их порядковому номеру *)
 Compute DupletListOffsetReferenceList testDupletList 0. (* Ожидается результат: 0 *)
 Compute DupletListOffsetReferenceList testDupletList 1. (* Ожидается результат: 3 *)
 Compute DupletListOffsetReferenceList testDupletList 2. (* Ожидается результат: 5 *)
@@ -121,14 +121,14 @@ Compute DupletListOffsetReferenceList testDupletList 5. (* Ожидается р
 Compute DupletListOffsetReferenceList testDupletList 6. (* Ожидается результат: 12 *)
 Compute DupletListOffsetReferenceList testDupletList 7. (* Ожидается результат: 12 *)
 
-(* Определяем трёхмерную ассоциативную сеть как последовательность кортежей длины 3 *)
+(* Определяем трёхмерную сеть как последовательность кортежей длины 3 *)
 Definition testTupleList : AssociativeNetworkTupleList 3 :=
   { [0; 0; 0], [1; 1; 2], [2; 4; 0], [3; 0; 5], [4; 1; 1], [0; 0; 0] }.
 
-(* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
+(* Преобразованная трёхмерная сеть в сеть дуплетов через сеть вложенных УП *)
 Definition testTuplesToDupletList : AssociativeNetworkDupletList := TupleListToDupletList testTupleList.
 
-(* Вычисление трёхмерной ассоциативной сети преобразованной в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
+(* Вычисление трёхмерной сети преобразованной в сеть дуплетов через сеть вложенных УП *)
 Compute testTuplesToDupletList.
 (* Ожидается результат:
 { (0, 1), (0, 2), (0, 2),
@@ -138,11 +138,11 @@ Compute testTuplesToDupletList.
   (4, 13), (1, 14), (1, 14),
   (0, 16), (0, 17), (0, 17)} *)
 
-(* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП и обратно в трёхмерную ассоциативную сеть *)
+(* Преобразованная трёхмерная сеть в сеть дуплетов через сеть вложенных УП и обратно в трёхмерную сеть *)
 Definition resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
   ReferenceListListToTupleList (DupletListToReferenceListList testTuplesToDupletList).
 
-(* Итоговая проверка эквивалентности ассоциативных сетей *)
+(* Итоговая проверка эквивалентности сетей *)
 Compute resultTuplesNetwork.
 (* Ожидается результат:
   { [0; 0; 0], [1; 1; 2], [2; 4; 0], [3; 0; 5], [4; 1; 1], [0; 0; 0] } *)

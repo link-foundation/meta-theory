@@ -10,13 +10,13 @@
 
 **Уровень 0 (базовый):**
 
-> $\displaystyle Reference := \mathbb{N}_0, \quad Duplet := Reference \times Reference, \quad AssociativeNetwork : Reference \to Duplet$
+> $\displaystyle Reference := \mathbb{N}_0, \quad Duplet := Reference \times Reference, \quad Network : Reference \to Duplet$
 
 **Уровень 1 (последовательности через связи):**
 
 > $\displaystyle LinkSequence := Reference$
 
-Последовательность — это ссылка на корень дерева связей-дуплетов, хранимого в ассоциативной сети. Каждый внутренний узел — дуплет $(ссылка\_на\_левое, ссылка\_на\_правое)$, листья — элементы последовательности. Например: $[1, 2, 3, 4] = ((1, 2), (3, 4))$, хранится в математической нотации как $5 \to (1, 2),\ 6 \to (3, 4),\ 7 \to (5, 6)$ или в [нотации связей](https://github.com/link-foundation/links-notation): `(5: 1 2) (6: 3 4) (7: 5 6)`.
+Последовательность — это ссылка на корень дерева связей-дуплетов, хранимого в сети. Каждый внутренний узел — дуплет $(ссылка\_на\_левое, ссылка\_на\_правое)$, листья — элементы последовательности. Например: $[1, 2, 3, 4] = ((1, 2), (3, 4))$, хранится в математической нотации как $5 \to (1, 2),\ 6 \to (3, 4),\ 7 \to (5, 6)$ или в [нотации связей](https://github.com/link-foundation/links-notation): `(5: 1 2) (6: 3 4) (7: 5 6)`.
 
 **Уровень 2 (множества через последовательности):**
 
@@ -28,7 +28,7 @@
 
 > $\displaystyle MetaReference := Reference, \quad MetaDuplet := MetaReference \times MetaReference, \quad MetaAssociativeNetwork : MetaReference \to MetaDuplet$
 
-Мета-ссылка — это элемент множества, хранимого в ассоциативной сети. Мета-дуплет — пара мета-ссылок. Мета-ассоциативная сеть — функция из мета-ссылок в мета-дуплеты.
+Мета-ссылка — это элемент множества, хранимого в сети. Мета-дуплет — пара мета-ссылок. Мета-сеть — функция из мета-ссылок в мета-дуплеты.
 
 **Уровень 3 структурно идентичен Уровню 0**, но определён через конструкции Уровней 1 и 2, которые сами определены через Уровень 0. Цикл замкнут.
 
@@ -47,26 +47,26 @@ Require Import SetSequenceEquivalence.
 (* Мета-ссылка: элемент множества, определённого через связи-дуплеты *)
 Definition MetaReference := Reference.
 
-(* Мета-пространство ссылок: ссылка на корень дерева в ассоциативной сети *)
+(* Мета-пространство ссылок: ссылка на корень дерева в сети *)
 Definition MetaReferenceSpace := LinkSet.
 
 (* Мета-дуплет: пара мета-ссылок *)
 Definition MetaDuplet := prod MetaReference MetaReference.
 
-(* Мета-ассоциативная сеть *)
+(* Мета-сеть *)
 Definition MetaAssociativeNetwork := MetaReference -> MetaDuplet.
 
-(* Мета-ассоциативная сеть в виде последовательности мета-дуплетов *)
+(* Мета-сеть в виде последовательности мета-дуплетов *)
 Definition MetaAssociativeNetworkList := list MetaDuplet.
 
-(* Создание мета-пространства ссылок в ассоциативной сети *)
+(* Создание мета-пространства ссылок в сети *)
 Definition MakeMetaReferenceSpace (size : nat) (offset : nat)
     : option (MetaReferenceSpace * AssociativeNetworkDupletList) :=
   ListToSet (makeMetaReferenceSpace_ size) offset.
 
 (* ОСНОВНАЯ ТЕОРЕМА МЕТА-ТЕОРИИ:
-   Любая мета-ассоциативная сеть может быть представлена
-   как обычная ассоциативная сеть дуплетов *)
+   Любая мета-сеть может быть представлена
+   как обычная сеть дуплетов *)
 Theorem meta_network_is_duplet_network :
   forall (net : MetaAssociativeNetworkList),
     MetaNetworkToDupletList net = net.
@@ -89,21 +89,21 @@ import SetSequenceEquivalence
 -- Мета-ссылка: элемент множества, определённого через связи-дуплеты
 abbrev MetaReference := Reference
 
--- Мета-пространство ссылок: ссылка на корень дерева в ассоциативной сети
+-- Мета-пространство ссылок: ссылка на корень дерева в сети
 abbrev MetaReferenceSpace := LinkSet
 
 -- Мета-дуплет: пара мета-ссылок
 abbrev MetaDuplet := MetaReference × MetaReference
 
--- Мета-ассоциативная сеть
+-- Мета-сеть
 abbrev MetaAssociativeNetwork := MetaReference → MetaDuplet
 
--- Мета-ассоциативная сеть в виде последовательности мета-дуплетов
+-- Мета-сеть в виде последовательности мета-дуплетов
 abbrev MetaAssociativeNetworkList := List MetaDuplet
 
 -- ОСНОВНАЯ ТЕОРЕМА МЕТА-ТЕОРИИ:
--- Любая мета-ассоциативная сеть может быть представлена
--- как обычная ассоциативная сеть дуплетов
+-- Любая мета-сеть может быть представлена
+-- как обычная сеть дуплетов
 theorem meta_network_is_duplet_network :
     ∀ (net : MetaAssociativeNetworkList),
       MetaNetworkToDupletList net = net

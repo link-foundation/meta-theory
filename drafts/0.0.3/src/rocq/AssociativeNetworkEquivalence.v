@@ -8,7 +8,7 @@ Import VectorNotations.
 Require Import AssociativeNetworkDefinitions.
 Require Import AssociativeNetworkConversions.
 
-(* Предикат эквивалентности двух ассоциативных сетей кортежей длины n,
+(* Предикат эквивалентности двух сетей кортежей длины n,
    anet1 и anet2 типа AssociativeNetworkTupleFunction.
 
    Данный предикат описывает свойство «эквивалентности» для таких сетей.
@@ -18,14 +18,14 @@ Require Import AssociativeNetworkConversions.
 Definition TupleFunctionEquivalence {n: nat} (anet1: AssociativeNetworkTupleFunction n) (anet2: AssociativeNetworkTupleFunction n) : Prop :=
   forall id, anet1 id = anet2 id.
 
-(* Предикат эквивалентности двух ассоциативных сетей кортежей длины n,
+(* Предикат эквивалентности двух сетей кортежей длины n,
    anet1 и anet2 типа AssociativeNetworkTupleList.
 *)
 Definition TupleListEquivalence {n: nat} (anet1: AssociativeNetworkTupleList n) (anet2: AssociativeNetworkTupleList n) : Prop :=
   anet1 = anet2.
 
-(* Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletFunction *)
+(* Предикат эквивалентности для сетей дуплетов AssociativeNetworkDupletFunction *)
 Definition DupletFunctionEquivalence (anet1: AssociativeNetworkDupletFunction) (anet2: AssociativeNetworkDupletFunction) : Prop := forall id, anet1 id = anet2 id.
 
-(* Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletList *)
+(* Предикат эквивалентности для сетей дуплетов AssociativeNetworkDupletList *)
 Definition DupletListEquivalence (anet1: AssociativeNetworkDupletList) (anet2: AssociativeNetworkDupletList) : Prop := anet1 = anet2.

@@ -67,7 +67,7 @@ Definition ReferenceListToDupletList (np: ReferenceList) : AssociativeNetworkDup
 Definition AddReferenceListToDupletList (anet: AssociativeNetworkDupletList) (np: ReferenceList) : AssociativeNetworkDupletList :=
   app anet (ReferenceListToDupletList_ (length anet) np).
 
-(* Функция отрезает голову anetd и возвращает хвост начиная с offset *)
+(* Функция отрезает голову N² и возвращает хвост начиная с offset *)
 Fixpoint DupletListBehead (anet: AssociativeNetworkDupletList) (offset : nat) : AssociativeNetworkDupletList :=
   match offset with
   | 0 => anet
@@ -93,16 +93,16 @@ Fixpoint DupletListToReferenceList_ (anet: AssociativeNetworkDupletList) (offset
 Definition DupletListReadReferenceList (anet: AssociativeNetworkDupletList) (index: nat) : ReferenceList :=
   DupletListToReferenceList_ anet 0 index.
 
-(* Функция преобразования AssociativeNetworkDupletList в ReferenceList начиная с головы списка ассоциативной сети *)
+(* Функция преобразования AssociativeNetworkDupletList в ReferenceList начиная с головы списка сети *)
 Definition DupletListToReferenceList (anet: AssociativeNetworkDupletList) : ReferenceList := DupletListReadReferenceList anet 0.
 
 (*
-  Теперь всё готово для преобразования ассоциативной сети вложенных упорядоченных пар anetl : Reference → ReferenceList
-  в ассоциативную сеть дуплетов anetd : Reference → Reference².
+  Теперь всё готово для преобразования сети вложенных упорядоченных пар N^{list} : Reference → ReferenceList
+  в сеть дуплетов N² : Reference → Reference².
 
   Данное преобразование можно делать по-разному: с сохранением исходных ссылок на кортежи
   либо с переиндексацией. Переиндексацию можно не делать, если написать дополнительную функцию для
-  ассоциативной сети дуплетов, которая возвращает вложенную упорядоченную пару по её ссылке.
+  сети дуплетов, которая возвращает вложенную упорядоченную пару по её ссылке.
 *)
 
 (* Функция добавления AssociativeNetworkReferenceListList в AssociativeNetworkDupletList *)
@@ -144,12 +144,12 @@ Definition TupleListToDupletList {n : nat} (anetv: AssociativeNetworkTupleList n
   ReferenceListListToDupletList (TupleListToReferenceListList anetv).
 
 (*
-  Теперь всё готово для преобразования ассоциативной сети дуплетов anetd : Reference → Reference²
-  в ассоциативную сеть вложенных упорядоченных пар anetl : Reference → ReferenceList.
+  Теперь всё готово для преобразования сети дуплетов N² : Reference → Reference²
+  в сеть вложенных упорядоченных пар N^{list} : Reference → ReferenceList.
 
   Данное преобразование будем делать с сохранением исходных ссылок на кортежи.
   Переиндексацию можно не делать, потому что есть функция DupletListOffsetReferenceList для
-  ассоциативной сети дуплетов, которая возвращает смещение вложенной УП по ссылке на неё.
+  сети дуплетов, которая возвращает смещение вложенной УП по ссылке на неё.
 *)
 
 (* Функция отрезает первую ReferenceList из AssociativeNetworkDupletList и возвращает хвост *)
@@ -170,7 +170,7 @@ Fixpoint DupletListToReferenceListList_ (anetd: AssociativeNetworkDupletList) (n
   | cons (x, next_index) tail_anet =>
   if offset =? next_index then (* конец ReferenceList, переходим к следующей ReferenceList *)
   cons (app np (cons x nil)) (DupletListToReferenceListList_ tail_anet nil (S offset))
-  else (* ещё не конец ReferenceList, парсим ассоциативную сеть дуплетов дальше *)
+  else (* ещё не конец ReferenceList, парсим сеть дуплетов дальше *)
   DupletListToReferenceListList_ tail_anet (app np (cons x nil)) (S offset)
   end.
 

@@ -7,43 +7,43 @@ Import ListNotations.
 Import VectorNotations.
 
 (* Множество ссылок на вектора: L ⊆ ℕ₀ *)
-Definition L := nat.
+Definition Link := nat.
 
-(* Значение L по умолчанию: ноль *)
-Definition LDefault : L := 0.
+(* Значение Link по умолчанию: ноль *)
+Definition LinkDefault : Link := 0.
 
-(* Множество векторов ссылок длины n ∈ ℕ₀: Vn ⊆ Lⁿ *)
-Definition Vn (n : nat) := t L n.
+(* Множество векторов ссылок длины n ∈ ℕ₀: VectorOfLinks ⊆ Lⁿ *)
+Definition VectorOfLinks (n : nat) := t Link n.
 
-(* Значение Vn по умолчанию *)
-Definition VnDefault (n : nat) : Vn n := Vector.const LDefault n.
+(* Значение VectorOfLinks по умолчанию *)
+Definition VectorOfLinksDefault (n : nat) : VectorOfLinks n := Vector.const LinkDefault n.
 
-(* Множество всех ассоциаций: A = L × Vn *)
-Definition A (n : nat) := prod L (Vn n).
+(* Множество всех ассоциаций: Association = Link × VectorOfLinks *)
+Definition Association (n : nat) := prod Link (VectorOfLinks n).
 
-(* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : L → Vn} *)
-Definition ANetVf (n : nat) := L -> Vn n.
+(* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → VectorOfLinks} *)
+Definition AssociativeNetworkVectorFunction (n : nat) := Link -> VectorOfLinks n.
 
 (* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
-Definition ANetVl (n : nat) := list (Vn n).
+Definition AssociativeNetworkVectorList (n : nat) := list (VectorOfLinks n).
 
 (* Вложенные упорядоченные пары *)
-Definition NP := list L.
+Definition NestedPair := list Link.
 
-(* Ассоциативная сеть вложенных упорядоченных пар: anetl : L → NP *)
-Definition ANetLf := L -> NP.
+(* Ассоциативная сеть вложенных упорядоченных пар: anetl : Link → NestedPair *)
+Definition AssociativeNetworkNestedPairFunction := Link -> NestedPair.
 
 (* Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар *)
-Definition ANetLl := list NP.
+Definition AssociativeNetworkNestedPairList := list NestedPair.
 
 (* Дуплет ссылок *)
-Definition D := prod L L.
+Definition Duplet := prod Link Link.
 
-(* Значение D по умолчанию: пара из двух LDefault, используется для обозначения пустого дуплета *)
-Definition DDefault : D := (LDefault, LDefault).
+(* Значение Duplet по умолчанию: пара из двух LinkDefault, используется для обозначения пустого дуплета *)
+Definition DupletDefault : Duplet := (LinkDefault, LinkDefault).
 
-(* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть): anetd : L → L² *)
-Definition ANetDf := L -> D.
+(* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть): anetd : Link → Link² *)
+Definition AssociativeNetworkDupletFunction := Link -> Duplet.
 
 (* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть) в виде последовательности дуплетов *)
-Definition ANetDl := list D.
+Definition AssociativeNetworkDupletList := list Duplet.

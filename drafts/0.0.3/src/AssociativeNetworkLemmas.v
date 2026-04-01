@@ -10,7 +10,7 @@ Require Import AssociativeNetworkConversions.
 Require Import AssociativeNetworkEquivalence.
 
 (* Лемма о сохранении длины векторов ассоциативной сети *)
-Lemma Vn_dim_preserved : forall {l: nat} (t: Vn l), List.length (VnToNP t) = l.
+Lemma VectorOfLinksDimensionPreserved : forall {l: nat} (t: VectorOfLinks l), List.length (VectorOfLinksToNestedPair t) = l.
 Proof.
   intros l t.
   induction t.
@@ -19,25 +19,25 @@ Proof.
 Qed.
 
 
-(* Лемма о взаимном обращении функций NPToVnOption и VnToNP
+(* Лемма о взаимном обращении функций NestedPairToVectorOfLinksOption и VectorOfLinksToNestedPair
 
-   H_inverse доказывает, что каждый вектор Vn без потери данных может быть преобразован в NP
-   с помощью VnToNP и обратно в Vn с помощью NPToVnOption.
+   NestedPairToVectorOfLinksInverse доказывает, что каждый вектор VectorOfLinks без потери данных может быть преобразован в NestedPair
+   с помощью VectorOfLinksToNestedPair и обратно в VectorOfLinks с помощью NestedPairToVectorOfLinksOption.
 
-   В формальном виде forall n: nat, forall t: Vn n, NPToVnOption n (VnToNP t) = Some t говорит о том,
-   что для всякого натурального числа n и каждого вектора Vn длины n,
-   мы можем преобразовать Vn в NP с помощью VnToNP,
-   затем обратно преобразовать результат в Vn с помощью NPToVnOption n,
-   и в итоге получить тот же вектор Vn, что и в начале.
+   В формальном виде forall n: nat, forall t: VectorOfLinks n, NestedPairToVectorOfLinksOption n (VectorOfLinksToNestedPair t) = Some t говорит о том,
+   что для всякого натурального числа n и каждого вектора VectorOfLinks длины n,
+   мы можем преобразовать VectorOfLinks в NestedPair с помощью VectorOfLinksToNestedPair,
+   затем обратно преобразовать результат в VectorOfLinks с помощью NestedPairToVectorOfLinksOption n,
+   и в итоге получить тот же вектор VectorOfLinks, что и в начале.
 
    Это свойство очень важно, потому что оно гарантирует,
-   что эти две функции образуют обратную пару на множестве преобразуемых векторов Vn и NP.
+   что эти две функции образуют обратную пару на множестве преобразуемых векторов VectorOfLinks и NestedPair.
    Когда вы применяете обе функции к значениям в этом множестве, вы в итоге получаете исходное значение.
    Это означает, что никакая информация не теряется при преобразованиях,
-   так что можно свободно конвертировать между Vn и NP,
+   так что можно свободно конвертировать между VectorOfLinks и NestedPair,
    если это требуется в реализации или доказательствах.
 *)
-Lemma H_inverse: forall n: nat, forall t: Vn n, NPToVnOption n (VnToNP t) = Some t.
+Lemma NestedPairToVectorOfLinksInverse: forall n: nat, forall t: VectorOfLinks n, NestedPairToVectorOfLinksOption n (VectorOfLinksToNestedPair t) = Some t.
 Proof.
   intros n.
   induction t as [| h n' t' IH].
@@ -49,9 +49,9 @@ Qed.
 (*
   Теорема обёртывания и восстановления ассоциативной сети векторов:
 
-  Пусть дана ассоциативная сеть векторов длины n, обозначенная как anetvⁿ : L → Vⁿ.
-  Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : L → NP,
-  где NP = {(∅,∅) | (l, np), l ∈ L, np ∈ NP}.
+  Пусть дана ассоциативная сеть векторов длины n, обозначенная как anetvⁿ : Link → Vⁿ.
+  Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Link → NestedPair,
+  где NestedPair = {(∅,∅) | (l, np), l ∈ Link, np ∈ NestedPair}.
   Затем определим обратное отображение из ассоциативной сети вложенных упорядоченных пар обратно
   в ассоциативную сеть векторов длины n.
 
@@ -62,25 +62,25 @@ Qed.
   в ассоциативную сеть векторов длины n обеспечивает восстановление исходной сети anetvⁿ.
   Иначе говоря:
 
-  ∀ anetvⁿ : L → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
+  ∀ anetvⁿ : Link → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
 *)
-Theorem anetf_equiv_after_transforms : forall {n: nat} (anet: ANetVf n),
-  ANetVf_equiv anet (fun id => match NPToVnOption n ((ANetVfToANetLf anet) id) with
+Theorem VectorFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkVectorFunction n),
+  VectorFunctionEquivalence anet (fun id => match NestedPairToVectorOfLinksOption n ((VectorFunctionToNestedPairFunction anet) id) with
   | Some t => t
   | None => anet id
   end).
 Proof.
   intros n net id.
-  unfold ANetVfToANetLf.
+  unfold VectorFunctionToNestedPairFunction.
   simpl.
-  rewrite H_inverse.
+  rewrite NestedPairToVectorOfLinksInverse.
   reflexivity.
 Qed.
 
 
-(* Лемма о сохранении длины списков NP в ассоциативной сети дуплетов *)
-Lemma NP_dim_preserved : forall (offset: nat) (np: NP),
-  length np = length (NPToANetDl_ offset np).
+(* Лемма о сохранении длины списков NestedPair в ассоциативной сети дуплетов *)
+Lemma NestedPairDimensionPreserved : forall (offset: nat) (np: NestedPair),
+  length np = length (NestedPairToDupletList_ offset np).
 Proof.
   intros offset np.
   generalize dependent offset.

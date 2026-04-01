@@ -360,46 +360,46 @@ Import ListNotations.
 Import VectorNotations.
 
 (* Множество ссылок на вектора: L ⊆ ℕ₀ *)
-Definition L := nat.
+Definition Link := nat.
 
-(* Значение L по умолчанию: ноль *)
-Definition LDefault : L := 0.
+(* Значение Link по умолчанию: ноль *)
+Definition LinkDefault : Link := 0.
 
-(* Множество векторов ссылок длины n ∈ ℕ₀: Vn ⊆ Lⁿ *)
-Definition Vn (n : nat) := t L n.
+(* Множество векторов ссылок длины n ∈ ℕ₀: VectorOfLinks ⊆ Lⁿ *)
+Definition VectorOfLinks (n : nat) := t Link n.
 
-(* Значение Vn по умолчанию *)
-Definition VnDefault (n : nat) : Vn n := Vector.const LDefault n.
+(* Значение VectorOfLinks по умолчанию *)
+Definition VectorOfLinksDefault (n : nat) : VectorOfLinks n := Vector.const LinkDefault n.
 
-(* Множество всех ассоциаций: A = L × Vn *)
-Definition A (n : nat) := prod L (Vn n).
+(* Множество всех ассоциаций: Association = Link × VectorOfLinks *)
+Definition Association (n : nat) := prod Link (VectorOfLinks n).
 
-(* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : L → Vn} *)
-Definition ANetVf (n : nat) := L -> Vn n.
+(* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → VectorOfLinks} *)
+Definition AssociativeNetworkVectorFunction (n : nat) := Link -> VectorOfLinks n.
 
 (* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
-Definition ANetVl (n : nat) := list (Vn n).
+Definition AssociativeNetworkVectorList (n : nat) := list (VectorOfLinks n).
 
 (* Вложенные упорядоченные пары *)
-Definition NP := list L.
+Definition NestedPair := list Link.
 
-(* Ассоциативная сеть вложенных упорядоченных пар: anetl : L → NP *)
-Definition ANetLf := L -> NP.
+(* Ассоциативная сеть вложенных упорядоченных пар: anetl : Link → NestedPair *)
+Definition AssociativeNetworkNestedPairFunction := Link -> NestedPair.
 
 (* Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар *)
-Definition ANetLl := list NP.
+Definition AssociativeNetworkNestedPairList := list NestedPair.
 
 (* Дуплет ссылок *)
-Definition D := prod L L.
+Definition Duplet := prod Link Link.
 
-(* Значение D по умолчанию: пара из двух LDefault, используется для обозначения пустого дуплета *)
-Definition DDefault : D := (LDefault, LDefault).
+(* Значение Duplet по умолчанию: пара из двух LinkDefault, используется для обозначения пустого дуплета *)
+Definition DupletDefault : Duplet := (LinkDefault, LinkDefault).
 
-(* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть): anetd : L → L² *)
-Definition ANetDf := L -> D.
+(* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть): anetd : Link → Link² *)
+Definition AssociativeNetworkDupletFunction := Link -> Duplet.
 
 (* Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть) в виде последовательности дуплетов *)
-Definition ANetDl := list D.
+Definition AssociativeNetworkDupletList := list Duplet.
 ```
 
 #### Функции преобразования ассоциативных сетей
@@ -407,121 +407,121 @@ Definition ANetDl := list D.
 [[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/AssociativeNetworkConversions.v)
 
 ```rocq
-(* Функция преобразования Vn в NP *)
-Fixpoint VnToNP {n : nat} (v : Vn n) : NP :=
+(* Функция преобразования VectorOfLinks в NestedPair *)
+Fixpoint VectorOfLinksToNestedPair {n : nat} (v : VectorOfLinks n) : NestedPair :=
   match v with
   | Vector.nil _ => List.nil
-  | Vector.cons _ h _ t => List.cons h (VnToNP t)
+  | Vector.cons _ h _ t => List.cons h (VectorOfLinksToNestedPair t)
   end.
 
-(* Функция преобразования ANetVf в ANetLf *)
-Definition ANetVfToANetLf {n : nat} (a: ANetVf n) : ANetLf :=
-  fun id => VnToNP (a id).
+(* Функция преобразования AssociativeNetworkVectorFunction в AssociativeNetworkNestedPairFunction *)
+Definition VectorFunctionToNestedPairFunction {n : nat} (a: AssociativeNetworkVectorFunction n) : AssociativeNetworkNestedPairFunction :=
+  fun id => VectorOfLinksToNestedPair (a id).
 
-(* Функция преобразования ANetVl в ANetLl *)
-Definition ANetVlToANetLl {n: nat} (net: ANetVl n) : ANetLl :=
-  map VnToNP net.
+(* Функция преобразования AssociativeNetworkVectorList в AssociativeNetworkNestedPairList *)
+Definition VectorListToNestedPairList {n: nat} (net: AssociativeNetworkVectorList n) : AssociativeNetworkNestedPairList :=
+  map VectorOfLinksToNestedPair net.
 
-(* Функция преобразования NP в Vn, возвращающая option *)
-Fixpoint NPToVnOption (n: nat) (p: NP) : option (Vn n) :=
+(* Функция преобразования NestedPair в VectorOfLinks, возвращающая option *)
+Fixpoint NestedPairToVectorOfLinksOption (n: nat) (p: NestedPair) : option (VectorOfLinks n) :=
   match n, p with
   | 0, List.nil => Some (Vector.nil nat)
   | S n', List.cons f p' =>
-  match NPToVnOption n' p' with
+  match NestedPairToVectorOfLinksOption n' p' with
   | None => None
   | Some t => Some (Vector.cons nat f n' t)
   end
   | _, _ => None
   end.
 
-(* Функция преобразования NP в Vn с использованием VnDefault *)
-Definition NPToVn (n: nat) (p: NP) : Vn n :=
-  match NPToVnOption n p with
-  | None => VnDefault n
+(* Функция преобразования NestedPair в VectorOfLinks с использованием VectorOfLinksDefault *)
+Definition NestedPairToVectorOfLinks (n: nat) (p: NestedPair) : VectorOfLinks n :=
+  match NestedPairToVectorOfLinksOption n p with
+  | None => VectorOfLinksDefault n
   | Some t => t
   end.
 
-(* Функция преобразования ANetLf в ANetVf *)
-Definition ANetLfToANetVf { n: nat } (net: ANetLf) : ANetVf n :=
-  fun id => match NPToVnOption n (net id) with
+(* Функция преобразования AssociativeNetworkNestedPairFunction в AssociativeNetworkVectorFunction *)
+Definition NestedPairFunctionToVectorFunction { n: nat } (net: AssociativeNetworkNestedPairFunction) : AssociativeNetworkVectorFunction n :=
+  fun id => match NestedPairToVectorOfLinksOption n (net id) with
   | Some t => t
-  | None => VnDefault n
+  | None => VectorOfLinksDefault n
   end.
 
-(* Функция преобразования ANetLl в ANetVl *)
-Definition ANetLlToANetVl {n: nat} (net : ANetLl) : ANetVl n :=
-  map (NPToVn n) net.
+(* Функция преобразования AssociativeNetworkNestedPairList в AssociativeNetworkVectorList *)
+Definition NestedPairListToVectorList {n: nat} (net : AssociativeNetworkNestedPairList) : AssociativeNetworkVectorList n :=
+  map (NestedPairToVectorOfLinks n) net.
 
-(* Функция преобразования NP в ANetDl со смещением индексации *)
-Fixpoint NPToANetDl_ (offset: nat) (np: NP) : ANetDl :=
+(* Функция преобразования NestedPair в AssociativeNetworkDupletList со смещением индексации *)
+Fixpoint NestedPairToDupletList_ (offset: nat) (np: NestedPair) : AssociativeNetworkDupletList :=
   match np with
   | nil => nil
   | cons h nil => cons (h, offset) nil
-  | cons h t => cons (h, S offset) (NPToANetDl_ (S offset) t)
+  | cons h t => cons (h, S offset) (NestedPairToDupletList_ (S offset) t)
   end.
 
-(* Функция преобразования NP в ANetDl *)
-Definition NPToANetDl (np: NP) : ANetDl := NPToANetDl_ 0 np.
+(* Функция преобразования NestedPair в AssociativeNetworkDupletList *)
+Definition NestedPairToDupletList (np: NestedPair) : AssociativeNetworkDupletList := NestedPairToDupletList_ 0 np.
 
-(* Функция добавления NP в хвост ANetDl *)
-Definition AddNPToANetDl (anet: ANetDl) (np: NP) : ANetDl :=
-  app anet (NPToANetDl_ (length anet) np).
+(* Функция добавления NestedPair в хвост AssociativeNetworkDupletList *)
+Definition AddNestedPairToDupletList (anet: AssociativeNetworkDupletList) (np: NestedPair) : AssociativeNetworkDupletList :=
+  app anet (NestedPairToDupletList_ (length anet) np).
 
 (* Функция отрезает голову anetd и возвращает хвост начиная с offset *)
-Fixpoint ANetDl_behead (anet: ANetDl) (offset : nat) : ANetDl :=
+Fixpoint DupletListBehead (anet: AssociativeNetworkDupletList) (offset : nat) : AssociativeNetworkDupletList :=
   match offset with
   | 0 => anet
   | S n' =>
   match anet with
   | nil => nil
-  | cons h t => ANetDl_behead t n'
+  | cons h t => DupletListBehead t n'
   end
   end.
 
-(* Функция преобразования ANetDl в NP с индексацией в начале ANetDl начиная с offset *)
-Fixpoint ANetDlToNP_ (anet: ANetDl) (offset: nat) (index: nat): NP :=
+(* Функция преобразования AssociativeNetworkDupletList в NestedPair с индексацией в начале AssociativeNetworkDupletList начиная с offset *)
+Fixpoint DupletListToNestedPair_ (anet: AssociativeNetworkDupletList) (offset: nat) (index: nat): NestedPair :=
   match anet with
   | nil => nil
   | cons (x, next_index) tail_anet =>
   if offset =? index then
-  cons x (ANetDlToNP_ tail_anet (S offset) next_index)
+  cons x (DupletListToNestedPair_ tail_anet (S offset) next_index)
   else
-  ANetDlToNP_ tail_anet (S offset) index
+  DupletListToNestedPair_ tail_anet (S offset) index
   end.
 
-(* Функция чтения NP из ANetDl по индексу дуплета *)
-Definition ANetDl_readNP (anet: ANetDl) (index: nat) : NP :=
-  ANetDlToNP_ anet 0 index.
+(* Функция чтения NestedPair из AssociativeNetworkDupletList по индексу дуплета *)
+Definition DupletListReadNestedPair (anet: AssociativeNetworkDupletList) (index: nat) : NestedPair :=
+  DupletListToNestedPair_ anet 0 index.
 
-(* Функция преобразования ANetDl в NP начиная с головы списка ассоциативной сети *)
-Definition ANetDlToNP (anet: ANetDl) : NP := ANetDl_readNP anet 0.
+(* Функция преобразования AssociativeNetworkDupletList в NestedPair начиная с головы списка ассоциативной сети *)
+Definition DupletListToNestedPair (anet: AssociativeNetworkDupletList) : NestedPair := DupletListReadNestedPair anet 0.
 
 (*
-  Теперь всё готово для преобразования ассоциативной сети вложенных упорядоченных пар anetl : L → NP
-  в ассоциативную сеть дуплетов anetd : L → L².
+  Теперь всё готово для преобразования ассоциативной сети вложенных упорядоченных пар anetl : Link → NestedPair
+  в ассоциативную сеть дуплетов anetd : Link → Link².
 
   Данное преобразование можно делать по-разному: с сохранением исходных ссылок на вектора
   либо с переиндексацией. Переиндексацию можно не делать, если написать дополнительную функцию для
   ассоциативной сети дуплетов, которая возвращает вложенную упорядоченную пару по её ссылке.
 *)
 
-(* Функция добавления ANetLl в ANetDl *)
-Fixpoint AddANetLlToANetDl (anetd: ANetDl) (anetl: ANetLl) : ANetDl :=
+(* Функция добавления AssociativeNetworkNestedPairList в AssociativeNetworkDupletList *)
+Fixpoint AddNestedPairListToDupletList (anetd: AssociativeNetworkDupletList) (anetl: AssociativeNetworkNestedPairList) : AssociativeNetworkDupletList :=
   match anetl with
   | nil => anetd
-  | cons h t => AddANetLlToANetDl (AddNPToANetDl anetd h) t
+  | cons h t => AddNestedPairListToDupletList (AddNestedPairToDupletList anetd h) t
   end.
 
-(* Функция преобразования ANetLl в ANetDl *)
-Definition ANetLlToANetDl (anetl: ANetLl) : ANetDl :=
+(* Функция преобразования AssociativeNetworkNestedPairList в AssociativeNetworkDupletList *)
+Definition NestedPairListToDupletList (anetl: AssociativeNetworkNestedPairList) : AssociativeNetworkDupletList :=
   match anetl with
   | nil => nil
-  | cons h t => AddANetLlToANetDl (NPToANetDl h) t
+  | cons h t => AddNestedPairListToDupletList (NestedPairToDupletList h) t
   end.
 
-(* Функция поиска NP в хвосте ANetDl начинающемуся с offset по её порядковому номеру.
-   Возвращает offset NP. *)
-Fixpoint ANetDl_offsetNP_ (anet: ANetDl) (offset: nat) (index: nat) : nat :=
+(* Функция поиска NestedPair в хвосте AssociativeNetworkDupletList начинающемуся с offset по её порядковому номеру.
+   Возвращает offset NestedPair. *)
+Fixpoint DupletListOffsetNestedPair_ (anet: AssociativeNetworkDupletList) (offset: nat) (index: nat) : nat :=
   match anet with
   | nil => offset + (length anet)
   | cons (_, next_index) tail_anet =>
@@ -529,54 +529,54 @@ Fixpoint ANetDl_offsetNP_ (anet: ANetDl) (offset: nat) (index: nat) : nat :=
   | O => offset
   | S index' =>
   if offset =? next_index then
-  ANetDl_offsetNP_ tail_anet (S offset) index'
+  DupletListOffsetNestedPair_ tail_anet (S offset) index'
   else
-  ANetDl_offsetNP_ tail_anet (S offset) index
+  DupletListOffsetNestedPair_ tail_anet (S offset) index
   end
   end.
 
-(* Функция поиска NP в ANetDl по её порядковому номеру. Возвращает offset NP. *)
-Definition ANetDl_offsetNP (anet: ANetDl) (index: nat) : nat :=
-  ANetDl_offsetNP_ anet 0 index.
+(* Функция поиска NestedPair в AssociativeNetworkDupletList по её порядковому номеру. Возвращает offset NestedPair. *)
+Definition DupletListOffsetNestedPair (anet: AssociativeNetworkDupletList) (index: nat) : nat :=
+  DupletListOffsetNestedPair_ anet 0 index.
 
-(* Функция преобразования ANetVl в ANetDl *)
-Definition ANetVlToANetDl {n : nat} (anetv: ANetVl n) : ANetDl :=
-  ANetLlToANetDl (ANetVlToANetLl anetv).
+(* Функция преобразования AssociativeNetworkVectorList в AssociativeNetworkDupletList *)
+Definition VectorListToDupletList {n : nat} (anetv: AssociativeNetworkVectorList n) : AssociativeNetworkDupletList :=
+  NestedPairListToDupletList (VectorListToNestedPairList anetv).
 
 (*
-  Теперь всё готово для преобразования ассоциативной сети дуплетов anetd : L → L²
-  в ассоциативную сеть вложенных упорядоченных пар anetl : L → NP.
+  Теперь всё готово для преобразования ассоциативной сети дуплетов anetd : Link → Link²
+  в ассоциативную сеть вложенных упорядоченных пар anetl : Link → NestedPair.
 
   Данное преобразование будем делать с сохранением исходных ссылок на вектора.
-  Переиндексацию можно не делать, потому что есть функция ANetDl_offsetNP для
+  Переиндексацию можно не делать, потому что есть функция DupletListOffsetNestedPair для
   ассоциативной сети дуплетов, которая возвращает смещение вложенной УП по ссылке на неё.
 *)
 
-(* Функция отрезает первую NP из ANetDl и возвращает хвост *)
-Fixpoint ANetDl_beheadNP (anet: ANetDl) (offset: nat) : ANetDl :=
+(* Функция отрезает первую NestedPair из AssociativeNetworkDupletList и возвращает хвост *)
+Fixpoint DupletListBeheadNestedPair (anet: AssociativeNetworkDupletList) (offset: nat) : AssociativeNetworkDupletList :=
   match anet with
   | nil => nil
   | cons (_, next_index) tail_anet =>
-  if offset =? next_index then (* конец NP *)
+  if offset =? next_index then (* конец NestedPair *)
   tail_anet
-  else (* ещё не конец NP *)
-  ANetDl_beheadNP tail_anet (S offset)
+  else (* ещё не конец NestedPair *)
+  DupletListBeheadNestedPair tail_anet (S offset)
   end.
 
-(* Функция преобразования NP и ANetDl со смещения offset в ANetLl *)
-Fixpoint ANetDlToANetLl_ (anetd: ANetDl) (np: NP) (offset: nat) : ANetLl :=
+(* Функция преобразования NestedPair и AssociativeNetworkDupletList со смещения offset в AssociativeNetworkNestedPairList *)
+Fixpoint DupletListToNestedPairList_ (anetd: AssociativeNetworkDupletList) (np: NestedPair) (offset: nat) : AssociativeNetworkNestedPairList :=
   match anetd with
-  | nil => nil (* отбрасываем NP даже если она недостроена *)
+  | nil => nil (* отбрасываем NestedPair даже если она недостроена *)
   | cons (x, next_index) tail_anet =>
-  if offset =? next_index then (* конец NP, переходим к следующей NP *)
-  cons (app np (cons x nil)) (ANetDlToANetLl_ tail_anet nil (S offset))
-  else (* ещё не конец NP, парсим ассоциативную сеть дуплетов дальше *)
-  ANetDlToANetLl_ tail_anet (app np (cons x nil)) (S offset)
+  if offset =? next_index then (* конец NestedPair, переходим к следующей NestedPair *)
+  cons (app np (cons x nil)) (DupletListToNestedPairList_ tail_anet nil (S offset))
+  else (* ещё не конец NestedPair, парсим ассоциативную сеть дуплетов дальше *)
+  DupletListToNestedPairList_ tail_anet (app np (cons x nil)) (S offset)
   end.
 
-(* Функция преобразования ANetDl в ANetLl *)
-Definition ANetDlToANetLl (anetd: ANetDl) : ANetLl :=
-  ANetDlToANetLl_ anetd nil LDefault.
+(* Функция преобразования AssociativeNetworkDupletList в AssociativeNetworkNestedPairList *)
+Definition DupletListToNestedPairList (anetd: AssociativeNetworkDupletList) : AssociativeNetworkNestedPairList :=
+  DupletListToNestedPairList_ anetd nil LinkDefault.
 ```
 
 #### Предикаты эквивалентности ассоциативных сетей
@@ -585,26 +585,26 @@ Definition ANetDlToANetLl (anetd: ANetDl) : ANetLl :=
 
 ```rocq
 (* Предикат эквивалентности двух ассоциативных сетей векторов длины n,
-   anet1 и anet2 типа ANetVf.
+   anet1 и anet2 типа AssociativeNetworkVectorFunction.
 
    Данный предикат описывает свойство «эквивалентности» для таких сетей.
    Он утверждает, что anet1 и anet2 считаются «эквивалентными», если для каждой ссылки id вектор,
    связанный с id в anet1, точно совпадает с вектором, связанным с тем же id в anet2.
 *)
-Definition ANetVf_equiv {n: nat} (anet1: ANetVf n) (anet2: ANetVf n) : Prop :=
+Definition VectorFunctionEquivalence {n: nat} (anet1: AssociativeNetworkVectorFunction n) (anet2: AssociativeNetworkVectorFunction n) : Prop :=
   forall id, anet1 id = anet2 id.
 
 (* Предикат эквивалентности двух ассоциативных сетей векторов длины n,
-   anet1 и anet2 типа ANetVl.
+   anet1 и anet2 типа AssociativeNetworkVectorList.
 *)
-Definition ANetVl_equiv_Vl {n: nat} (anet1: ANetVl n) (anet2: ANetVl n) : Prop :=
+Definition VectorListEquivalence {n: nat} (anet1: AssociativeNetworkVectorList n) (anet2: AssociativeNetworkVectorList n) : Prop :=
   anet1 = anet2.
 
-(* Предикат эквивалентности для ассоциативных сетей дуплетов ANetDf *)
-Definition ANetDf_equiv (anet1: ANetDf) (anet2: ANetDf) : Prop := forall id, anet1 id = anet2 id.
+(* Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletFunction *)
+Definition DupletFunctionEquivalence (anet1: AssociativeNetworkDupletFunction) (anet2: AssociativeNetworkDupletFunction) : Prop := forall id, anet1 id = anet2 id.
 
-(* Предикат эквивалентности для ассоциативных сетей дуплетов ANetDl *)
-Definition ANetDl_equiv (anet1: ANetDl) (anet2: ANetDl) : Prop := anet1 = anet2.
+(* Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletList *)
+Definition DupletListEquivalence (anet1: AssociativeNetworkDupletList) (anet2: AssociativeNetworkDupletList) : Prop := anet1 = anet2.
 ```
 
 #### Леммы эквивалентности ассоциативных сетей
@@ -613,7 +613,7 @@ Definition ANetDl_equiv (anet1: ANetDl) (anet2: ANetDl) : Prop := anet1 = anet2.
 
 ```rocq
 (* Лемма о сохранении длины векторов ассоциативной сети *)
-Lemma Vn_dim_preserved : forall {l: nat} (t: Vn l), List.length (VnToNP t) = l.
+Lemma VectorOfLinksDimensionPreserved : forall {l: nat} (t: VectorOfLinks l), List.length (VectorOfLinksToNestedPair t) = l.
 Proof.
   intros l t.
   induction t.
@@ -622,25 +622,25 @@ Proof.
 Qed.
 
 
-(* Лемма о взаимном обращении функций NPToVnOption и VnToNP
+(* Лемма о взаимном обращении функций NestedPairToVectorOfLinksOption и VectorOfLinksToNestedPair
 
-   H_inverse доказывает, что каждый вектор Vn без потери данных может быть преобразован в NP
-   с помощью VnToNP и обратно в Vn с помощью NPToVnOption.
+   NestedPairToVectorOfLinksInverse доказывает, что каждый вектор VectorOfLinks без потери данных может быть преобразован в NestedPair
+   с помощью VectorOfLinksToNestedPair и обратно в VectorOfLinks с помощью NestedPairToVectorOfLinksOption.
 
-   В формальном виде forall n: nat, forall t: Vn n, NPToVnOption n (VnToNP t) = Some t говорит о том,
-   что для всякого натурального числа n и каждого вектора Vn длины n,
-   мы можем преобразовать Vn в NP с помощью VnToNP,
-   затем обратно преобразовать результат в Vn с помощью NPToVnOption n,
-   и в итоге получить тот же вектор Vn, что и в начале.
+   В формальном виде forall n: nat, forall t: VectorOfLinks n, NestedPairToVectorOfLinksOption n (VectorOfLinksToNestedPair t) = Some t говорит о том,
+   что для всякого натурального числа n и каждого вектора VectorOfLinks длины n,
+   мы можем преобразовать VectorOfLinks в NestedPair с помощью VectorOfLinksToNestedPair,
+   затем обратно преобразовать результат в VectorOfLinks с помощью NestedPairToVectorOfLinksOption n,
+   и в итоге получить тот же вектор VectorOfLinks, что и в начале.
 
    Это свойство очень важно, потому что оно гарантирует,
-   что эти две функции образуют обратную пару на множестве преобразуемых векторов Vn и NP.
+   что эти две функции образуют обратную пару на множестве преобразуемых векторов VectorOfLinks и NestedPair.
    Когда вы применяете обе функции к значениям в этом множестве, вы в итоге получаете исходное значение.
    Это означает, что никакая информация не теряется при преобразованиях,
-   так что можно свободно конвертировать между Vn и NP,
+   так что можно свободно конвертировать между VectorOfLinks и NestedPair,
    если это требуется в реализации или доказательствах.
 *)
-Lemma H_inverse: forall n: nat, forall t: Vn n, NPToVnOption n (VnToNP t) = Some t.
+Lemma NestedPairToVectorOfLinksInverse: forall n: nat, forall t: VectorOfLinks n, NestedPairToVectorOfLinksOption n (VectorOfLinksToNestedPair t) = Some t.
 Proof.
   intros n.
   induction t as [| h n' t' IH].
@@ -652,9 +652,9 @@ Qed.
 (*
   Теорема обёртывания и восстановления ассоциативной сети векторов:
 
-  Пусть дана ассоциативная сеть векторов длины n, обозначенная как anetvⁿ : L → Vⁿ.
-  Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : L → NP,
-  где NP = {(∅,∅) | (l, np), l ∈ L, np ∈ NP}.
+  Пусть дана ассоциативная сеть векторов длины n, обозначенная как anetvⁿ : Link → Vⁿ.
+  Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Link → NestedPair,
+  где NestedPair = {(∅,∅) | (l, np), l ∈ Link, np ∈ NestedPair}.
   Затем определим обратное отображение из ассоциативной сети вложенных упорядоченных пар обратно
   в ассоциативную сеть векторов длины n.
 
@@ -665,25 +665,25 @@ Qed.
   в ассоциативную сеть векторов длины n обеспечивает восстановление исходной сети anetvⁿ.
   Иначе говоря:
 
-  ∀ anetvⁿ : L → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
+  ∀ anetvⁿ : Link → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
 *)
-Theorem anetf_equiv_after_transforms : forall {n: nat} (anet: ANetVf n),
-  ANetVf_equiv anet (fun id => match NPToVnOption n ((ANetVfToANetLf anet) id) with
+Theorem VectorFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkVectorFunction n),
+  VectorFunctionEquivalence anet (fun id => match NestedPairToVectorOfLinksOption n ((VectorFunctionToNestedPairFunction anet) id) with
   | Some t => t
   | None => anet id
   end).
 Proof.
   intros n net id.
-  unfold ANetVfToANetLf.
+  unfold VectorFunctionToNestedPairFunction.
   simpl.
-  rewrite H_inverse.
+  rewrite NestedPairToVectorOfLinksInverse.
   reflexivity.
 Qed.
 
 
-(* Лемма о сохранении длины списков NP в ассоциативной сети дуплетов *)
-Lemma NP_dim_preserved : forall (offset: nat) (np: NP),
-  length np = length (NPToANetDl_ offset np).
+(* Лемма о сохранении длины списков NestedPair в ассоциативной сети дуплетов *)
+Lemma NestedPairDimensionPreserved : forall (offset: nat) (np: NestedPair),
+  length np = length (NestedPairToDupletList_ offset np).
 Proof.
   intros offset np.
   generalize dependent offset.
@@ -705,7 +705,7 @@ Notation "{ }" := (nil) (at level 0).
 Notation "{ x , .. , y }" := (cons x .. (cons y nil) ..) (at level 0).
 
 (* Трёхмерная ассоциативная сеть *)
-Definition complexExampleNet : ANetVf 3 :=
+Definition complexExampleNetwork : AssociativeNetworkVectorFunction 3 :=
   fun id => match id with
   | 0 => [0; 0; 0]
   | 1 => [1; 1; 2]
@@ -716,29 +716,29 @@ Definition complexExampleNet : ANetVf 3 :=
   end.
 
 (* Вектора ссылок *)
-Definition exampleTuple0 : Vn 0 := [].
-Definition exampleTuple1 : Vn 1 := [0].
-Definition exampleTuple4 : Vn 4 := [3; 2; 1; 0].
+Definition exampleTuple0 : VectorOfLinks 0 := [].
+Definition exampleTuple1 : VectorOfLinks 1 := [0].
+Definition exampleTuple4 : VectorOfLinks 4 := [3; 2; 1; 0].
 
 (* Преобразование векторов ссылок во вложенные упорядоченные пары (списки) *)
-Definition nestedPair0 := VnToNP exampleTuple0.
-Definition nestedPair1 := VnToNP exampleTuple1.
-Definition nestedPair4 := VnToNP exampleTuple4.
+Definition nestedPair0 := VectorOfLinksToNestedPair exampleTuple0.
+Definition nestedPair1 := VectorOfLinksToNestedPair exampleTuple1.
+Definition nestedPair4 := VectorOfLinksToNestedPair exampleTuple4.
 
 Compute nestedPair0. (* Ожидается результат: { } *)
 Compute nestedPair1. (* Ожидается результат: {0} *)
 Compute nestedPair4. (* Ожидается результат: {3, 2, 1, 0} *)
 
 (* Вычисление значений преобразованной функции трёхмерной ассоциативной сети *)
-Compute (ANetVfToANetLf complexExampleNet) 0. (* Ожидается результат: {0, 0, 0} *)
-Compute (ANetVfToANetLf complexExampleNet) 1. (* Ожидается результат: {1, 1, 2} *)
-Compute (ANetVfToANetLf complexExampleNet) 2. (* Ожидается результат: {2, 4, 0} *)
-Compute (ANetVfToANetLf complexExampleNet) 3. (* Ожидается результат: {3, 0, 5} *)
-Compute (ANetVfToANetLf complexExampleNet) 4. (* Ожидается результат: {4, 1, 1} *)
-Compute (ANetVfToANetLf complexExampleNet) 5. (* Ожидается результат: {0, 0, 0} *)
+Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 0. (* Ожидается результат: {0, 0, 0} *)
+Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 1. (* Ожидается результат: {1, 1, 2} *)
+Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 2. (* Ожидается результат: {2, 4, 0} *)
+Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 3. (* Ожидается результат: {3, 0, 5} *)
+Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 4. (* Ожидается результат: {4, 1, 1} *)
+Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 5. (* Ожидается результат: {0, 0, 0} *)
 
 (* Ассоциативная сеть вложенных упорядоченных пар *)
-Definition testPairsNet : ANetLf :=
+Definition testPairsNetwork : AssociativeNetworkNestedPairFunction :=
   fun id => match id with
   | 0 => {5, 0, 8}
   | 1 => {7, 1, 2}
@@ -749,47 +749,47 @@ Definition testPairsNet : ANetLf :=
   end.
 
 (* Преобразованная ассоциативная сеть вложенных УП в трёхмерную ассоциативную сеть (размерность должна совпадать) *)
-Definition testTuplesNet : ANetVf 3 :=
-  ANetLfToANetVf testPairsNet.
+Definition testTuplesNetwork : AssociativeNetworkVectorFunction 3 :=
+  NestedPairFunctionToVectorFunction testPairsNetwork.
 
 (* Вычисление значений преобразованной функции ассоциативной сети вложенных УП *)
-Compute testTuplesNet 0. (* Ожидается результат: [5; 0; 8] *)
-Compute testTuplesNet 1. (* Ожидается результат: [7; 1; 2] *)
-Compute testTuplesNet 2. (* Ожидается результат: [2; 4; 5] *)
-Compute testTuplesNet 3. (* Ожидается результат: [3; 1; 5] *)
-Compute testTuplesNet 4. (* Ожидается результат: [4; 2; 1] *)
-Compute testTuplesNet 5. (* Ожидается результат: [0; 0; 0] *)
+Compute testTuplesNetwork 0. (* Ожидается результат: [5; 0; 8] *)
+Compute testTuplesNetwork 1. (* Ожидается результат: [7; 1; 2] *)
+Compute testTuplesNetwork 2. (* Ожидается результат: [2; 4; 5] *)
+Compute testTuplesNetwork 3. (* Ожидается результат: [3; 1; 5] *)
+Compute testTuplesNetwork 4. (* Ожидается результат: [4; 2; 1] *)
+Compute testTuplesNetwork 5. (* Ожидается результат: [0; 0; 0] *)
 
 (* Преобразование вложенных УП в ассоциативную сеть дуплетов *)
-Compute NPToANetDl { 121, 21, 1343 }.
+Compute NestedPairToDupletList { 121, 21, 1343 }.
 (* Должно вернуть: {(121, 1), (21, 2), (1343, 2)} *)
 
 (* Добавление вложенных УП в ассоциативную сеть дуплетов *)
-Compute AddNPToANetDl {(121, 1), (21, 2), (1343, 2)} {12, 23, 34}.
+Compute AddNestedPairToDupletList {(121, 1), (21, 2), (1343, 2)} {12, 23, 34}.
 (* Ожидается результат: {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} *)
 
 (* Преобразование ассоциативной сети дуплетов во вложенные УП *)
-Compute ANetDlToNP {(121, 1), (21, 2), (1343, 2)}.
+Compute DupletListToNestedPair {(121, 1), (21, 2), (1343, 2)}.
 (* Ожидается результат: {121, 21, 1343} *)
 
-Compute ANetDlToNP {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)}.
+Compute DupletListToNestedPair {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)}.
 (* Ожидается результат: {121, 21, 1343} *)
 
 (* Чтение вложенных УП из ассоциативной сети дуплетов по индексу дуплета — начала вложенных УП *)
-Compute ANetDl_readNP {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} 0.
+Compute DupletListReadNestedPair {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} 0.
 (* Ожидается результат: {121, 21, 1343} *)
 
-Compute ANetDl_readNP {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} 3.
+Compute DupletListReadNestedPair {(121, 1), (21, 2), (1343, 2), (12, 4), (23, 5), (34, 5)} 3.
 (* Ожидается результат: {12, 23, 34} *)
 
 (* Определяем ассоциативную сеть вложенных УП *)
-Definition test_anetl := { {121, 21, 1343}, {12, 23}, {34}, {121, 21, 1343}, {12, 23}, {34} }.
+Definition testNestedPairList := { {121, 21, 1343}, {12, 23}, {34}, {121, 21, 1343}, {12, 23}, {34} }.
 
 (* Преобразованная ассоциативная сеть вложенных УП в ассоциативную сеть дуплетов *)
-Definition test_anetd := ANetLlToANetDl test_anetl.
+Definition testDupletList := NestedPairListToDupletList testNestedPairList.
 
 (* Вычисление преобразованной ассоциативной сети вложенных УП в ассоциативную сеть дуплетов *)
-Compute test_anetd.
+Compute testDupletList.
 (* Ожидается результат:
  {(121, 1), (21, 2), (1343, 2),
   (12, 4), (23, 4),
@@ -798,30 +798,30 @@ Compute test_anetd.
   (12, 10), (23, 10),
   (34, 11)} *)
 
-(* Вычисление преобразования ассоциативной сети вложенных УП в ассоциативную сеть дуплетов и обратно в test_anetl *)
-Compute ANetDlToANetLl test_anetd.
+(* Вычисление преобразования ассоциативной сети вложенных УП в ассоциативную сеть дуплетов и обратно в testNestedPairList *)
+Compute DupletListToNestedPairList testDupletList.
 (* Ожидается результат:
   {{121, 21, 1343}, {12, 23}, {34}, {121, 21, 1343}, {12, 23}, {34}} *)
 
 (* Вычисление смещения вложенных УП в ассоциативной сети дуплетов по их порядковому номеру *)
-Compute ANetDl_offsetNP test_anetd 0. (* Ожидается результат: 0 *)
-Compute ANetDl_offsetNP test_anetd 1. (* Ожидается результат: 3 *)
-Compute ANetDl_offsetNP test_anetd 2. (* Ожидается результат: 5 *)
-Compute ANetDl_offsetNP test_anetd 3. (* Ожидается результат: 6 *)
-Compute ANetDl_offsetNP test_anetd 4. (* Ожидается результат: 9 *)
-Compute ANetDl_offsetNP test_anetd 5. (* Ожидается результат: 11 *)
-Compute ANetDl_offsetNP test_anetd 6. (* Ожидается результат: 12 *)
-Compute ANetDl_offsetNP test_anetd 7. (* Ожидается результат: 12 *)
+Compute DupletListOffsetNestedPair testDupletList 0. (* Ожидается результат: 0 *)
+Compute DupletListOffsetNestedPair testDupletList 1. (* Ожидается результат: 3 *)
+Compute DupletListOffsetNestedPair testDupletList 2. (* Ожидается результат: 5 *)
+Compute DupletListOffsetNestedPair testDupletList 3. (* Ожидается результат: 6 *)
+Compute DupletListOffsetNestedPair testDupletList 4. (* Ожидается результат: 9 *)
+Compute DupletListOffsetNestedPair testDupletList 5. (* Ожидается результат: 11 *)
+Compute DupletListOffsetNestedPair testDupletList 6. (* Ожидается результат: 12 *)
+Compute DupletListOffsetNestedPair testDupletList 7. (* Ожидается результат: 12 *)
 
 (* Определяем трёхмерную ассоциативную сеть как последовательность векторов длины 3 *)
-Definition test_anetv : ANetVl 3 :=
+Definition testVectorList : AssociativeNetworkVectorList 3 :=
   { [0; 0; 0], [1; 1; 2], [2; 4; 0], [3; 0; 5], [4; 1; 1], [0; 0; 0] }.
 
 (* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
-Definition test_anetdl : ANetDl := ANetVlToANetDl test_anetv.
+Definition testVectorsToDupletList : AssociativeNetworkDupletList := VectorListToDupletList testVectorList.
 
 (* Вычисление трёхмерной ассоциативной сети преобразованной в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
-Compute test_anetdl.
+Compute testVectorsToDupletList.
 (* Ожидается результат:
 { (0, 1), (0, 2), (0, 2),
   (1, 4), (1, 5), (2, 5),
@@ -831,11 +831,11 @@ Compute test_anetdl.
   (0, 16), (0, 17), (0, 17)} *)
 
 (* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП и обратно в трёхмерную ассоциативную сеть *)
-Definition result_TuplesNet : ANetVl 3 :=
-  ANetLlToANetVl (ANetDlToANetLl test_anetdl).
+Definition resultTuplesNetwork : AssociativeNetworkVectorList 3 :=
+  NestedPairListToVectorList (DupletListToNestedPairList testVectorsToDupletList).
 
 (* Итоговая проверка эквивалентности ассоциативных сетей *)
-Compute result_TuplesNet.
+Compute resultTuplesNetwork.
 (* Ожидается результат:
   { [0; 0; 0], [1; 1; 2], [2; 4; 0], [3; 0; 5], [4; 1; 1], [0; 0; 0] } *)
 ```

@@ -95,7 +95,7 @@ for (let fi = 0; fi < element.formulas.length; fi++) {
 2. **Issue #30 opened** — Multiple formatting discrepancies identified via screenshots comparing original Habr pages with GitHub-rendered markdown
 3. **Root cause analysis** — Non-breaking spaces identified as the primary cause of formula rendering failures; percent sign, bold spacing, and blockquote centering identified as secondary causes
 4. **Script fixes applied** — All 7 root causes fixed in `download-article.mjs` and `verify.mjs`
-5. **Articles re-downloaded** — All 6 article files (3 articles × article.md + downloaded.md) regenerated
+5. **Articles re-downloaded** — All 3 article files re-downloaded as `article.md` (Note: `downloaded.md` files were later removed in issue #32 as redundant)
 6. **Visual verification** — Playwright browser automation confirmed 0 unrendered formulas across all articles on GitHub
 
 ## Verification Results
@@ -111,9 +111,9 @@ DOM inspection via Playwright confirmed **0 unrendered `$...$` formulas** on any
 ## Affected Articles
 
 All three articles were re-processed:
-- `archive/0.0.0/` — Math introduction to Deep Theory (article.md + downloaded.md)
-- `archive/0.0.1/` — Глубокая Теория Связей 0.0.1 (article.md + downloaded.md)
-- `archive/0.0.2/` — The Links Theory 0.0.2 (article.md + downloaded.md)
+- `archive/0.0.0/` — Math introduction to Deep Theory (`article.md`)
+- `archive/0.0.1/` — Глубокая Теория Связей 0.0.1 (`article.md`)
+- `archive/0.0.2/` — The Links Theory 0.0.2 (`article.md`)
 
 ## Key Technical Insights
 

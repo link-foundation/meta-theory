@@ -66,7 +66,7 @@ Since the content is identical (only dynamic view counts differ), we:
 - Updated `article.md` with the latest content from `downloaded.md` for articles 0.0.0 and 0.0.1
 - Removed all three `downloaded.md` files as redundant
 
-The download script (`download-article.mjs`) already defaults to writing `article.md`, so no script changes are needed for normal workflow. The `--downloaded` flag remains available for future comparison runs.
+The download script (`download-article.mjs`) defaults to writing `article.md`. The `--downloaded` flag has been removed since `downloaded.md` files are no longer used.
 
 ### 2. Files Changed
 
@@ -137,7 +137,7 @@ Both articles contain the heading "LinksPlatfrom" (missing 'l' in "Platform"). T
 
 2. **View counts change by ~2 views per download session.** This is because the download and verification scripts each load the page, contributing to the view count.
 
-3. **The `--downloaded` flag workflow is unnecessary.** Since the download script already defaults to `article.md`, running `node scripts/download-article.mjs --all` directly updates the canonical files.
+3. **The `--downloaded` flag workflow was removed.** The download script writes directly to `article.md`, so `node scripts/download-article.mjs --all` updates the canonical files.
 
 4. **Habr formula extraction via `img.formula[source]` is reliable.** The custom approach of reading LaTeX source from the `source` attribute of formula images produces accurate results that match the original rendering.
 

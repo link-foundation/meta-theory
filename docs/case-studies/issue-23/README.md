@@ -267,4 +267,4 @@ After applying all fixes, verification passes 100% across all articles:
    - Handles inline whitespace trimming without crossing line boundaries
 
 ### Articles re-downloaded
-All three articles (0.0.0, 0.0.1, 0.0.2) re-downloaded as both `article.md` and `downloaded.md` with all fixes applied.
+All three articles (0.0.0, 0.0.1, 0.0.2) re-downloaded as `article.md` with all fixes applied. (Note: `downloaded.md` files were later removed in issue #32 as redundant.)

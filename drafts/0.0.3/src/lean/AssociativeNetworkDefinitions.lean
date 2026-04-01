@@ -20,10 +20,10 @@ def TupleOfLinksDefault (n : Nat) : TupleOfLinks n := Vector.replicate n LinkDef
 -- Список ссылок (ранее NestedPair — вложенные упорядоченные пары): LinkList ⊆ List(L)
 abbrev LinkList := List Link
 
--- Ассоциативная сеть вложенных упорядоченных пар: anetl : Link → LinkList
+-- Ассоциативная сеть списков ссылок: anetl : Link → LinkList
 abbrev AssociativeNetworkLinkListFunction := Link → LinkList
 
--- Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар
+-- Ассоциативная сеть списков ссылок в виде последовательности списков ссылок
 abbrev AssociativeNetworkLinkListList := List LinkList
 
 -- Множество всех ассоциаций: Association = Link × TupleOfLinks
@@ -35,7 +35,9 @@ abbrev AssociativeNetworkTupleFunction (n : Nat) := Link → TupleOfLinks n
 -- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности
 abbrev AssociativeNetworkTupleList (n : Nat) := List (TupleOfLinks n)
 
--- Дуплет ссылок
+-- Дуплет ссылок: упорядоченная пара (Link, Link).
+-- В нотации связей (https://github.com/link-foundation/links-notation):
+-- дуплет записывается как (id: from to), например (3: 1 2)
 abbrev Duplet := Link × Link
 
 -- Значение Duplet по умолчанию: пара из двух LinkDefault, используется для обозначения пустого дуплета

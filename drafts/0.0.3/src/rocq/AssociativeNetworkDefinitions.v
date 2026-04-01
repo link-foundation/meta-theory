@@ -36,7 +36,9 @@ Definition AssociativeNetworkLinkListFunction := Link -> LinkList.
 (* Ассоциативная сеть списков ссылок в виде последовательности списков ссылок *)
 Definition AssociativeNetworkLinkListList := list LinkList.
 
-(* Дуплет ссылок *)
+(* Дуплет ссылок: упорядоченная пара (Link, Link).
+   В нотации связей (https://github.com/link-foundation/links-notation):
+   дуплет записывается как (id: from to), например (3: 1 2) *)
 Definition Duplet := prod Link Link.
 
 (* Значение Duplet по умолчанию: пара из двух LinkDefault, используется для обозначения пустого дуплета *)

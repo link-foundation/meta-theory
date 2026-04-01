@@ -9,8 +9,6 @@
   Адаптировано из: https://github.com/konard/subset-sum/tree/main/proofs/set_sequence_equivalence
 -/
 
-import Std.Data.List.Basic
-
 namespace SetSequenceEquivalence
 
 /-- Список является строго возрастающим, если каждый элемент строго меньше следующего -/
@@ -148,11 +146,11 @@ theorem mem_insertSorted (x y : Nat) (l : List Nat) :
   | cons z rest ih =>
     simp [insertSorted]
     split
-    · simp [List.mem_cons]
+    · simp
       tauto
     · split
       · rename_i hxz
-        simp [List.mem_cons]
+        simp
         constructor
         · intro h
           cases h with
@@ -167,7 +165,7 @@ theorem mem_insertSorted (x y : Nat) (l : List Nat) :
             cases h with
             | inl hyz => left; exact hyz
             | inr hr => right; exact hr
-      · simp [List.mem_cons]
+      · simp
         rw [ih]
         tauto
 
@@ -179,7 +177,7 @@ theorem mem_toOrderedUnique (x : Nat) (l : List Nat) :
   | cons y rest ih =>
     simp [toOrderedUnique]
     rw [mem_insertSorted]
-    simp [List.mem_cons]
+    simp
     constructor
     · intro h
       cases h with

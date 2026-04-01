@@ -15,7 +15,7 @@ def LinkDefault : Link := 0
 abbrev TupleOfLinks (n : Nat) := Vector Link n
 
 -- Значение TupleOfLinks по умолчанию
-def TupleOfLinksDefault (n : Nat) : TupleOfLinks n := Vector.mkVector n LinkDefault
+def TupleOfLinksDefault (n : Nat) : TupleOfLinks n := Vector.replicate n LinkDefault
 
 -- Множество всех ассоциаций: Association = Link × TupleOfLinks
 abbrev Association (n : Nat) := Link × TupleOfLinks n

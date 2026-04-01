@@ -20,8 +20,9 @@ def TupleListToNestedPairList {n : Nat} (net : AssociativeNetworkTupleList n) : 
 
 -- Функция преобразования NestedPair в TupleOfLinks, возвращающая option
 def NestedPairToTupleOfLinksOption (n : Nat) (p : NestedPair) : Option (TupleOfLinks n) :=
-  if h : p.length = n then
-    some (⟨p, h⟩)
+  let arr := p.toArray
+  if h : arr.size = n then
+    some ⟨arr, h⟩
   else
     none
 

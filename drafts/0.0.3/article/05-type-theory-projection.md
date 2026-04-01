@@ -78,46 +78,46 @@ Definition AssociativeNetworkDupletList := list Duplet.
 
 ```lean
 -- Множество ссылок на кортежи: L ⊆ ℕ₀
-def Link := Nat
+abbrev Link := Nat
 
 -- Значение Link по умолчанию: ноль
 def LinkDefault : Link := 0
 
 -- Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfLinks ⊆ Lⁿ
-def TupleOfLinks (n : Nat) := Vector Link n
+abbrev TupleOfLinks (n : Nat) := Vector Link n
 
 -- Значение TupleOfLinks по умолчанию
 def TupleOfLinksDefault (n : Nat) : TupleOfLinks n := Vector.replicate n LinkDefault
 
--- Множество всех ассоциаций: Association = Link × TupleOfLinks
-def Association (n : Nat) := Link × TupleOfLinks n
-
--- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → TupleOfLinks}
-def AssociativeNetworkTupleFunction (n : Nat) := Link → TupleOfLinks n
-
--- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности
-def AssociativeNetworkTupleList (n : Nat) := List (TupleOfLinks n)
-
 -- Вложенные упорядоченные пары
-def NestedPair := List Link
+abbrev NestedPair := List Link
 
 -- Ассоциативная сеть вложенных упорядоченных пар: anetl : Link → NestedPair
-def AssociativeNetworkNestedPairFunction := Link → NestedPair
+abbrev AssociativeNetworkNestedPairFunction := Link → NestedPair
 
 -- Ассоциативная сеть вложенных упорядоченных пар в виде последовательности вложенных упорядоченных пар
-def AssociativeNetworkNestedPairList := List NestedPair
+abbrev AssociativeNetworkNestedPairList := List NestedPair
+
+-- Множество всех ассоциаций: Association = Link × TupleOfLinks
+abbrev Association (n : Nat) := Link × TupleOfLinks n
+
+-- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → TupleOfLinks}
+abbrev AssociativeNetworkTupleFunction (n : Nat) := Link → TupleOfLinks n
+
+-- Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности
+abbrev AssociativeNetworkTupleList (n : Nat) := List (TupleOfLinks n)
 
 -- Дуплет ссылок
-def Duplet := Link × Link
+abbrev Duplet := Link × Link
 
 -- Значение Duplet по умолчанию: пара из двух LinkDefault, используется для обозначения пустого дуплета
 def DupletDefault : Duplet := (LinkDefault, LinkDefault)
 
 -- Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть): anetd : Link → Link²
-def AssociativeNetworkDupletFunction := Link → Duplet
+abbrev AssociativeNetworkDupletFunction := Link → Duplet
 
 -- Ассоциативная сеть дуплетов (или двумерная ассоциативная сеть) в виде последовательности дуплетов
-def AssociativeNetworkDupletList := List Duplet
+abbrev AssociativeNetworkDupletList := List Duplet
 ```
 
 #### Функции преобразования ассоциативных сетей
@@ -318,8 +318,9 @@ def TupleListToNestedPairList {n : Nat} (net : AssociativeNetworkTupleList n) : 
 
 -- Функция преобразования NestedPair в TupleOfLinks, возвращающая option
 def NestedPairToTupleOfLinksOption (n : Nat) (p : NestedPair) : Option (TupleOfLinks n) :=
-  if h : p.length = n then
-    some (⟨p, h⟩)
+  let arr := p.toArray
+  if h : arr.size = n then
+    some ⟨arr, h⟩
   else
     none
 
@@ -585,14 +586,11 @@ Qed.
 theorem TupleOfLinksDimensionPreserved {l : Nat} (t : TupleOfLinks l) :
     (TupleOfLinksToNestedPair t).length = l := by
   simp [TupleOfLinksToNestedPair]
-  exact t.toList_length
 
 -- Лемма о взаимном обращении функций NestedPairToTupleOfLinksOption и TupleOfLinksToNestedPair
 theorem NestedPairToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
     NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = some t := by
   simp [NestedPairToTupleOfLinksOption, TupleOfLinksToNestedPair]
-  simp [t.toList_length]
-  exact Vector.toList_injective.eq_iff.mpr rfl |>.symm ▸ rfl
 
 -- Теорема обёртывания и восстановления ассоциативной сети кортежей
 theorem TupleFunctionEquivalenceAfterTransforms {n : Nat} (anet : AssociativeNetworkTupleFunction n) :
@@ -772,12 +770,12 @@ Compute resultTuplesNetwork.
 -- Трёхмерная ассоциативная сеть
 def complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
   fun id => match id with
-  | 0 => ⟨[0, 0, 0], by decide⟩
-  | 1 => ⟨[1, 1, 2], by decide⟩
-  | 2 => ⟨[2, 4, 0], by decide⟩
-  | 3 => ⟨[3, 0, 5], by decide⟩
-  | 4 => ⟨[4, 1, 1], by decide⟩
-  | _ => ⟨[0, 0, 0], by decide⟩
+  | 0 => #v[0, 0, 0]
+  | 1 => #v[1, 1, 2]
+  | 2 => #v[2, 4, 0]
+  | 3 => #v[3, 0, 5]
+  | 4 => #v[4, 1, 1]
+  | _ => #v[0, 0, 0]
 
 -- Преобразование вложенных УП в ассоциативную сеть дуплетов
 #eval NestedPairToDupletList [121, 21, 1343]
@@ -802,8 +800,7 @@ def testNestedPairList : AssociativeNetworkNestedPairList :=
 
 -- Определяем трёхмерную ассоциативную сеть как последовательность кортежей длины 3
 def testTupleList : AssociativeNetworkTupleList 3 :=
-  [⟨[0, 0, 0], by decide⟩, ⟨[1, 1, 2], by decide⟩, ⟨[2, 4, 0], by decide⟩,
-   ⟨[3, 0, 5], by decide⟩, ⟨[4, 1, 1], by decide⟩, ⟨[0, 0, 0], by decide⟩]
+  [#v[0, 0, 0], #v[1, 1, 2], #v[2, 4, 0], #v[3, 0, 5], #v[4, 1, 1], #v[0, 0, 0]]
 
 -- Итоговая проверка эквивалентности ассоциативных сетей
 def resultTuplesNetwork : AssociativeNetworkTupleList 3 :=

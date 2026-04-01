@@ -141,3 +141,18 @@ scripts/article_content.json
 
 # Playwright MCP working directory
 .playwright-mcp/
+
+# Lean 4 build artifacts
+.lake/
+lake-manifest.json
+
+# Rocq build artifacts
+*.vo
+*.vok
+*.vos
+*.glob
+*.aux
+.*.aux
+Makefile.coq
+Makefile.coq.conf
+.Makefile.coq.d

@@ -9,8 +9,8 @@ Require Import AssociativeNetworkDefinitions.
 Require Import AssociativeNetworkConversions.
 Require Import AssociativeNetworkEquivalence.
 
-(* Лемма о сохранении длины векторов ассоциативной сети *)
-Lemma VectorOfLinksDimensionPreserved : forall {l: nat} (t: VectorOfLinks l), List.length (VectorOfLinksToNestedPair t) = l.
+(* Лемма о сохранении длины кортежей ассоциативной сети *)
+Lemma TupleOfLinksDimensionPreserved : forall {l: nat} (t: TupleOfLinks l), List.length (TupleOfLinksToNestedPair t) = l.
 Proof.
   intros l t.
   induction t.
@@ -19,25 +19,25 @@ Proof.
 Qed.
 
 
-(* Лемма о взаимном обращении функций NestedPairToVectorOfLinksOption и VectorOfLinksToNestedPair
+(* Лемма о взаимном обращении функций NestedPairToTupleOfLinksOption и TupleOfLinksToNestedPair
 
-   NestedPairToVectorOfLinksInverse доказывает, что каждый вектор VectorOfLinks без потери данных может быть преобразован в NestedPair
-   с помощью VectorOfLinksToNestedPair и обратно в VectorOfLinks с помощью NestedPairToVectorOfLinksOption.
+   NestedPairToTupleOfLinksInverse доказывает, что каждый кортеж TupleOfLinks без потери данных может быть преобразован в NestedPair
+   с помощью TupleOfLinksToNestedPair и обратно в TupleOfLinks с помощью NestedPairToTupleOfLinksOption.
 
-   В формальном виде forall n: nat, forall t: VectorOfLinks n, NestedPairToVectorOfLinksOption n (VectorOfLinksToNestedPair t) = Some t говорит о том,
-   что для всякого натурального числа n и каждого вектора VectorOfLinks длины n,
-   мы можем преобразовать VectorOfLinks в NestedPair с помощью VectorOfLinksToNestedPair,
-   затем обратно преобразовать результат в VectorOfLinks с помощью NestedPairToVectorOfLinksOption n,
-   и в итоге получить тот же вектор VectorOfLinks, что и в начале.
+   В формальном виде forall n: nat, forall t: TupleOfLinks n, NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = Some t говорит о том,
+   что для всякого натурального числа n и каждого кортежа TupleOfLinks длины n,
+   мы можем преобразовать TupleOfLinks в NestedPair с помощью TupleOfLinksToNestedPair,
+   затем обратно преобразовать результат в TupleOfLinks с помощью NestedPairToTupleOfLinksOption n,
+   и в итоге получить тот же кортеж TupleOfLinks, что и в начале.
 
    Это свойство очень важно, потому что оно гарантирует,
-   что эти две функции образуют обратную пару на множестве преобразуемых векторов VectorOfLinks и NestedPair.
+   что эти две функции образуют обратную пару на множестве преобразуемых кортежей TupleOfLinks и NestedPair.
    Когда вы применяете обе функции к значениям в этом множестве, вы в итоге получаете исходное значение.
    Это означает, что никакая информация не теряется при преобразованиях,
-   так что можно свободно конвертировать между VectorOfLinks и NestedPair,
+   так что можно свободно конвертировать между TupleOfLinks и NestedPair,
    если это требуется в реализации или доказательствах.
 *)
-Lemma NestedPairToVectorOfLinksInverse: forall n: nat, forall t: VectorOfLinks n, NestedPairToVectorOfLinksOption n (VectorOfLinksToNestedPair t) = Some t.
+Lemma NestedPairToTupleOfLinksInverse: forall n: nat, forall t: TupleOfLinks n, NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = Some t.
 Proof.
   intros n.
   induction t as [| h n' t' IH].
@@ -47,33 +47,33 @@ Qed.
 
 
 (*
-  Теорема обёртывания и восстановления ассоциативной сети векторов:
+  Теорема обёртывания и восстановления ассоциативной сети кортежей:
 
-  Пусть дана ассоциативная сеть векторов длины n, обозначенная как anetvⁿ : Link → Vⁿ.
+  Пусть дана ассоциативная сеть кортежей длины n, обозначенная как anetvⁿ : Link → Vⁿ.
   Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Link → NestedPair,
   где NestedPair = {(∅,∅) | (l, np), l ∈ Link, np ∈ NestedPair}.
   Затем определим обратное отображение из ассоциативной сети вложенных упорядоченных пар обратно
-  в ассоциативную сеть векторов длины n.
+  в ассоциативную сеть кортежей длины n.
 
   Теорема утверждает:
 
-  Для любой ассоциативной сети векторов длины n, anetvⁿ, применение операции преобразования
+  Для любой ассоциативной сети кортежей длины n, anetvⁿ, применение операции преобразования
   в ассоциативную сеть вложенных упорядоченных пар и обратное преобразование обратно
-  в ассоциативную сеть векторов длины n обеспечивает восстановление исходной сети anetvⁿ.
+  в ассоциативную сеть кортежей длины n обеспечивает восстановление исходной сети anetvⁿ.
   Иначе говоря:
 
   ∀ anetvⁿ : Link → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
 *)
-Theorem VectorFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkVectorFunction n),
-  VectorFunctionEquivalence anet (fun id => match NestedPairToVectorOfLinksOption n ((VectorFunctionToNestedPairFunction anet) id) with
+Theorem TupleFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkTupleFunction n),
+  TupleFunctionEquivalence anet (fun id => match NestedPairToTupleOfLinksOption n ((TupleFunctionToNestedPairFunction anet) id) with
   | Some t => t
   | None => anet id
   end).
 Proof.
   intros n net id.
-  unfold VectorFunctionToNestedPairFunction.
+  unfold TupleFunctionToNestedPairFunction.
   simpl.
-  rewrite NestedPairToVectorOfLinksInverse.
+  rewrite NestedPairToTupleOfLinksInverse.
   reflexivity.
 Qed.
 

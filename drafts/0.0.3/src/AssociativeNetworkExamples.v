@@ -13,7 +13,7 @@ Notation "{ }" := (nil) (at level 0).
 Notation "{ x , .. , y }" := (cons x .. (cons y nil) ..) (at level 0).
 
 (* Трёхмерная ассоциативная сеть *)
-Definition complexExampleNetwork : AssociativeNetworkVectorFunction 3 :=
+Definition complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
   fun id => match id with
   | 0 => [0; 0; 0]
   | 1 => [1; 1; 2]
@@ -23,27 +23,27 @@ Definition complexExampleNetwork : AssociativeNetworkVectorFunction 3 :=
   | S _ => [0; 0; 0]
   end.
 
-(* Вектора ссылок *)
-Definition exampleTuple0 : VectorOfLinks 0 := [].
-Definition exampleTuple1 : VectorOfLinks 1 := [0].
-Definition exampleTuple4 : VectorOfLinks 4 := [3; 2; 1; 0].
+(* Кортежи ссылок *)
+Definition exampleTuple0 : TupleOfLinks 0 := [].
+Definition exampleTuple1 : TupleOfLinks 1 := [0].
+Definition exampleTuple4 : TupleOfLinks 4 := [3; 2; 1; 0].
 
-(* Преобразование векторов ссылок во вложенные упорядоченные пары (списки) *)
-Definition nestedPair0 := VectorOfLinksToNestedPair exampleTuple0.
-Definition nestedPair1 := VectorOfLinksToNestedPair exampleTuple1.
-Definition nestedPair4 := VectorOfLinksToNestedPair exampleTuple4.
+(* Преобразование кортежей ссылок во вложенные упорядоченные пары (списки) *)
+Definition nestedPair0 := TupleOfLinksToNestedPair exampleTuple0.
+Definition nestedPair1 := TupleOfLinksToNestedPair exampleTuple1.
+Definition nestedPair4 := TupleOfLinksToNestedPair exampleTuple4.
 
 Compute nestedPair0. (* Ожидается результат: { } *)
 Compute nestedPair1. (* Ожидается результат: {0} *)
 Compute nestedPair4. (* Ожидается результат: {3, 2, 1, 0} *)
 
 (* Вычисление значений преобразованной функции трёхмерной ассоциативной сети *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 0. (* Ожидается результат: {0, 0, 0} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 1. (* Ожидается результат: {1, 1, 2} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 2. (* Ожидается результат: {2, 4, 0} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 3. (* Ожидается результат: {3, 0, 5} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 4. (* Ожидается результат: {4, 1, 1} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 5. (* Ожидается результат: {0, 0, 0} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 0. (* Ожидается результат: {0, 0, 0} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 1. (* Ожидается результат: {1, 1, 2} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 2. (* Ожидается результат: {2, 4, 0} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 3. (* Ожидается результат: {3, 0, 5} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 4. (* Ожидается результат: {4, 1, 1} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 5. (* Ожидается результат: {0, 0, 0} *)
 
 (* Ассоциативная сеть вложенных упорядоченных пар *)
 Definition testPairsNetwork : AssociativeNetworkNestedPairFunction :=
@@ -57,8 +57,8 @@ Definition testPairsNetwork : AssociativeNetworkNestedPairFunction :=
   end.
 
 (* Преобразованная ассоциативная сеть вложенных УП в трёхмерную ассоциативную сеть (размерность должна совпадать) *)
-Definition testTuplesNetwork : AssociativeNetworkVectorFunction 3 :=
-  NestedPairFunctionToVectorFunction testPairsNetwork.
+Definition testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
+  NestedPairFunctionToTupleFunction testPairsNetwork.
 
 (* Вычисление значений преобразованной функции ассоциативной сети вложенных УП *)
 Compute testTuplesNetwork 0. (* Ожидается результат: [5; 0; 8] *)
@@ -121,15 +121,15 @@ Compute DupletListOffsetNestedPair testDupletList 5. (* Ожидается ре�
 Compute DupletListOffsetNestedPair testDupletList 6. (* Ожидается результат: 12 *)
 Compute DupletListOffsetNestedPair testDupletList 7. (* Ожидается результат: 12 *)
 
-(* Определяем трёхмерную ассоциативную сеть как последовательность векторов длины 3 *)
-Definition testVectorList : AssociativeNetworkVectorList 3 :=
+(* Определяем трёхмерную ассоциативную сеть как последовательность кортежей длины 3 *)
+Definition testTupleList : AssociativeNetworkTupleList 3 :=
   { [0; 0; 0], [1; 1; 2], [2; 4; 0], [3; 0; 5], [4; 1; 1], [0; 0; 0] }.
 
 (* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
-Definition testVectorsToDupletList : AssociativeNetworkDupletList := VectorListToDupletList testVectorList.
+Definition testTuplesToDupletList : AssociativeNetworkDupletList := TupleListToDupletList testTupleList.
 
 (* Вычисление трёхмерной ассоциативной сети преобразованной в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
-Compute testVectorsToDupletList.
+Compute testTuplesToDupletList.
 (* Ожидается результат:
 { (0, 1), (0, 2), (0, 2),
   (1, 4), (1, 5), (2, 5),
@@ -139,8 +139,8 @@ Compute testVectorsToDupletList.
   (0, 16), (0, 17), (0, 17)} *)
 
 (* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП и обратно в трёхмерную ассоциативную сеть *)
-Definition resultTuplesNetwork : AssociativeNetworkVectorList 3 :=
-  NestedPairListToVectorList (DupletListToNestedPairList testVectorsToDupletList).
+Definition resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
+  NestedPairListToTupleList (DupletListToNestedPairList testTuplesToDupletList).
 
 (* Итоговая проверка эквивалентности ассоциативных сетей *)
 Compute resultTuplesNetwork.

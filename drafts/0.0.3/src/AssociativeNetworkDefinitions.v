@@ -6,26 +6,26 @@ Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
 
-(* Множество ссылок на вектора: L ⊆ ℕ₀ *)
+(* Множество ссылок на кортежи: L ⊆ ℕ₀ *)
 Definition Link := nat.
 
 (* Значение Link по умолчанию: ноль *)
 Definition LinkDefault : Link := 0.
 
-(* Множество векторов ссылок длины n ∈ ℕ₀: VectorOfLinks ⊆ Lⁿ *)
-Definition VectorOfLinks (n : nat) := t Link n.
+(* Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfLinks ⊆ Lⁿ *)
+Definition TupleOfLinks (n : nat) := t Link n.
 
-(* Значение VectorOfLinks по умолчанию *)
-Definition VectorOfLinksDefault (n : nat) : VectorOfLinks n := Vector.const LinkDefault n.
+(* Значение TupleOfLinks по умолчанию *)
+Definition TupleOfLinksDefault (n : nat) : TupleOfLinks n := Vector.const LinkDefault n.
 
-(* Множество всех ассоциаций: Association = Link × VectorOfLinks *)
-Definition Association (n : nat) := prod Link (VectorOfLinks n).
+(* Множество всех ассоциаций: Association = Link × TupleOfLinks *)
+Definition Association (n : nat) := prod Link (TupleOfLinks n).
 
-(* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → VectorOfLinks} *)
-Definition AssociativeNetworkVectorFunction (n : nat) := Link -> VectorOfLinks n.
+(* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → TupleOfLinks} *)
+Definition AssociativeNetworkTupleFunction (n : nat) := Link -> TupleOfLinks n.
 
-(* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
-Definition AssociativeNetworkVectorList (n : nat) := list (VectorOfLinks n).
+(* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
+Definition AssociativeNetworkTupleList (n : nat) := list (TupleOfLinks n).
 
 (* Вложенные упорядоченные пары *)
 Definition NestedPair := list Link.

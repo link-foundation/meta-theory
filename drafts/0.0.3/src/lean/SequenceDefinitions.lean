@@ -68,21 +68,22 @@ def ListToLeftStaircase : List Link → Option LinkTree
 
 /-- Сбалансированный вариант: ((1, 2), (3, 4))
     Список делится пополам, каждая половина рекурсивно превращается в дерево.
-    Адаптировано из BalancedVariantConverter. -/
-def ListToBalancedTree : List Link → Option LinkTree
-  | [] => none
-  | [x] => some (.Leaf x)
-  | l =>
-    let mid := l.length / 2
-    let left_part := l.take mid
-    let right_part := l.drop mid
-    match ListToBalancedTree left_part, ListToBalancedTree right_part with
-    | some lt, some rt => some (.Node lt rt)
-    | _, _ => none
-  termination_by l.length
-  decreasing_by
-  all_goals simp_all [List.length_take, List.length_drop]
-  all_goals omega
+    Адаптировано из BalancedVariantConverter.
+    Использует fuel-параметр для гарантии завершения. -/
+def ListToBalancedTree (l : List Link) (fuel : Nat := l.length + 1) : Option LinkTree :=
+  match fuel with
+  | 0 => none
+  | fuel' + 1 =>
+    match l with
+    | [] => none
+    | [x] => some (.Leaf x)
+    | _ =>
+      let mid := l.length / 2
+      let left_part := l.take mid
+      let right_part := l.drop mid
+      match ListToBalancedTree left_part fuel', ListToBalancedTree right_part fuel' with
+      | some lt, some rt => some (.Node lt rt)
+      | _, _ => none
 
 -- * Хранение дерева в ассоциативной сети дуплетов
 

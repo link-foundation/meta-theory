@@ -5,14 +5,14 @@
   листья которой образуют строго возрастающий список без дубликатов.
 
   Как и последовательность, множество идентифицируется ссылкой (Reference)
-  на корень дерева в ассоциативной сети.
+  на корень дерева в сети.
 
   Это ключевой шаг: имея последовательности, определённые через связи-дуплеты,
   мы теперь определяем множества как особый вид последовательностей.
   Таким образом, множества также выражены исключительно через связи.
 -/
-import AssociativeNetworkDefinitions
-import AssociativeNetworkConversions
+import NetworkDefinitions
+import NetworkConversions
 import SequenceDefinitions
 import SetSequenceEquivalence
 
@@ -21,7 +21,7 @@ open SetSequenceEquivalence
 -- * Множества как упорядоченные уникальные последовательности связей
 
 /-- Множество ссылок — это ссылка (Reference) на корень дерева связей
-    в ассоциативной сети, листья которого образуют строго возрастающий
+    в сети, листья которого образуют строго возрастающий
     список без дубликатов. Как и последовательность, множество — это Reference. -/
 abbrev LinkSet := Reference
 
@@ -33,10 +33,10 @@ def IsValidSetTree (s : LinkTree) : Prop :=
 def SingletonSet (value : Reference) : LinkSet := value
 
 /-- Преобразование списка ссылок в множество: сортировка, удаление дубликатов,
-    построение сбалансированного дерева и запись в ассоциативную сеть.
+    построение сбалансированного дерева и запись в сеть.
     Возвращает ссылку на корень (= множество) и сеть дуплетов. -/
 def ListToSet (l : List Reference) (offset : Nat)
-    : Option (LinkSet × AssociativeNetworkDupletList) :=
+    : Option (LinkSet × NetworkDupletList) :=
   let sorted := toOrderedUnique l
   match ListToBalancedTree sorted with
   | none => none
@@ -65,7 +65,7 @@ theorem ListToSet_membership (x : Reference) (l : List Reference) :
 
 -- Создание множества из списка с дубликатами
 #eval ListToSet [3, 1, 4, 1, 5, 9, 2, 6, 5, 3] 10
--- Множество {1, 2, 3, 4, 5, 6, 9} в ассоциативной сети
+-- Множество {1, 2, 3, 4, 5, 6, 9} в сети
 
 -- Множество из одного элемента
 #eval SingletonSet 42

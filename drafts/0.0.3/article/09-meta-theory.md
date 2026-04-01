@@ -10,13 +10,13 @@
 
 **Уровень 0 (базовый):**
 
-> $\displaystyle Reference := \mathbb{N}_0, \quad Duplet := Reference \times Reference, \quad AssociativeNetwork : Reference \to Duplet$
+> $\displaystyle Reference := \mathbb{N}_0, \quad Duplet := Reference \times Reference, \quad Network : Reference \to Duplet$
 
 **Уровень 1 (последовательности через связи):**
 
 > $\displaystyle LinkSequence := Reference$
 
-Последовательность — это ссылка на корень дерева связей-дуплетов, хранимого в ассоциативной сети. Каждый внутренний узел — дуплет $(ссылка\_на\_левое, ссылка\_на\_правое)$, листья — элементы последовательности. Например: $[1, 2, 3, 4] = ((1, 2), (3, 4))$, хранится в математической нотации как $5 \to (1, 2),\ 6 \to (3, 4),\ 7 \to (5, 6)$ или в [нотации связей](https://github.com/link-foundation/links-notation): `(5: 1 2) (6: 3 4) (7: 5 6)`.
+Последовательность — это ссылка на корень дерева связей-дуплетов, хранимого в сети. Каждый внутренний узел — дуплет $(ссылка\_на\_левое, ссылка\_на\_правое)$, листья — элементы последовательности. Например: $[1, 2, 3, 4] = ((1, 2), (3, 4))$, хранится в математической нотации как $5 \to (1, 2),\ 6 \to (3, 4),\ 7 \to (5, 6)$ или в [нотации связей](https://github.com/link-foundation/links-notation): `(5: 1 2) (6: 3 4) (7: 5 6)`.
 
 **Уровень 2 (множества через последовательности):**
 
@@ -26,11 +26,26 @@
 
 **Уровень 3 (мета-определения через множества):**
 
-> $\displaystyle MetaReference := Reference, \quad MetaDuplet := MetaReference \times MetaReference, \quad MetaAssociativeNetwork : MetaReference \to MetaDuplet$
+> $\displaystyle MetaReference := Reference, \quad MetaDuplet := MetaReference \times MetaReference, \quad MetaNetwork : MetaReference \to MetaDuplet$
 
-Мета-ссылка — это элемент множества, хранимого в ассоциативной сети. Мета-дуплет — пара мета-ссылок. Мета-ассоциативная сеть — функция из мета-ссылок в мета-дуплеты.
+Мета-ссылка — это элемент множества, хранимого в сети. Мета-дуплет — пара мета-ссылок. Мета-сеть — функция из мета-ссылок в мета-дуплеты.
 
 **Уровень 3 структурно идентичен Уровню 0**, но определён через конструкции Уровней 1 и 2, которые сами определены через Уровень 0. Цикл замкнут.
+
+#### Все мета-термины как связи
+
+Замечательное свойство теории связей состоит в том, что все мета-термины могут быть описаны в терминах связи ($L$) — центрального понятия, введённого в самой теории.
+
+**Мета-ссылка как связь.** Поскольку ссылка ($r ∈ R$) — это связь нулевой размерности $r ≡ (r, ())$, мета-ссылка (MetaReference), будучи элементом множества ссылок, также является связью. Более того, MetaReference — это связь произвольной размерности, все ссылки которой указывают на неё саму: это связь, определяющая себя через себя.
+
+**Мета-сеть как мета-последовательность.** Мета-сеть (MetaNetwork) — это функция $MetaReference \to MetaDuplet$, которая может быть представлена как последовательность мета-дуплетов (MetaNetworkList). Эта последовательность, в свою очередь, является мета-последовательностью (MetaSequence) — деревом связей-дуплетов в сети. А мета-последовательность — это ссылка на корень дерева, то есть снова связь.
+
+**Все мета-термины описываются через связи.** Таким образом:
+- MetaReference — это связь (нулевой размерности, с самоссылкой)
+- MetaDuplet — это связь (двумерная, пара мета-ссылок)
+- MetaNetwork — это связь связей (последовательность связей, которая сама является связью)
+
+Все термины, необходимые для введения теории связей, описываются как связи — термин, введённый в самой теории связей. Это означает, что теория связей является **полностью самодостаточной**: она определяет свои основания через свои же конструкции.
 
 #### Формализация в Rocq и Lean
 
@@ -39,7 +54,7 @@
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/MetaDefinitions.v)
 
 ```rocq
-Require Import AssociativeNetworkDefinitions.
+Require Import NetworkDefinitions.
 Require Import SequenceDefinitions.
 Require Import SetDefinitions.
 Require Import SetSequenceEquivalence.
@@ -47,28 +62,28 @@ Require Import SetSequenceEquivalence.
 (* Мета-ссылка: элемент множества, определённого через связи-дуплеты *)
 Definition MetaReference := Reference.
 
-(* Мета-пространство ссылок: ссылка на корень дерева в ассоциативной сети *)
+(* Мета-пространство ссылок: ссылка на корень дерева в сети *)
 Definition MetaReferenceSpace := LinkSet.
 
 (* Мета-дуплет: пара мета-ссылок *)
 Definition MetaDuplet := prod MetaReference MetaReference.
 
-(* Мета-ассоциативная сеть *)
-Definition MetaAssociativeNetwork := MetaReference -> MetaDuplet.
+(* Мета-сеть *)
+Definition MetaNetwork := MetaReference -> MetaDuplet.
 
-(* Мета-ассоциативная сеть в виде последовательности мета-дуплетов *)
-Definition MetaAssociativeNetworkList := list MetaDuplet.
+(* Мета-сеть в виде последовательности мета-дуплетов *)
+Definition MetaNetworkList := list MetaDuplet.
 
-(* Создание мета-пространства ссылок в ассоциативной сети *)
+(* Создание мета-пространства ссылок в сети *)
 Definition MakeMetaReferenceSpace (size : nat) (offset : nat)
-    : option (MetaReferenceSpace * AssociativeNetworkDupletList) :=
+    : option (MetaReferenceSpace * NetworkDupletList) :=
   ListToSet (makeMetaReferenceSpace_ size) offset.
 
 (* ОСНОВНАЯ ТЕОРЕМА МЕТА-ТЕОРИИ:
-   Любая мета-ассоциативная сеть может быть представлена
-   как обычная ассоциативная сеть дуплетов *)
+   Любая мета-сеть может быть представлена
+   как обычная сеть дуплетов *)
 Theorem meta_network_is_duplet_network :
-  forall (net : MetaAssociativeNetworkList),
+  forall (net : MetaNetworkList),
     MetaNetworkToDupletList net = net.
 
 (* Мета-пространство ссылок содержит упорядоченные уникальные элементы *)
@@ -81,7 +96,7 @@ Theorem meta_reference_space_elements_valid : forall (size : nat),
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/MetaDefinitions.lean)
 
 ```lean
-import AssociativeNetworkDefinitions
+import NetworkDefinitions
 import SequenceDefinitions
 import SetDefinitions
 import SetSequenceEquivalence
@@ -89,23 +104,23 @@ import SetSequenceEquivalence
 -- Мета-ссылка: элемент множества, определённого через связи-дуплеты
 abbrev MetaReference := Reference
 
--- Мета-пространство ссылок: ссылка на корень дерева в ассоциативной сети
+-- Мета-пространство ссылок: ссылка на корень дерева в сети
 abbrev MetaReferenceSpace := LinkSet
 
 -- Мета-дуплет: пара мета-ссылок
 abbrev MetaDuplet := MetaReference × MetaReference
 
--- Мета-ассоциативная сеть
-abbrev MetaAssociativeNetwork := MetaReference → MetaDuplet
+-- Мета-сеть
+abbrev MetaNetwork := MetaReference → MetaDuplet
 
--- Мета-ассоциативная сеть в виде последовательности мета-дуплетов
-abbrev MetaAssociativeNetworkList := List MetaDuplet
+-- Мета-сеть в виде последовательности мета-дуплетов
+abbrev MetaNetworkList := List MetaDuplet
 
 -- ОСНОВНАЯ ТЕОРЕМА МЕТА-ТЕОРИИ:
--- Любая мета-ассоциативная сеть может быть представлена
--- как обычная ассоциативная сеть дуплетов
+-- Любая мета-сеть может быть представлена
+-- как обычная сеть дуплетов
 theorem meta_network_is_duplet_network :
-    ∀ (net : MetaAssociativeNetworkList),
+    ∀ (net : MetaNetworkList),
       MetaNetworkToDupletList net = net
 
 -- Мета-пространство ссылок содержит упорядоченные уникальные элементы
@@ -121,10 +136,10 @@ theorem meta_reference_space_elements_valid (size : Nat) :
 
 2. **Определение теории множеств через теорию связей.** Поскольку множества формально определены как деревья связей-дуплетов с инвариантом упорядоченности, теория связей содержит в себе (по крайней мере, конечную) теорию множеств. Это открывает путь к проекции теории множеств *в* теорию связей, а не только *из* неё.
 
-3. **Замыкание цикла с теорией типов.** Теория связей определена в терминах теории множеств (через $L \subseteq \mathbb{N}_0$), теория множеств определена через теорию типов (в Rocq/Lean), а теория типов использует множества и последовательности, которые мы определили через связи. Цикл замкнут на трёх уровнях.
+3. **Замыкание цикла с теорией типов.** Теория связей определена в терминах теории множеств (через $R \subseteq \mathbb{N}_0$), теория множеств определена через теорию типов (в Rocq/Lean), а теория типов использует множества и последовательности, которые мы определили через связи. Цикл замкнут на трёх уровнях.
 
-4. **Унификация.** Связи-дуплеты ($L \to L^2$) достаточны для представления последовательностей, множеств и, как следствие, самих связей на мета-уровне. Это подтверждает универсальность формулы:
+4. **Унификация.** Связи-дуплеты ($R \to R^2$) достаточны для представления последовательностей, множеств и, как следствие, самих связей на мета-уровне. Это подтверждает универсальность формулы:
 
-> $\displaystyle L \to L^2$
+> $\displaystyle R \to R^2$
 
 В будущих работах мы планируем расширить этот подход, показав полную проекцию теории множеств и теории типов в теорию связей, а также формально доказать биективность преобразований между этими теориями.

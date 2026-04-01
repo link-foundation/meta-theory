@@ -1,12 +1,12 @@
 ### Последовательности и множества, определённые в терминах связей
 
-В предыдущих разделах мы показали, что любой кортеж длины $n$ может быть эквивалентно представлен в виде цепочки связей-дуплетов ($L \to L^2$). Теперь мы делаем следующий шаг: формально определяем **последовательности** и **множества** исключительно в терминах связей-дуплетов.
+В предыдущих разделах мы показали, что любой кортеж длины $n$ может быть эквивалентно представлен в виде цепочки связей-дуплетов ($R \to R^2$). Теперь мы делаем следующий шаг: формально определяем **последовательности** и **множества** исключительно в терминах связей-дуплетов.
 
 Это важный шаг, поскольку последовательности и множества являются фундаментальными структурами данных, лежащими в основе теории множеств и теории типов. Показав, что они могут быть полностью выражены через связи, мы демонстрируем выразительную мощь теории связей.
 
 #### Последовательности как деревья связей-дуплетов
 
-Последовательность в теории связей — это **ссылка (Reference) на корень дерева**, хранимого в ассоциативной сети дуплетов. Каждый внутренний узел дерева — это связь-дуплет $(ссылка\_на\_левое, ссылка\_на\_правое)$, а листья — это элементы последовательности.
+Последовательность в теории связей — это **ссылка (Reference) на корень дерева**, хранимого в сети дуплетов. Каждый внутренний узел дерева — это связь-дуплет $(ссылка\_на\_левое, ссылка\_на\_правое)$, а листья — это элементы последовательности.
 
 Например, последовательность $[1, 2, 3, 4]$ в сбалансированном варианте $((1, 2), (3, 4))$ хранится как:
 
@@ -25,7 +25,7 @@
 
 > $\displaystyle LinkSequence := Reference$
 
-Последовательность идентифицируется ссылкой (Reference) на корень дерева в ассоциативной сети.
+Последовательность идентифицируется ссылкой (Reference) на корень дерева в сети.
 
 Одна и та же последовательность может быть представлена деревьями различной формы:
 
@@ -47,7 +47,10 @@
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SequenceDefinitions.v)
 
 ```rocq
-(* Последовательность — это ссылка на корень дерева в ассоциативной сети *)
+Require Import NetworkDefinitions.
+Require Import NetworkConversions.
+
+(* Последовательность — это ссылка на корень дерева в сети *)
 Definition LinkSequence := Reference.
 
 (* Вспомогательное дерево для алгоритмов построения последовательностей *)
@@ -55,16 +58,16 @@ Inductive LinkTree : Type :=
   | Leaf : Reference -> LinkTree
   | Node : LinkTree -> LinkTree -> LinkTree.
 
-(* Запись дерева в ассоциативную сеть дуплетов *)
+(* Запись дерева в сеть дуплетов *)
 Fixpoint TreeToDupletList_ (t : LinkTree) (offset : nat)
-    : AssociativeNetworkDupletList * nat := ...
+    : NetworkDupletList * nat := ...
 
 (* Получение ссылки на корень (= последовательность) *)
 Definition TreeToSequence (t : LinkTree) (offset : nat) : LinkSequence := ...
 
 (* Полное преобразование: список → сеть дуплетов + ссылка на корень *)
 Definition ListToSequence (l : list Reference) (offset : nat)
-    : option (LinkSequence * AssociativeNetworkDupletList) := ...
+    : option (LinkSequence * NetworkDupletList) := ...
 ```
 
 ##### Lean
@@ -72,7 +75,10 @@ Definition ListToSequence (l : list Reference) (offset : nat)
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/SequenceDefinitions.lean)
 
 ```lean
--- Последовательность — это ссылка на корень дерева в ассоциативной сети
+import NetworkDefinitions
+import NetworkConversions
+
+-- Последовательность — это ссылка на корень дерева в сети
 abbrev LinkSequence := Reference
 
 /-- Вспомогательное дерево для алгоритмов построения последовательностей -/
@@ -80,15 +86,15 @@ inductive LinkTree where
   | Leaf : Reference → LinkTree
   | Node : LinkTree → LinkTree → LinkTree
 
--- Запись дерева в ассоциативную сеть дуплетов
-def TreeToDupletList_ : LinkTree → Nat → AssociativeNetworkDupletList × Nat
+-- Запись дерева в сеть дуплетов
+def TreeToDupletList_ : LinkTree → Nat → NetworkDupletList × Nat
 
 -- Получение ссылки на корень (= последовательность)
 def TreeToSequence (t : LinkTree) (offset : Nat) : LinkSequence
 
 -- Полное преобразование: список → сеть дуплетов + ссылка на корень
 def ListToSequence (l : List Reference) (offset : Nat)
-    : Option (LinkSequence × AssociativeNetworkDupletList)
+    : Option (LinkSequence × NetworkDupletList)
 ```
 
 #### Эквивалентность множеств и последовательностей
@@ -131,7 +137,7 @@ theorem set_sequence_equivalence (l : List Nat) :
 
 #### Множества как упорядоченные уникальные последовательности связей
 
-Используя доказанную эквивалентность, мы определяем **множество** как **ссылку (Reference) на корень дерева** в ассоциативной сети, листья которого образуют строго возрастающий список. Для создания множества из произвольного списка сначала применяется `toOrderedUnique` (сортировка и удаление дубликатов), затем строится сбалансированное дерево и записывается в сеть.
+Используя доказанную эквивалентность, мы определяем **множество** как **ссылку (Reference) на корень дерева** в сети, листья которого образуют строго возрастающий список. Для создания множества из произвольного списка сначала применяется `toOrderedUnique` (сортировка и удаление дубликатов), затем строится сбалансированное дерево и записывается в сеть.
 
 > $\displaystyle LinkSet := Reference$
 
@@ -140,7 +146,12 @@ theorem set_sequence_equivalence (l : List Nat) :
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SetDefinitions.v)
 
 ```rocq
-(* Множество ссылок — это ссылка на корень дерева в ассоциативной сети *)
+Require Import NetworkDefinitions.
+Require Import NetworkConversions.
+Require Import SequenceDefinitions.
+Require Import SetSequenceEquivalence.
+
+(* Множество ссылок — это ссылка на корень дерева в сети *)
 Definition LinkSet := Reference.
 
 (* Предикат корректности множества (через дерево) *)
@@ -149,7 +160,7 @@ Definition IsValidSetTree (s : LinkTree) : Prop :=
 
 (* Преобразование списка в множество: ссылка на корень + сеть дуплетов *)
 Definition ListToSet (l : list Reference) (offset : nat)
-    : option (LinkSet * AssociativeNetworkDupletList) :=
+    : option (LinkSet * NetworkDupletList) :=
   let sorted := toOrderedUnique l in
   match ListToBalancedTree sorted with
   | None => None
@@ -162,7 +173,12 @@ Definition ListToSet (l : list Reference) (offset : nat)
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/SetDefinitions.lean)
 
 ```lean
--- Множество ссылок — это ссылка на корень дерева в ассоциативной сети
+import NetworkDefinitions
+import NetworkConversions
+import SequenceDefinitions
+import SetSequenceEquivalence
+
+-- Множество ссылок — это ссылка на корень дерева в сети
 abbrev LinkSet := Reference
 
 -- Предикат корректности множества (через дерево)
@@ -171,15 +187,15 @@ def IsValidSetTree (s : LinkTree) : Prop :=
 
 -- Преобразование списка в множество: ссылка на корень + сеть дуплетов
 def ListToSet (l : List Reference) (offset : Nat)
-    : Option (LinkSet × AssociativeNetworkDupletList)
+    : Option (LinkSet × NetworkDupletList)
 ```
 
 #### Значение результатов
 
 Таким образом, мы формально показали, что:
 
-1. **Последовательности** определены как ссылки на корни деревьев связей-дуплетов ($L \to L^2$) в ассоциативной сети
+1. **Последовательности** определены как ссылки на корни деревьев связей-дуплетов ($R \to R^2$) в сети
 2. **Множества** определены как последовательности с инвариантом упорядоченности и уникальности листьев
 3. Теорема `set_sequence_equivalence` гарантирует, что любое конечное множество натуральных чисел может быть представлено как упорядоченная уникальная последовательность
 
-Всё это означает, что и последовательности, и множества **выражены исключительно через связи-дуплеты** — минимальную структуру теории связей $L \to L^2$.
+Всё это означает, что и последовательности, и множества **выражены исключительно через связи-дуплеты** — минимальную структуру теории связей $R \to R^2$.

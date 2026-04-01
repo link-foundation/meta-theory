@@ -2,14 +2,14 @@
   SequenceDefinitions.lean - Определение последовательностей в терминах связей.
 
   Последовательность — это вложенная структура связей-дуплетов,
-  хранимая в ассоциативной сети. Последовательность идентифицируется
+  хранимая в сети. Последовательность идентифицируется
   ссылкой (Reference) на корень дерева дуплетов.
 
   Каждый внутренний узел дерева — это связь-дуплет (ссылка_на_левое, ссылка_на_правое).
   Листья — это элементы последовательности (ссылки).
 
   Пример: [1, 2, 3, 4] = ((1, 2), (3, 4))
-  Хранится в ассоциативной сети как:
+  Хранится в сети как:
     (5: 1, 2)   — дуплет для пары (1, 2)
     (6: 3, 4)   — дуплет для пары (3, 4)
     (7: 5, 6)   — дуплет-корень, ссылающийся на поддеревья
@@ -25,31 +25,31 @@
   Адаптировано из: https://github.com/linksplatform/Documentation/tree/main/doc/LinksTheoryManuscriptDraft/05%20Sequences
   См. также: https://github.com/linksplatform/Data.Doublets.Sequences/blob/main/csharp/Platform.Data.Doublets.Sequences/Converters/BalancedVariantConverter.cs
 -/
-import AssociativeNetworkDefinitions
-import AssociativeNetworkConversions
+import NetworkDefinitions
+import NetworkConversions
 
--- * Последовательность — это ссылка на корень дерева в ассоциативной сети
+-- * Последовательность — это ссылка на корень дерева в сети
 
 /-- Последовательность идентифицируется ссылкой (Reference) на корень дерева дуплетов,
-    хранимого в ассоциативной сети. Это не отдельный тип — это просто Reference. -/
+    хранимого в сети. Это не отдельный тип — это просто Reference. -/
 abbrev LinkSequence := Reference
 
 -- * Вспомогательное дерево для построения последовательностей
 
 /-- LinkTree — промежуточная структура для алгоритмов построения деревьев.
-    Конечный результат всегда записывается в ассоциативную сеть дуплетов. -/
+    Конечный результат всегда записывается в сеть дуплетов. -/
 inductive LinkTree where
   | Leaf : Reference → LinkTree
   | Node : LinkTree → LinkTree → LinkTree
   deriving Repr
 
--- * Запись дерева в ассоциативную сеть дуплетов
+-- * Запись дерева в сеть дуплетов
 
-/-- Запись дерева в ассоциативную сеть дуплетов.
+/-- Запись дерева в сеть дуплетов.
     Каждый узел Node записывается как дуплет (ссылка_на_левое, ссылка_на_правое).
     Листья — это элементы последовательности (не записываются как отдельные дуплеты).
-    Возвращает пару: (ассоциативная сеть дуплетов, следующее свободное смещение). -/
-def TreeToDupletList_ : LinkTree → Nat → AssociativeNetworkDupletList × Nat
+    Возвращает пару: (сеть дуплетов, следующее свободное смещение). -/
+def TreeToDupletList_ : LinkTree → Nat → NetworkDupletList × Nat
   | .Leaf _, offset => ([], offset)
   | .Node l r, offset =>
     let left_root := match l with | .Leaf x => x | .Node _ _ => offset + 1
@@ -58,7 +58,7 @@ def TreeToDupletList_ : LinkTree → Nat → AssociativeNetworkDupletList × Nat
     let (right_net, right_next) := TreeToDupletList_ r left_next
     ((left_root, right_root) :: left_net ++ right_net, right_next)
 
-def TreeToDupletList (t : LinkTree) (offset : Nat) : AssociativeNetworkDupletList :=
+def TreeToDupletList (t : LinkTree) (offset : Nat) : NetworkDupletList :=
   (TreeToDupletList_ t offset).1
 
 /-- Получение ссылки на корень дерева (= последовательность) -/
@@ -114,11 +114,11 @@ def ListToBalancedTree (l : List Reference) (fuel : Nat := l.length + 1) : Optio
       | some lt, some rt => some (.Node lt rt)
       | _, _ => none
 
--- * Полное преобразование: список → ассоциативная сеть дуплетов + ссылка на корень
+-- * Полное преобразование: список → сеть дуплетов + ссылка на корень
 
-/-- Преобразование списка в последовательность (ссылку на корень) и ассоциативную сеть -/
+/-- Преобразование списка в последовательность (ссылку на корень) и сеть -/
 def ListToSequence (l : List Reference) (offset : Nat)
-    : Option (LinkSequence × AssociativeNetworkDupletList) :=
+    : Option (LinkSequence × NetworkDupletList) :=
   match ListToBalancedTree l with
   | none => none
   | some t => some (TreeToSequence t offset, TreeToDupletList t offset)
@@ -130,8 +130,8 @@ def listGetD (l : List α) (n : Nat) (default : α) : α :=
   | x :: _, 0 => x
   | _ :: rest, n + 1 => listGetD rest n default
 
-/-- Чтение последовательности из ассоциативной сети дуплетов -/
-def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Reference) (fuel : Nat)
+/-- Чтение последовательности из сети дуплетов -/
+def ReadSequence_ (anet : NetworkDupletList) (root : Reference) (fuel : Nat)
     : List Reference :=
   match fuel with
   | 0 => []
@@ -142,12 +142,12 @@ def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Reference) (fuel
     else
       [root]
 
-def ReadSequence (anet : AssociativeNetworkDupletList) (root : LinkSequence) : List Reference :=
+def ReadSequence (anet : NetworkDupletList) (root : LinkSequence) : List Reference :=
   ReadSequence_ anet root (anet.length + 1)
 
 -- * Примеры
 
--- Пример: [1, 2, 3, 4] — сбалансированное дерево, записанное в ассоциативную сеть
+-- Пример: [1, 2, 3, 4] — сбалансированное дерево, записанное в сеть
 #eval ListToSequence [1, 2, 3, 4] 5
 -- Ожидается: some (5, [(6, 7), (1, 2), (3, 4)])
 -- Последовательность = ссылка 5

@@ -1,13 +1,21 @@
 (**
   SequenceDefinitions.v - Определение последовательностей в терминах связей.
 
-  Последовательность определяется как дерево связей-дуплетов.
-  Каждый элемент последовательности представлен дуплетом (элемент, ссылка_на_следующий),
-  где ссылка_на_следующий указывает на следующий дуплет в последовательности.
-  Пустая последовательность обозначается ссылкой на себя (0, 0).
+  Последовательность определяется как вложенная структура связей-дуплетов,
+  образующая бинарное дерево. Листья дерева — это элементы последовательности,
+  а каждый внутренний узел — это связь-дуплет (левое_поддерево, правое_поддерево).
 
-  Это формализует идею из теории связей: любая последовательность может быть
-  представлена исключительно связями-дуплетами вида L → L².
+  Примеры:
+    [1, 2, 3, 4] = ((1, 2), (3, 4))   — сбалансированный вариант
+    [1, 2, 3, 4] = (((1, 2), 3), 4)   — левая лестница
+    [1, 2, 3, 4] = (1, (2, (3, 4)))   — правая лестница
+
+  Это формализует идею из рукописи теории связей:
+  последовательность — это дерево связей, где связи играют роль ветвей,
+  а листья дерева представляют собственно элементы последовательности.
+
+  Адаптировано из: https://github.com/linksplatform/Documentation/tree/main/doc/LinksTheoryManuscriptDraft/05%20Sequences
+  См. также: https://github.com/linksplatform/Data.Doublets.Sequences/blob/main/csharp/Platform.Data.Doublets.Sequences/Converters/BalancedVariantConverter.cs
 *)
 
 Require Import PeanoNat.
@@ -18,78 +26,137 @@ Import ListNotations.
 Require Import AssociativeNetworkDefinitions.
 Require Import AssociativeNetworkConversions.
 
-(** * Последовательности как деревья связей *)
+(** * Последовательности как вложенные структуры связей *)
 
-(** Последовательность, определённая в терминах связей-дуплетов.
-    Каждый элемент — это дуплет (значение, ссылка_на_следующий).
-    Пустой дуплет (0, 0) обозначает конец последовательности. *)
-Definition Sequence := AssociativeNetworkDupletList.
+(** Дерево связей: рекурсивная структура, представляющая последовательность.
+    - Leaf (лист): одиночный элемент-ссылка
+    - Node (узел): связь-дуплет, состоящая из двух поддеревьев *)
+Inductive LinkTree : Type :=
+  | Leaf : Link -> LinkTree
+  | Node : LinkTree -> LinkTree -> LinkTree.
 
-(** Пустая последовательность *)
-Definition EmptySequence : Sequence := nil.
+(** Последовательность — это дерево связей *)
+Definition Sequence := LinkTree.
 
-(** Предикат: является ли последовательность пустой *)
-Definition IsEmptySequence (s : Sequence) : Prop := s = nil.
+(** Получение листьев дерева (элементов последовательности) слева направо *)
+Fixpoint TreeToList (t : LinkTree) : list Link :=
+  match t with
+  | Leaf x => [x]
+  | Node left right => TreeToList left ++ TreeToList right
+  end.
 
-(** Создание последовательности из одного элемента.
-    Элемент-связь указывает на себя, обозначая конец. *)
-Definition SingletonSequence (value : Link) : Sequence :=
-  (value, 0) :: nil.
+(** Длина последовательности (количество листьев) *)
+Fixpoint TreeLength (t : LinkTree) : nat :=
+  match t with
+  | Leaf _ => 1
+  | Node left right => TreeLength left + TreeLength right
+  end.
 
-(** Преобразование списка ссылок в последовательность связей-дуплетов.
-    Это ключевая операция: берём обычный список и представляем его
-    как цепочку связей-дуплетов. *)
-Definition ListToSequence (l : list Link) : Sequence :=
-  NestedPairToDupletList l.
+(** * Алгоритмы создания последовательностей *)
 
-(** Преобразование последовательности связей-дуплетов обратно в список ссылок. *)
-Definition SequenceToList (s : Sequence) : list Link :=
-  DupletListToNestedPair s.
+(** Правая лестница: (1, (2, (3, 4)))
+    Каждый следующий элемент вкладывается вправо. *)
+Fixpoint ListToRightStaircase (l : list Link) : option LinkTree :=
+  match l with
+  | [] => None
+  | [x] => Some (Leaf x)
+  | x :: rest =>
+    match ListToRightStaircase rest with
+    | None => None
+    | Some t => Some (Node (Leaf x) t)
+    end
+  end.
 
-(** Длина последовательности *)
-Definition SequenceLength (s : Sequence) : nat :=
-  length s.
+(** Левая лестница: (((1, 2), 3), 4)
+    Каждый следующий элемент вкладывается влево. *)
+Fixpoint ListToLeftStaircase_ (acc : LinkTree) (l : list Link) : LinkTree :=
+  match l with
+  | [] => acc
+  | x :: rest => ListToLeftStaircase_ (Node acc (Leaf x)) rest
+  end.
 
-(** Конкатенация двух последовательностей *)
-Definition SequenceConcat (s1 s2 : Sequence) : Sequence :=
-  let l1 := SequenceToList s1 in
-  let l2 := SequenceToList s2 in
-  ListToSequence (l1 ++ l2).
+Definition ListToLeftStaircase (l : list Link) : option LinkTree :=
+  match l with
+  | [] => None
+  | [x] => Some (Leaf x)
+  | x :: rest => Some (ListToLeftStaircase_ (Leaf x) rest)
+  end.
 
-(** Добавление элемента в конец последовательности *)
-Definition SequenceAppend (s : Sequence) (value : Link) : Sequence :=
-  let l := SequenceToList s in
-  ListToSequence (l ++ (value :: nil)).
+(** Сбалансированный вариант: ((1, 2), (3, 4))
+    Список делится пополам, каждая половина рекурсивно превращается в дерево.
+    Адаптировано из BalancedVariantConverter. *)
+Fixpoint ListToBalancedTree (l : list Link) : option LinkTree :=
+  match l with
+  | [] => None
+  | [x] => Some (Leaf x)
+  | _ =>
+    let mid := length l / 2 in
+    let left_part := firstn mid l in
+    let right_part := skipn mid l in
+    match ListToBalancedTree left_part, ListToBalancedTree right_part with
+    | Some lt, Some rt => Some (Node lt rt)
+    | _, _ => None
+    end
+  end.
 
-(** Добавление элемента в начало последовательности *)
-Definition SequencePrepend (value : Link) (s : Sequence) : Sequence :=
-  let l := SequenceToList s in
-  ListToSequence (value :: l).
+(** * Хранение дерева в ассоциативной сети дуплетов *)
+
+(** Запись дерева в ассоциативную сеть дуплетов.
+    Каждый узел Node записывается как дуплет (ссылка_на_левое, ссылка_на_правое).
+    Листья записываются как дуплеты (значение, значение) — связь-ссылающаяся-на-себя.
+    Возвращает пару: (ассоциативная сеть дуплетов, ссылка на корень). *)
+Fixpoint TreeToDupletList_ (t : LinkTree) (offset : nat)
+    : AssociativeNetworkDupletList * nat :=
+  match t with
+  | Leaf x => ([(x, x)], S offset)
+  | Node left right =>
+    let '(left_net, left_next) := TreeToDupletList_ left (S offset) in
+    let '(right_net, right_next) := TreeToDupletList_ right left_next in
+    ((S offset, left_next) :: left_net ++ right_net, right_next)
+  end.
+
+Definition TreeToDupletList (t : LinkTree) : AssociativeNetworkDupletList :=
+  fst (TreeToDupletList_ t 0).
 
 (** * Примеры *)
 
-(** Пример: создание последовательности [3, 1, 4, 1, 5] *)
-Definition exampleSequence := ListToSequence [3; 1; 4; 1; 5].
+(** Пример: [3, 1, 4, 1, 5] — правая лестница *)
+Compute ListToRightStaircase [3; 1; 4; 1; 5].
+(* Ожидается: Some (Node (Leaf 3) (Node (Leaf 1) (Node (Leaf 4) (Node (Leaf 1) (Leaf 5))))) *)
+(* Т.е. (3, (1, (4, (1, 5)))) *)
 
-(** Вычисление примера последовательности *)
-Compute exampleSequence.
-(* Ожидается: [(3, 1), (1, 2), (4, 3), (1, 4), (5, 4)] *)
+(** Пример: [1, 2, 3, 4] — левая лестница *)
+Compute ListToLeftStaircase [1; 2; 3; 4].
+(* Ожидается: Some (Node (Node (Node (Leaf 1) (Leaf 2)) (Leaf 3)) (Leaf 4)) *)
+(* Т.е. (((1, 2), 3), 4) *)
 
-(** Обратное преобразование *)
-Compute SequenceToList exampleSequence.
-(* Ожидается: [3, 1, 4, 1, 5] *)
+(** Пример: [1, 2, 3, 4] — сбалансированное дерево *)
+Compute ListToBalancedTree [1; 2; 3; 4].
+(* Ожидается: Some (Node (Node (Leaf 1) (Leaf 2)) (Node (Leaf 3) (Leaf 4))) *)
+(* Т.е. ((1, 2), (3, 4)) *)
+
+(** Пример: [1, 2, 3, 4, 5] — сбалансированное дерево *)
+Compute ListToBalancedTree [1; 2; 3; 4; 5].
+(* Ожидается: Some (Node (Node (Leaf 1) (Leaf 2)) (Node (Node (Leaf 3) (Leaf 4)) (Leaf 5))) *)
+(* Т.е. ((1, 2), ((3, 4), 5)) *)
+
+(** Обратное преобразование: дерево в список *)
+Compute TreeToList (Node (Node (Leaf 1) (Leaf 2)) (Node (Leaf 3) (Leaf 4))).
+(* Ожидается: [1, 2, 3, 4] *)
+
+(** Все три варианта дают одну и ту же последовательность элементов *)
+Definition balanced_1234 := match ListToBalancedTree [1; 2; 3; 4] with Some t => TreeToList t | None => [] end.
+Definition right_1234 := match ListToRightStaircase [1; 2; 3; 4] with Some t => TreeToList t | None => [] end.
+Definition left_1234 := match ListToLeftStaircase [1; 2; 3; 4] with Some t => TreeToList t | None => [] end.
+
+Compute balanced_1234. (* [1, 2, 3, 4] *)
+Compute right_1234.    (* [1, 2, 3, 4] *)
+Compute left_1234.     (* [1, 2, 3, 4] *)
 
 (** Пустая последовательность *)
-Compute ListToSequence [].
-(* Ожидается: [] *)
-
-Compute SequenceToList EmptySequence.
-(* Ожидается: [] *)
+Compute ListToRightStaircase [].
+(* Ожидается: None *)
 
 (** Последовательность из одного элемента *)
-Compute SingletonSequence 42.
-(* Ожидается: [(42, 0)] *)
-
-(** Конкатенация *)
-Compute SequenceConcat (ListToSequence [1; 2; 3]) (ListToSequence [4; 5]).
-(* Ожидается: представление [1, 2, 3, 4, 5] в дуплетах *)
+Compute ListToRightStaircase [42].
+(* Ожидается: Some (Leaf 42) *)

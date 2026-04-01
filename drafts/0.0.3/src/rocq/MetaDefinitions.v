@@ -4,9 +4,9 @@
   определены в терминах связей.
 
   Этот файл замыкает цикл определений:
-  1. Связи (Link) и ссылки (Reference) определены как натуральные числа (ℕ₀)
-  2. Последовательности определены как деревья связей-дуплетов (L → L²)
-  3. Множества определены как упорядоченные уникальные последовательности
+  1. Связи (Link) и ссылки определены как натуральные числа (ℕ₀)
+  2. Последовательности определены как деревья связей-дуплетов (LinkTree)
+  3. Множества определены как упорядоченные уникальные деревья связей (LinkSet)
   4. Теперь мы переопределяем связи и ссылки через множества и последовательности
 
   Это демонстрирует, что теория связей может определять свои собственные
@@ -29,32 +29,27 @@ Require Import SetSequenceEquivalence.
 
 (**
   Мета-ссылка (MetaLink) — это элемент множества ссылок,
-  определённого как упорядоченная уникальная последовательность связей-дуплетов.
+  определённого как упорядоченное уникальное дерево связей-дуплетов.
 
   В исходном определении: Link := ℕ₀ (натуральное число)
-  В мета-определении: MetaLink — это элемент LinkSet,
-  где LinkSet — это последовательность дуплетов (Sequence),
-  а Sequence — это AssociativeNetworkDupletList,
-  а каждый дуплет — это пара связей (Link × Link).
+  В мета-определении: MetaLink — это лист дерева LinkSet,
+  где LinkSet — это LinkTree (бинарное дерево связей-дуплетов).
 
   Таким образом, мета-ссылка определена через связи, которые определены
   через мета-ссылки — цикл замкнут.
 *)
 
-(** Мета-ссылка: элемент множества, определённого через связи-дуплеты *)
+(** Мета-ссылка: элемент множества, определённого через деревья связей *)
 Definition MetaLink := Link.
 
 (** Мета-пространство ссылок: множество всех допустимых мета-ссылок,
-    представленное как упорядоченная уникальная последовательность связей *)
+    представленное как дерево связей-дуплетов *)
 Definition MetaLinkSpace := LinkSet.
 
-(** Мета-дуплет: пара мета-ссылок, определённая через связи-дуплеты.
-    В исходном определении: Duplet := Link × Link
-    В мета-определении: MetaDuplet := MetaLink × MetaLink *)
+(** Мета-дуплет: пара мета-ссылок — это узел дерева связей *)
 Definition MetaDuplet := prod MetaLink MetaLink.
 
-(** Мета-ассоциативная сеть: функция из мета-ссылок в мета-дуплеты,
-    реализованная через последовательности связей-дуплетов *)
+(** Мета-ассоциативная сеть: функция из мета-ссылок в мета-дуплеты *)
 Definition MetaAssociativeNetwork := MetaLink -> MetaDuplet.
 
 (** Мета-ассоциативная сеть в виде последовательности мета-дуплетов *)
@@ -62,11 +57,11 @@ Definition MetaAssociativeNetworkList := list MetaDuplet.
 
 (**
   Ключевая конструкция: определение множества мета-ссылок
-  через связи-дуплеты.
+  через деревья связей-дуплетов.
 
   Мы берём множество натуральных чисел {0, 1, 2, ..., n} и
-  представляем его как LinkSet — упорядоченную уникальную
-  последовательность связей-дуплетов.
+  представляем его как LinkSet — дерево связей, листья которого
+  образуют упорядоченную уникальную последовательность.
 *)
 
 (** Создание мета-пространства ссылок заданного размера *)
@@ -76,7 +71,7 @@ Fixpoint makeMetaLinkSpace_ (n : nat) : list Link :=
   | S n' => makeMetaLinkSpace_ n' ++ [S n']
   end.
 
-Definition MakeMetaLinkSpace (size : nat) : MetaLinkSpace :=
+Definition MakeMetaLinkSpace (size : nat) : option MetaLinkSpace :=
   ListToSet (makeMetaLinkSpace_ size).
 
 (** Предикат: является ли значение допустимой мета-ссылкой в данном пространстве *)
@@ -85,9 +80,9 @@ Definition IsValidMetaLink (space : MetaLinkSpace) (x : MetaLink) : Prop :=
 
 (** * Определение мета-ассоциативной сети через последовательности *)
 
-(** Мета-ассоциативная сеть как последовательность связей *)
-Definition MetaNetworkAsSequence (net : MetaAssociativeNetworkList) : Sequence :=
-  ListToSequence (map (fun d => fst d) net).
+(** Мета-ассоциативная сеть как дерево связей *)
+Definition MetaNetworkAsTree (net : MetaAssociativeNetworkList) : option Sequence :=
+  ListToBalancedTree (map (fun d => fst d) net).
 
 (** Преобразование мета-сети в ассоциативную сеть дуплетов *)
 Definition MetaNetworkToDupletList (net : MetaAssociativeNetworkList) : AssociativeNetworkDupletList :=
@@ -112,8 +107,8 @@ Proof.
   reflexivity.
 Qed.
 
-(** Мета-пространство ссылок является корректным множеством *)
-Theorem meta_link_space_is_valid_set : forall (size : nat),
+(** Мета-пространство ссылок содержит упорядоченные уникальные элементы *)
+Theorem meta_link_space_elements_valid : forall (size : nat),
   IsOrderedUniqueSequence (toOrderedUnique (makeMetaLinkSpace_ size)).
 Proof.
   intro size.
@@ -131,16 +126,17 @@ Qed.
     AssociativeNetwork := Link → Duplet
 
   Уровень 1 (последовательности через связи):
-    Sequence := list Duplet  (= AssociativeNetworkDupletList)
-    Операции: ListToSequence, SequenceToList, ...
+    Sequence := LinkTree  (бинарное дерево, где листья — Link, узлы — дуплеты)
+    Варианты: сбалансированный, левая/правая лестница
+    Операции: TreeToList, ListToBalancedTree, ListToRightStaircase, ListToLeftStaircase
 
   Уровень 2 (множества через последовательности):
-    LinkSet := Sequence  (с предикатом IsOrderedUniqueSequence)
-    Операции: ListToSet, SetToList, InSet, ...
+    LinkSet := LinkTree  (с предикатом IsOrderedUniqueSequence на листьях)
+    Операции: ListToSet, SetToList, InSet, SetUnion, SetIntersection
 
   Уровень 3 (мета-определения через множества):
-    MetaLink := Link  (элемент LinkSet)
-    MetaDuplet := MetaLink × MetaLink
+    MetaLink := Link  (лист дерева LinkSet)
+    MetaDuplet := MetaLink × MetaLink  (узел дерева)
     MetaAssociativeNetwork := MetaLink → MetaDuplet
 
   Уровень 3 структурно идентичен Уровню 0,
@@ -152,7 +148,7 @@ Qed.
 
 (** Пример: создание мета-пространства из 5 ссылок *)
 Compute MakeMetaLinkSpace 4.
-(* Множество {0, 1, 2, 3, 4} в виде последовательности дуплетов *)
+(* Множество {0, 1, 2, 3, 4} в виде сбалансированного дерева *)
 
 (** Пример: создание мета-ассоциативной сети *)
 Definition exampleMetaNetwork : MetaAssociativeNetworkList :=
@@ -162,13 +158,9 @@ Definition exampleMetaNetwork : MetaAssociativeNetworkList :=
 Compute MetaNetworkToDupletList exampleMetaNetwork.
 (* Ожидается: [(1, 2), (2, 3), (3, 1)] — структурно идентично исходной сети *)
 
-(** Представление мета-сети как последовательности *)
-Compute MetaNetworkAsSequence exampleMetaNetwork.
-(* Последовательность ключей мета-сети в виде дуплетов *)
-
 (** * Проверки верификации *)
 
 Check meta_network_is_duplet_network.
-Check meta_link_space_is_valid_set.
+Check meta_link_space_elements_valid.
 
 (** Все мета-определения успешно верифицированы! *)

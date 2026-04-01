@@ -6,47 +6,59 @@
 
 #### Последовательности как деревья связей
 
-Последовательность в теории связей определяется как **дерево связей-дуплетов**. Каждый элемент последовательности представлен дуплетом $(значение, ссылка\_на\_следующий)$, где $ссылка\_на\_следующий$ указывает на следующий дуплет в цепочке. Пустая последовательность представляется пустым списком дуплетов.
+Последовательность в теории связей определяется как **бинарное дерево связей-дуплетов** ([LinkTree](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SequenceDefinitions.v)). Листья дерева — это элементы последовательности, а каждый внутренний узел — это связь-дуплет, объединяющая два поддерева.
 
-Ключевые операции:
-- **ListToSequence** — преобразование обычного списка ссылок в последовательность связей-дуплетов
-- **SequenceToList** — обратное преобразование последовательности в список
-- **SequenceConcat** — конкатенация двух последовательностей
-- **SequenceAppend** / **SequencePrepend** — добавление элемента в конец или начало
+Формально:
+- **Leaf** (лист) — одиночный элемент-ссылка
+- **Node** (узел) — связь-дуплет из двух поддеревьев
 
-Эти операции реализуются через уже доказанные функции преобразования `NestedPairToDupletList` и `DupletListToNestedPair` из предыдущих разделов.
+Одна и та же последовательность может быть представлена деревьями различной формы:
+
+```
+[1, 2, 3, 4] = ((1, 2), (3, 4))   — сбалансированный вариант
+[1, 2, 3, 4] = (((1, 2), 3), 4)   — левая лестница
+[1, 2, 3, 4] = (1, (2, (3, 4)))   — правая лестница
+```
+
+Все эти варианты содержат одни и те же листья в одном и том же порядке, различаясь лишь структурой дерева. Количество различных деревьев для последовательности длины $n$ определяется [числом Каталана](https://ru.wikipedia.org/wiki/Числа_Каталана).
+
+Определены три алгоритма создания последовательностей:
+- **ListToBalancedTree** — сбалансированный вариант (как в [BalancedVariantConverter](https://github.com/linksplatform/Data.Doublets.Sequences/blob/main/csharp/Platform.Data.Doublets.Sequences/Converters/BalancedVariantConverter.cs))
+- **ListToRightStaircase** — правая лестница $(1, (2, (3, 4)))$
+- **ListToLeftStaircase** — левая лестница $(((1, 2), 3), 4)$
 
 ##### Rocq
 
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SequenceDefinitions.v)
 
 ```rocq
-Require Import AssociativeNetworkDefinitions.
-Require Import AssociativeNetworkConversions.
+(* Дерево связей: рекурсивная структура, представляющая последовательность *)
+Inductive LinkTree : Type :=
+  | Leaf : Link -> LinkTree
+  | Node : LinkTree -> LinkTree -> LinkTree.
 
-(* Последовательность, определённая в терминах связей-дуплетов *)
-Definition Sequence := AssociativeNetworkDupletList.
+(* Последовательность — это дерево связей *)
+Definition Sequence := LinkTree.
 
-(* Пустая последовательность *)
-Definition EmptySequence : Sequence := nil.
+(* Получение листьев дерева (элементов последовательности) слева направо *)
+Fixpoint TreeToList (t : LinkTree) : list Link :=
+  match t with
+  | Leaf x => [x]
+  | Node left right => TreeToList left ++ TreeToList right
+  end.
 
-(* Создание последовательности из одного элемента *)
-Definition SingletonSequence (value : Link) : Sequence :=
-  (value, 0) :: nil.
-
-(* Преобразование списка ссылок в последовательность связей-дуплетов *)
-Definition ListToSequence (l : list Link) : Sequence :=
-  NestedPairToDupletList l.
-
-(* Преобразование последовательности обратно в список ссылок *)
-Definition SequenceToList (s : Sequence) : list Link :=
-  DupletListToNestedPair s.
-
-(* Конкатенация двух последовательностей *)
-Definition SequenceConcat (s1 s2 : Sequence) : Sequence :=
-  let l1 := SequenceToList s1 in
-  let l2 := SequenceToList s2 in
-  ListToSequence (l1 ++ l2).
+(* Сбалансированный вариант: ((1, 2), (3, 4)) *)
+Fixpoint ListToBalancedTree (l : list Link) : option LinkTree :=
+  match l with
+  | [] => None
+  | [x] => Some (Leaf x)
+  | _ =>
+    let mid := length l / 2 in
+    match ListToBalancedTree (firstn mid l), ListToBalancedTree (skipn mid l) with
+    | Some lt, Some rt => Some (Node lt rt)
+    | _, _ => None
+    end
+  end.
 ```
 
 ##### Lean
@@ -54,32 +66,28 @@ Definition SequenceConcat (s1 s2 : Sequence) : Sequence :=
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/SequenceDefinitions.lean)
 
 ```lean
-import AssociativeNetworkDefinitions
-import AssociativeNetworkConversions
+/-- Дерево связей: рекурсивная структура, представляющая последовательность -/
+inductive LinkTree where
+  | Leaf : Link → LinkTree
+  | Node : LinkTree → LinkTree → LinkTree
 
--- Последовательность, определённая в терминах связей-дуплетов
-abbrev Sequence := AssociativeNetworkDupletList
+-- Последовательность — это дерево связей
+abbrev Sequence := LinkTree
 
--- Пустая последовательность
-def EmptySequence : Sequence := []
+-- Получение листьев дерева слева направо
+def TreeToList : LinkTree → List Link
+  | .Leaf x => [x]
+  | .Node left right => TreeToList left ++ TreeToList right
 
--- Создание последовательности из одного элемента
-def SingletonSequence (value : Link) : Sequence :=
-  [(value, 0)]
-
--- Преобразование списка ссылок в последовательность связей-дуплетов
-def ListToSequence (l : List Link) : Sequence :=
-  NestedPairToDupletList l
-
--- Преобразование последовательности обратно в список ссылок
-def SequenceToList (s : Sequence) : List Link :=
-  DupletListToNestedPair s
-
--- Конкатенация двух последовательностей
-def SequenceConcat (s1 s2 : Sequence) : Sequence :=
-  let l1 := SequenceToList s1
-  let l2 := SequenceToList s2
-  ListToSequence (l1 ++ l2)
+/-- Сбалансированный вариант: ((1, 2), (3, 4)) -/
+def ListToBalancedTree : List Link → Option LinkTree
+  | [] => none
+  | [x] => some (.Leaf x)
+  | l =>
+    let mid := l.length / 2
+    match ListToBalancedTree (l.take mid), ListToBalancedTree (l.drop mid) with
+    | some lt, some rt => some (.Node lt rt)
+    | _, _ => none
 ```
 
 #### Эквивалентность множеств и последовательностей
@@ -100,31 +108,6 @@ def SequenceConcat (s1 s2 : Sequence) : Sequence :=
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SetSequenceEquivalence.v)
 
 ```rocq
-(* Список является строго возрастающим, если каждый элемент строго меньше следующего *)
-Fixpoint StrictlyAscending (l : list nat) : Prop :=
-  match l with
-  | [] => True
-  | [_] => True
-  | x :: ((y :: _) as rest) => x < y /\ StrictlyAscending rest
-  end.
-
-(* Вставка элемента в отсортированный список с сохранением порядка *)
-Fixpoint insertSorted (x : nat) (l : list nat) : list nat :=
-  match l with
-  | [] => [x]
-  | y :: rest =>
-    if x <? y then x :: y :: rest
-    else if x =? y then y :: rest
-    else y :: insertSorted x rest
-  end.
-
-(* Сортировка списка в строго возрастающем порядке *)
-Fixpoint toOrderedUnique (l : list nat) : list nat :=
-  match l with
-  | [] => []
-  | x :: rest => insertSorted x (toOrderedUnique rest)
-  end.
-
 (* ОСНОВНАЯ ТЕОРЕМА: Эквивалентность множества и последовательности *)
 Theorem set_sequence_equivalence : forall l : list nat,
   exists l' : list nat,
@@ -137,25 +120,6 @@ Theorem set_sequence_equivalence : forall l : list nat,
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/SetSequenceEquivalence.lean)
 
 ```lean
-/-- Список является строго возрастающим -/
-def StrictlyAscending : List Nat → Prop
-  | [] => True
-  | [_] => True
-  | x :: y :: rest => x < y ∧ StrictlyAscending (y :: rest)
-
-/-- Вставка элемента в отсортированный список с сохранением порядка -/
-def insertSorted (x : Nat) : List Nat → List Nat
-  | [] => [x]
-  | y :: rest =>
-    if x < y then x :: y :: rest
-    else if x = y then y :: rest
-    else y :: insertSorted x rest
-
-/-- Сортировка списка в строго возрастающем порядке -/
-def toOrderedUnique : List Nat → List Nat
-  | [] => []
-  | x :: rest => insertSorted x (toOrderedUnique rest)
-
 /-- Основная теорема: Каждый список может быть преобразован в упорядоченную
     уникальную последовательность с теми же элементами -/
 theorem set_sequence_equivalence (l : List Nat) :
@@ -164,43 +128,25 @@ theorem set_sequence_equivalence (l : List Nat) :
     (∀ x, x ∈ l' ↔ x ∈ l)
 ```
 
-#### Множества как упорядоченные уникальные последовательности связей
+#### Множества как упорядоченные уникальные деревья связей
 
-Используя доказанную эквивалентность, мы определяем **множество** как упорядоченную уникальную **последовательность связей-дуплетов**. Множество — это та же структура `Sequence` (список дуплетов), но с дополнительным инвариантом: его элементы образуют строго возрастающий список.
+Используя доказанную эквивалентность, мы определяем **множество** как **дерево связей** (`LinkTree`), листья которого образуют строго возрастающий список. Для создания множества из произвольного списка сначала применяется `toOrderedUnique` (сортировка и удаление дубликатов), затем `ListToBalancedTree` (построение сбалансированного дерева).
 
 ##### Rocq
 
 [[Ссылка на исходный код (Rocq)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/rocq/SetDefinitions.v)
 
 ```rocq
-Require Import AssociativeNetworkDefinitions.
-Require Import AssociativeNetworkConversions.
-Require Import SequenceDefinitions.
-Require Import SetSequenceEquivalence.
-
-(* Множество ссылок — это последовательность связей-дуплетов,
-   элементы которой образуют строго возрастающий список *)
-Definition LinkSet := Sequence.
+(* Множество ссылок — это дерево связей, листья которого строго возрастают *)
+Definition LinkSet := LinkTree.
 
 (* Предикат корректности множества *)
 Definition IsValidSet (s : LinkSet) : Prop :=
-  IsOrderedUniqueSequence (SequenceToList s).
+  IsOrderedUniqueSequence (TreeToList s).
 
-(* Преобразование списка ссылок в множество *)
-Definition ListToSet (l : list Link) : LinkSet :=
-  ListToSequence (toOrderedUnique l).
-
-(* Принадлежность элемента множеству *)
-Definition InSet (x : Link) (s : LinkSet) : Prop :=
-  In x (SetToList s).
-
-(* Объединение двух множеств *)
-Definition SetUnion (s1 s2 : LinkSet) : LinkSet :=
-  ListToSet ((SetToList s1) ++ (SetToList s2)).
-
-(* ListToSet всегда производит корректное множество *)
-Theorem ListToSet_is_valid : forall l : list Link,
-  IsOrderedUniqueSequence (toOrderedUnique l).
+(* Преобразование списка в множество (сбалансированное дерево) *)
+Definition ListToSet (l : list Link) : option LinkSet :=
+  ListToBalancedTree (toOrderedUnique l).
 ```
 
 ##### Lean
@@ -208,41 +154,24 @@ Theorem ListToSet_is_valid : forall l : list Link,
 [[Ссылка на исходный код (Lean)]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/lean/SetDefinitions.lean)
 
 ```lean
-import SequenceDefinitions
-import SetSequenceEquivalence
-
-open SetSequenceEquivalence
-
--- Множество ссылок — это последовательность связей-дуплетов
-abbrev LinkSet := Sequence
+-- Множество ссылок — это дерево связей
+abbrev LinkSet := LinkTree
 
 -- Предикат корректности множества
 def IsValidSet (s : LinkSet) : Prop :=
-  IsOrderedUniqueSequence (SequenceToList s)
+  IsOrderedUniqueSequence (TreeToList s)
 
--- Преобразование списка ссылок в множество
-def ListToSet (l : List Link) : LinkSet :=
-  ListToSequence (toOrderedUnique l)
-
--- Принадлежность элемента множеству
-def InSet (x : Link) (s : LinkSet) : Prop :=
-  x ∈ SetToList s
-
--- Объединение двух множеств
-def SetUnion (s1 s2 : LinkSet) : LinkSet :=
-  ListToSet ((SetToList s1) ++ (SetToList s2))
-
--- ListToSet всегда производит корректное множество
-theorem ListToSet_is_valid (l : List Link) :
-    IsOrderedUniqueSequence (toOrderedUnique l)
+-- Преобразование списка в множество (сбалансированное дерево)
+def ListToSet (l : List Link) : Option LinkSet :=
+  ListToBalancedTree (toOrderedUnique l)
 ```
 
 #### Значение результатов
 
 Таким образом, мы формально показали, что:
 
-1. **Последовательности** могут быть полностью определены в терминах связей-дуплетов ($L \to L^2$)
-2. **Множества** могут быть определены как особый вид последовательностей (с инвариантом упорядоченности и уникальности)
+1. **Последовательности** определены как бинарные деревья связей-дуплетов ($L \to L^2$), где листья — элементы, а узлы — связи
+2. **Множества** определены как деревья связей с инвариантом упорядоченности и уникальности листьев
 3. Теорема `set_sequence_equivalence` гарантирует, что любое конечное множество натуральных чисел может быть представлено как упорядоченная уникальная последовательность
 
 Всё это означает, что и последовательности, и множества **выражены исключительно через связи-дуплеты** — минимальную структуру теории связей $L \to L^2$.

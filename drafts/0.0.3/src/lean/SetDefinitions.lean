@@ -2,10 +2,10 @@
   SetDefinitions.lean - Определение множеств в терминах последовательностей связей.
 
   Множество определяется как упорядоченная уникальная последовательность —
-  то есть последовательность связей-дуплетов, элементы которой строго
-  возрастают и не содержат дубликатов.
+  то есть дерево связей-дуплетов, листья которого образуют строго
+  возрастающий список без дубликатов.
 
-  Это ключевой шаг: имея последовательности, определённые в терминах связей (дуплетов),
+  Это ключевой шаг: имея последовательности, определённые как деревья связей,
   мы теперь определяем множества как особый вид последовательностей.
   Таким образом, множества также выражены исключительно через связи.
 -/
@@ -18,36 +18,33 @@ open SetSequenceEquivalence
 
 -- * Множества как упорядоченные уникальные последовательности связей
 
--- Множество ссылок — это последовательность связей-дуплетов,
--- элементы которой образуют строго возрастающий список (без дубликатов).
-abbrev LinkSet := Sequence
+-- Множество ссылок — это дерево связей (последовательность),
+-- листья которого образуют строго возрастающий список (без дубликатов).
+abbrev LinkSet := LinkTree
 
--- Предикат: является ли последовательность корректным множеством
--- (упорядоченная уникальная последовательность)
+-- Предикат: является ли дерево связей корректным множеством
+-- (упорядоченная уникальная последовательность листьев)
 def IsValidSet (s : LinkSet) : Prop :=
-  IsOrderedUniqueSequence (SequenceToList s)
-
--- Пустое множество
-def EmptySet : LinkSet := EmptySequence
+  IsOrderedUniqueSequence (TreeToList s)
 
 -- Множество из одного элемента
 def SingletonSet (value : Link) : LinkSet :=
-  SingletonSequence value
+  .Leaf value
 
--- Преобразование списка ссылок в множество (с сортировкой и удалением дубликатов)
-def ListToSet (l : List Link) : LinkSet :=
-  ListToSequence (toOrderedUnique l)
+-- Преобразование списка ссылок в множество (сбалансированное дерево после сортировки)
+def ListToSet (l : List Link) : Option LinkSet :=
+  ListToBalancedTree (toOrderedUnique l)
 
 -- Преобразование множества обратно в список ссылок
 def SetToList (s : LinkSet) : List Link :=
-  SequenceToList s
+  TreeToList s
 
 -- Принадлежность элемента множеству
 def InSet (x : Link) (s : LinkSet) : Prop :=
   x ∈ SetToList s
 
 -- Объединение двух множеств
-def SetUnion (s1 s2 : LinkSet) : LinkSet :=
+def SetUnion (s1 s2 : LinkSet) : Option LinkSet :=
   ListToSet ((SetToList s1) ++ (SetToList s2))
 
 -- Пересечение двух множеств
@@ -57,17 +54,17 @@ def listIntersect : List Link → List Link → List Link
     if l2.any (· == x) then x :: listIntersect rest l2
     else listIntersect rest l2
 
-def SetIntersection (s1 s2 : LinkSet) : LinkSet :=
+def SetIntersection (s1 s2 : LinkSet) : Option LinkSet :=
   ListToSet (listIntersect (SetToList s1) (SetToList s2))
 
 -- Подмножество: s1 ⊆ s2
 def IsSubset (s1 s2 : LinkSet) : Prop :=
   ∀ x, InSet x s1 → InSet x s2
 
--- * Теорема: результат ListToSet всегда является корректным множеством
+-- * Теорема: ListToSet всегда содержит упорядоченные уникальные элементы
 
--- ListToSet всегда производит корректное множество
-theorem ListToSet_is_valid (l : List Link) :
+-- ListToSet всегда производит упорядоченный уникальный список элементов
+theorem ListToSet_elements_valid (l : List Link) :
     IsOrderedUniqueSequence (toOrderedUnique l) := by
   exact toOrderedUnique_is_ascending l
 
@@ -80,14 +77,10 @@ theorem ListToSet_membership (x : Link) (l : List Link) :
 
 -- Создание множества из списка с дубликатами
 #eval ListToSet [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
--- Множество {1, 2, 3, 4, 5, 6, 9} в виде дуплетов
+-- Множество {1, 2, 3, 4, 5, 6, 9} в виде сбалансированного дерева
 
 -- Множество из одного элемента
 #eval SingletonSet 42
 
--- Пустое множество
-#eval EmptySet
-
 -- Объединение множеств
-#eval SetUnion (ListToSet [1, 3, 5]) (ListToSet [2, 4, 6])
--- Ожидается: представление {1, 2, 3, 4, 5, 6}
+#eval SetUnion (SingletonSet 1) (SingletonSet 2)

@@ -2,10 +2,10 @@
   SetDefinitions.v - Определение множеств в терминах последовательностей связей.
 
   Множество определяется как упорядоченная уникальная последовательность —
-  то есть последовательность связей-дуплетов, элементы которой строго
-  возрастают и не содержат дубликатов.
+  то есть дерево связей-дуплетов, листья которого образуют строго
+  возрастающий список без дубликатов.
 
-  Это ключевой шаг: имея последовательности, определённые в терминах связей (дуплетов),
+  Это ключевой шаг: имея последовательности, определённые как деревья связей,
   мы теперь определяем множества как особый вид последовательностей.
   Таким образом, множества также выражены исключительно через связи.
 *)
@@ -22,36 +22,35 @@ Require Import SetSequenceEquivalence.
 
 (** * Множества как упорядоченные уникальные последовательности связей *)
 
-(** Множество ссылок — это последовательность связей-дуплетов,
-    элементы которой образуют строго возрастающий список (без дубликатов). *)
-Definition LinkSet := Sequence.
+(** Множество ссылок — это дерево связей (последовательность),
+    листья которого образуют строго возрастающий список (без дубликатов). *)
+Definition LinkSet := LinkTree.
 
-(** Предикат: является ли последовательность корректным множеством
-    (упорядоченная уникальная последовательность) *)
+(** Предикат: является ли дерево связей корректным множеством
+    (упорядоченная уникальная последовательность листьев) *)
 Definition IsValidSet (s : LinkSet) : Prop :=
-  IsOrderedUniqueSequence (SequenceToList s).
+  IsOrderedUniqueSequence (TreeToList s).
 
-(** Пустое множество *)
-Definition EmptySet : LinkSet := EmptySequence.
+(** Пустое множество не может быть представлено деревом (дерево всегда содержит хотя бы один лист) *)
 
 (** Множество из одного элемента *)
 Definition SingletonSet (value : Link) : LinkSet :=
-  SingletonSequence value.
+  Leaf value.
 
-(** Преобразование списка ссылок в множество (с сортировкой и удалением дубликатов) *)
-Definition ListToSet (l : list Link) : LinkSet :=
-  ListToSequence (toOrderedUnique l).
+(** Преобразование списка ссылок в множество (сбалансированное дерево после сортировки и удаления дубликатов) *)
+Definition ListToSet (l : list Link) : option LinkSet :=
+  ListToBalancedTree (toOrderedUnique l).
 
 (** Преобразование множества обратно в список ссылок *)
 Definition SetToList (s : LinkSet) : list Link :=
-  SequenceToList s.
+  TreeToList s.
 
 (** Принадлежность элемента множеству *)
 Definition InSet (x : Link) (s : LinkSet) : Prop :=
   In x (SetToList s).
 
 (** Объединение двух множеств *)
-Definition SetUnion (s1 s2 : LinkSet) : LinkSet :=
+Definition SetUnion (s1 s2 : LinkSet) : option LinkSet :=
   ListToSet ((SetToList s1) ++ (SetToList s2)).
 
 (** Пересечение двух множеств *)
@@ -64,17 +63,16 @@ Fixpoint list_intersect (l1 l2 : list Link) : list Link :=
     else list_intersect rest l2
   end.
 
-Definition SetIntersection (s1 s2 : LinkSet) : LinkSet :=
+Definition SetIntersection (s1 s2 : LinkSet) : option LinkSet :=
   ListToSet (list_intersect (SetToList s1) (SetToList s2)).
 
 (** Подмножество: s1 ⊆ s2 *)
 Definition IsSubset (s1 s2 : LinkSet) : Prop :=
   forall x, InSet x s1 -> InSet x s2.
 
-(** * Теорема: результат ListToSet всегда является корректным множеством *)
+(** * Теорема: ListToSet всегда содержит упорядоченные уникальные элементы *)
 
-(** ListToSet всегда производит корректное множество *)
-Theorem ListToSet_is_valid : forall l : list Link,
+Theorem ListToSet_elements_valid : forall l : list Link,
   IsOrderedUniqueSequence (toOrderedUnique l).
 Proof.
   intro l.
@@ -94,14 +92,10 @@ Qed.
 
 (** Создание множества из списка с дубликатами *)
 Compute ListToSet [3; 1; 4; 1; 5; 9; 2; 6; 5; 3].
-(* Множество {1, 2, 3, 4, 5, 6, 9} в виде дуплетов *)
+(* Множество {1, 2, 3, 4, 5, 6, 9} в виде сбалансированного дерева *)
 
 (** Множество из одного элемента *)
 Compute SingletonSet 42.
 
-(** Пустое множество *)
-Compute EmptySet.
-
 (** Объединение множеств *)
-Compute SetUnion (ListToSet [1; 3; 5]) (ListToSet [2; 4; 6]).
-(* Ожидается: представление {1, 2, 3, 4, 5, 6} *)
+Compute SetUnion (SingletonSet 1) (SingletonSet 2).

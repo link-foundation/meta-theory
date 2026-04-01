@@ -6,7 +6,7 @@
 
 **Язык:** Русский (перевод версии 0.0.2 с английского на русский)
 
-**Авторы:** [Vasily Solopov](https://habr.com/ru/users/random_one/), [Roman Vertushkin](https://habr.com/ru/users/Vertushkin/), [Ivan Glazunov](https://habr.com/ru/users/IvanSGlazunov/), [Konstantin Diachenko](https://habr.com/ru/users/Konard/)
+**Авторы:** Василий Солопов, [Роман Вертушкин](https://habr.com/ru/users/Vertushkin/), [Иван Глазунов](https://habr.com/ru/users/IvanSGlazunov/), [Константин Дьяченко](https://habr.com/ru/users/Konard/)
 
 **Основные изменения по сравнению с 0.0.2:**
 
@@ -34,7 +34,7 @@
 
 **Язык:** Английский
 
-**Авторы:** [Vasily Solopov](https://habr.com/ru/users/random_one/), [Roman Vertushkin](https://habr.com/ru/users/Vertushkin/), [Ivan Glazunov](https://habr.com/ru/users/IvanSGlazunov/), [Konstantin Diachenko](https://habr.com/ru/users/Konard/)
+**Авторы:** Василий Солопов, [Роман Вертушкин](https://habr.com/ru/users/Vertushkin/), [Иван Глазунов](https://habr.com/ru/users/IvanSGlazunov/), [Константин Дьяченко](https://habr.com/ru/users/Konard/)
 
 **Опубликована:** 1 апреля 2025
 
@@ -44,7 +44,7 @@
 
 **Основные изменения по сравнению с 0.0.1:**
 
-- Перевод статьи с русского на английский язык (автор перевода — Константин Дьяченко)
+- Перевод статьи с русского на английский язык
 - Формализация определений, функций преобразования, лемм и примеров в Rocq (ранее Coq)
 - Проекция теории связей в теорию типов через теорию множеств
 - Доказательство эквивалентности преобразований между сетями различных представлений
@@ -58,7 +58,7 @@
 
 **Язык:** Русский
 
-**Авторы:** [Василий Солопов](https://habr.com/ru/users/random_one/), [Роман Вертушкин](https://habr.com/ru/users/Vertushkin/), [Иван Глазунов](https://habr.com/ru/users/IvanSGlazunov/), [Константин Дьяченко](https://habr.com/ru/users/Konard/)
+**Авторы:** Василий Солопов, [Роман Вертушкин](https://habr.com/ru/users/Vertushkin/), [Иван Глазунов](https://habr.com/ru/users/IvanSGlazunov/), [Константин Дьяченко](https://habr.com/ru/users/Konard/)
 
 **Опубликована:** 1 апреля 2024
 

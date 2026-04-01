@@ -20,6 +20,7 @@ theorem TupleOfLinksDimensionPreserved {l : Nat} (t : TupleOfLinks l) :
 theorem NestedPairToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
     NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = some t := by
   simp [NestedPairToTupleOfLinksOption, TupleOfLinksToNestedPair]
+  congr 1
 
 /-
   Теорема обёртывания и восстановления ассоциативной сети кортежей:

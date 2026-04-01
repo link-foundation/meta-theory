@@ -10,23 +10,23 @@
 
 **Уровень 0 (базовый):**
 
-> $\displaystyle Link := \mathbb{N}_0, \quad Duplet := Link \times Link, \quad AssociativeNetwork : Link \to Duplet$
+> $\displaystyle Reference := \mathbb{N}_0, \quad Duplet := Reference \times Reference, \quad AssociativeNetwork : Reference \to Duplet$
 
 **Уровень 1 (последовательности через связи):**
 
-> $\displaystyle LinkSequence := Link$
+> $\displaystyle LinkSequence := Reference$
 
-Последовательность — это ссылка на корень дерева связей-дуплетов, хранимого в ассоциативной сети. Каждый внутренний узел — дуплет $(ссылка\_на\_левое, ссылка\_на\_правое)$, листья — элементы последовательности. Например: $[1, 2, 3, 4] = ((1, 2), (3, 4))$, хранится как $(5: 1, 2),\ (6: 3, 4),\ (7: 5, 6)$ или в [нотации связей](https://github.com/link-foundation/links-notation): `(5: 1 2) (6: 3 4) (7: 5 6)`.
+Последовательность — это ссылка на корень дерева связей-дуплетов, хранимого в ассоциативной сети. Каждый внутренний узел — дуплет $(ссылка\_на\_левое, ссылка\_на\_правое)$, листья — элементы последовательности. Например: $[1, 2, 3, 4] = ((1, 2), (3, 4))$, хранится в математической нотации как $5 \to (1, 2),\ 6 \to (3, 4),\ 7 \to (5, 6)$ или в [нотации связей](https://github.com/link-foundation/links-notation): `(5: 1 2) (6: 3 4) (7: 5 6)`.
 
 **Уровень 2 (множества через последовательности):**
 
-> $\displaystyle LinkSet := Link\ |\ IsOrderedUniqueSequence(листья)$
+> $\displaystyle LinkSet := Reference\ |\ IsOrderedUniqueSequence(листья)$
 
 Множества — это ссылки на деревья связей с инвариантом: листья образуют строго возрастающий список без дубликатов.
 
 **Уровень 3 (мета-определения через множества):**
 
-> $\displaystyle MetaLink := Link, \quad MetaDuplet := MetaLink \times MetaLink, \quad MetaAssociativeNetwork : MetaLink \to MetaDuplet$
+> $\displaystyle MetaLink := Reference, \quad MetaDuplet := MetaLink \times MetaLink, \quad MetaAssociativeNetwork : MetaLink \to MetaDuplet$
 
 Мета-ссылка — это элемент множества, хранимого в ассоциативной сети. Мета-дуплет — пара мета-ссылок. Мета-ассоциативная сеть — функция из мета-ссылок в мета-дуплеты.
 
@@ -45,7 +45,7 @@ Require Import SetDefinitions.
 Require Import SetSequenceEquivalence.
 
 (* Мета-ссылка: элемент множества, определённого через связи-дуплеты *)
-Definition MetaLink := Link.
+Definition MetaLink := Reference.
 
 (* Мета-пространство ссылок: ссылка на корень дерева в ассоциативной сети *)
 Definition MetaLinkSpace := LinkSet.
@@ -87,7 +87,7 @@ import SetDefinitions
 import SetSequenceEquivalence
 
 -- Мета-ссылка: элемент множества, определённого через связи-дуплеты
-abbrev MetaLink := Link
+abbrev MetaLink := Reference
 
 -- Мета-пространство ссылок: ссылка на корень дерева в ассоциативной сети
 abbrev MetaLinkSpace := LinkSet

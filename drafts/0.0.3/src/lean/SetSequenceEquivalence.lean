@@ -26,53 +26,12 @@ def NoDuplicates : List Nat → Prop
 def IsOrderedUniqueSequence (l : List Nat) : Prop :=
   StrictlyAscending l
 
-/-- Вспомогательная лемма: все элементы в хвосте строго возрастающего списка больше головы -/
-theorem strictly_ascending_all_gt (x : Nat) (l : List Nat)
-    (h : StrictlyAscending (x :: l)) : ∀ z ∈ l, x < z := by
-  induction l with
-  | nil => intro z hz; exact absurd hz (List.not_mem_nil z)
-  | cons y ys ih =>
-    intro z hz
-    have hxy : x < y := by
-      simp [StrictlyAscending] at h; exact h.1
-    cases hz with
-    | head => exact hxy
-    | tail _ hz_ys =>
-      have hrest : StrictlyAscending (y :: ys) := by
-        simp [StrictlyAscending] at h
-        cases ys with
-        | nil => simp [StrictlyAscending]
-        | cons w ws => exact h.2
-      have hyz : y < z := ih hrest z hz_ys
-      omega
-
-/-- Строго возрастающий список не содержит дубликатов -/
-theorem strictly_ascending_implies_no_dup : ∀ l : List Nat,
-    StrictlyAscending l → NoDuplicates l := by
-  intro l
-  induction l with
-  | nil => intro _; simp [NoDuplicates]
-  | cons x rest ih =>
-    intro h
-    simp [NoDuplicates]
-    constructor
-    · intro hx_in
-      have := strictly_ascending_all_gt x rest h x hx_in
-      omega
-    · cases rest with
-      | nil => simp [NoDuplicates]
-      | cons y ys =>
-        simp [StrictlyAscending] at h
-        cases ys with
-        | nil => exact ih (by simp [StrictlyAscending]) h.2
-        | cons w ws => exact ih h.2
-
 /-- Вставка элемента в отсортированный список с сохранением порядка -/
 def insertSorted (x : Nat) : List Nat → List Nat
   | [] => [x]
   | y :: rest =>
     if x < y then x :: y :: rest
-    else if x = y then y :: rest  -- Пропуск дубликатов
+    else if x = y then y :: rest
     else y :: insertSorted x rest
 
 /-- Сортировка списка в строго возрастающем порядке (с удалением дубликатов) -/
@@ -80,123 +39,165 @@ def toOrderedUnique : List Nat → List Nat
   | [] => []
   | x :: rest => insertSorted x (toOrderedUnique rest)
 
-/-- insertSorted сохраняет свойство строгого возрастания -/
-theorem insertSorted_preserves_ascending (x : Nat) (l : List Nat) :
-    StrictlyAscending l → StrictlyAscending (insertSorted x l) := by
-  intro h
+/-- Вспомогательная: StrictlyAscending для хвоста -/
+private theorem sa_tail {x : Nat} {rest : List Nat}
+    (h : StrictlyAscending (x :: rest)) : StrictlyAscending rest := by
+  match rest with
+  | [] => exact True.intro
+  | [_] => exact True.intro
+  | y :: z :: zs =>
+    unfold StrictlyAscending at h
+    exact h.2
+
+/-- Вспомогательная: StrictlyAscending для x :: y :: _ даёт x < y -/
+private theorem sa_head {x y : Nat} {rest : List Nat}
+    (h : StrictlyAscending (x :: y :: rest)) : x < y := by
+  unfold StrictlyAscending at h
+  exact h.1
+
+/-- Все элементы строго возрастающего списка больше головы -/
+private theorem sa_all_gt {x : Nat} {l : List Nat}
+    (h : StrictlyAscending (x :: l)) : ∀ z, z ∈ l → x < z := by
+  intro z hz
   induction l with
-  | nil => simp [insertSorted, StrictlyAscending]
+  | nil => exact absurd hz (List.not_mem_nil z)
+  | cons y ys ih =>
+    match hz with
+    | .head _ => exact sa_head h
+    | .tail _ hz_ys =>
+      have : y < z := ih (sa_tail h) hz_ys
+      have : x < y := sa_head h
+      omega
+
+/-- Строго возрастающий список не содержит дубликатов -/
+theorem strictly_ascending_implies_no_dup (l : List Nat)
+    (h : StrictlyAscending l) : NoDuplicates l := by
+  induction l with
+  | nil => exact True.intro
+  | cons x rest ih =>
+    unfold NoDuplicates
+    constructor
+    · intro hx_in
+      have := sa_all_gt h x hx_in
+      omega
+    · exact ih (sa_tail h)
+
+/-- insertSorted сохраняет свойство строгого возрастания -/
+theorem insertSorted_preserves_ascending (x : Nat) :
+    ∀ l : List Nat, StrictlyAscending l → StrictlyAscending (insertSorted x l) := by
+  intro l
+  induction l with
+  | nil => intro _; unfold insertSorted; unfold StrictlyAscending; trivial
   | cons y rest ih =>
-    simp only [insertSorted]
-    by_cases hxy : x < y
-    · simp [hxy, StrictlyAscending]
+    intro h
+    unfold insertSorted
+    split
+    · -- x < y
+      rename_i hxy
+      unfold StrictlyAscending
       exact ⟨hxy, h⟩
-    · simp [hxy]
-      by_cases hxy_eq : x = y
-      · simp [hxy_eq]; exact h
-      · simp [hxy_eq]
+    · split
+      · -- x = y
+        exact h
+      · -- x > y
+        rename_i hxy_not_lt hxy_ne
         have hyx : y < x := by omega
-        cases rest with
-        | nil =>
-          simp [insertSorted, StrictlyAscending]
-          exact hyx
-        | cons z zs =>
-          have hyz : y < z := by simp [StrictlyAscending] at h; exact h.1
-          have hrest : StrictlyAscending (z :: zs) := by
-            simp [StrictlyAscending] at h
-            cases zs with
-            | nil => simp [StrictlyAscending]
-            | cons w ws => exact h.2
-          have ih_result := ih hrest
-          simp only [insertSorted] at ih_result ⊢
-          by_cases hxz : x < z
-          · simp [hxz, StrictlyAscending]
-            exact ⟨hyx, hxz, hrest⟩
-          · simp [hxz]
-            by_cases hxz_eq : x = z
-            · simp [hxz_eq, StrictlyAscending]; exact h
-            · simp [hxz_eq, StrictlyAscending]
-              constructor
-              · exact hyz
-              · exact ih_result
+        have hrest := sa_tail h
+        have ih_result := ih hrest
+        match rest with
+        | [] =>
+          unfold insertSorted; unfold StrictlyAscending
+          exact ⟨hyx, True.intro⟩
+        | z :: zs =>
+          have hyz : y < z := sa_head h
+          unfold insertSorted at ih_result ⊢
+          split
+          · -- x < z
+            rename_i hxz
+            unfold StrictlyAscending
+            exact ⟨hyx, hxz, sa_tail h⟩
+          · split
+            · -- x = z
+              exact h
+            · -- x > z
+              unfold StrictlyAscending
+              exact ⟨hyz, ih_result⟩
 
 /-- toOrderedUnique выдаёт строго возрастающие списки -/
 theorem toOrderedUnique_is_ascending (l : List Nat) :
     StrictlyAscending (toOrderedUnique l) := by
   induction l with
-  | nil => simp [toOrderedUnique, StrictlyAscending]
+  | nil => unfold toOrderedUnique; unfold StrictlyAscending; trivial
   | cons x rest ih =>
-    simp [toOrderedUnique]
+    unfold toOrderedUnique
     exact insertSorted_preserves_ascending x (toOrderedUnique rest) ih
 
 /-- Принадлежность элемента сохраняется при insertSorted -/
-theorem mem_insertSorted (x y : Nat) (l : List Nat) :
-    y ∈ insertSorted x l ↔ y = x ∨ y ∈ l := by
+theorem mem_insertSorted (x y : Nat) :
+    ∀ l : List Nat, y ∈ insertSorted x l ↔ y = x ∨ y ∈ l := by
+  intro l
   induction l with
   | nil =>
-    simp [insertSorted]
+    unfold insertSorted
     constructor
-    · intro h; cases h with
-      | head => left; rfl
-      | tail _ h => exact absurd h (List.not_mem_nil _)
-    · intro h; cases h with
-      | inl h => exact h ▸ List.Mem.head _
-      | inr h => exact absurd h (List.not_mem_nil _)
+    · intro h; match h with
+      | .head _ => exact Or.inl rfl
+    · intro h; match h with
+      | .inl h => exact h ▸ .head _
+      | .inr h => exact absurd h (List.not_mem_nil _)
   | cons z rest ih =>
-    simp only [insertSorted]
-    by_cases hxz : x < z
-    · simp [hxz]
+    unfold insertSorted
+    split
+    · -- x < z
       constructor
-      · intro h; cases h with
-        | head => left; rfl
-        | tail _ h => right; exact h
-      · intro h; cases h with
-        | inl h => exact h ▸ List.Mem.head _
-        | inr h => exact List.Mem.tail _ h
-    · simp [hxz]
-      by_cases hxz_eq : x = z
-      · simp [hxz_eq]
+      · intro h; match h with
+        | .head _ => exact Or.inl rfl
+        | .tail _ h => exact Or.inr h
+      · intro h; match h with
+        | .inl h => exact h ▸ .head _
+        | .inr h => exact .tail _ h
+    · split
+      · -- x = z
+        rename_i _ hxz
         constructor
-        · intro h; cases h with
-          | head => left; exact hxz_eq ▸ rfl
-          | tail _ h => right; exact List.Mem.tail _ h
-        · intro h; cases h with
-          | inl h => exact hxz_eq ▸ h ▸ List.Mem.head _
-          | inr h => cases h with
-            | head => exact List.Mem.head _
-            | tail _ h => exact List.Mem.tail _ h
-      · simp [hxz_eq]
+        · intro h; match h with
+          | .head _ => exact Or.inl hxz
+          | .tail _ h => exact Or.inr (.tail _ h)
+        · intro h; match h with
+          | .inl h => exact hxz ▸ h ▸ .head _
+          | .inr h => match h with
+            | .head _ => exact .head _
+            | .tail _ h => exact .tail _ h
+      · -- x > z
         constructor
-        · intro h; cases h with
-          | head => right; exact List.Mem.head _
-          | tail _ h =>
-            rw [ih] at h
-            cases h with
-            | inl h => left; exact h
-            | inr h => right; exact List.Mem.tail _ h
-        · intro h; cases h with
-          | inl h =>
-            exact List.Mem.tail _ (ih.mpr (Or.inl h))
-          | inr h => cases h with
-            | head => exact List.Mem.head _
-            | tail _ h =>
-              exact List.Mem.tail _ (ih.mpr (Or.inr h))
+        · intro h; match h with
+          | .head _ => exact Or.inr (.head _)
+          | .tail _ h =>
+            match ih.mp h with
+            | .inl h => exact Or.inl h
+            | .inr h => exact Or.inr (.tail _ h)
+        · intro h; match h with
+          | .inl h => exact .tail _ (ih.mpr (Or.inl h))
+          | .inr h => match h with
+            | .head _ => exact .head _
+            | .tail _ h => exact .tail _ (ih.mpr (Or.inr h))
 
 /-- Принадлежность элемента сохраняется при toOrderedUnique -/
 theorem mem_toOrderedUnique (x : Nat) (l : List Nat) :
     x ∈ toOrderedUnique l ↔ x ∈ l := by
   induction l with
-  | nil => simp [toOrderedUnique]
+  | nil => unfold toOrderedUnique; exact Iff.rfl
   | cons y rest ih =>
-    simp only [toOrderedUnique]
-    rw [mem_insertSorted]
+    unfold toOrderedUnique
     constructor
-    · intro h; cases h with
-      | inl h => exact h ▸ List.Mem.head _
-      | inr h => exact List.Mem.tail _ (ih.mp h)
-    · intro h; cases h with
-      | head => left; rfl
-      | tail _ h => right; exact ih.mpr h
+    · intro h
+      match (mem_insertSorted y x (toOrderedUnique rest)).mp h with
+      | .inl h => exact h ▸ .head _
+      | .inr h => exact .tail _ (ih.mp h)
+    · intro h
+      match h with
+      | .head _ => exact (mem_insertSorted y y (toOrderedUnique rest)).mpr (Or.inl rfl)
+      | .tail _ h => exact (mem_insertSorted y x (toOrderedUnique rest)).mpr (Or.inr (ih.mpr h))
 
 /-
   ОСНОВНАЯ ТЕОРЕМА: Эквивалентность множества и последовательности
@@ -210,14 +211,13 @@ theorem mem_toOrderedUnique (x : Nat) (l : List Nat) :
 theorem set_sequence_equivalence (l : List Nat) :
     ∃ l' : List Nat,
       IsOrderedUniqueSequence l' ∧
-      (∀ x, x ∈ l' ↔ x ∈ l) := by
-  exact ⟨toOrderedUnique l, toOrderedUnique_is_ascending l, mem_toOrderedUnique · l⟩
+      (∀ x, x ∈ l' ↔ x ∈ l) :=
+  ⟨toOrderedUnique l, toOrderedUnique_is_ascending l, fun x => mem_toOrderedUnique x l⟩
 
 /-- Следствие: Упорядоченная уникальная последовательность не содержит дубликатов -/
 theorem ordered_unique_has_no_dup (l : List Nat) :
-    NoDuplicates (toOrderedUnique l) := by
-  apply strictly_ascending_implies_no_dup
-  exact toOrderedUnique_is_ascending l
+    NoDuplicates (toOrderedUnique l) :=
+  strictly_ascending_implies_no_dup _ (toOrderedUnique_is_ascending l)
 
 end SetSequenceEquivalence
 

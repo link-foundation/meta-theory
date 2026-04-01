@@ -14,7 +14,7 @@
 
 ### Планы на будущее
 
-В данной статье была продемонстрирована лишь малая часть всех наработок по теории связей, которые накопились за несколько лет работы и исследований. В следующих статьях постепенно будут раскрыты и другие проекции теории связей в терминах иных теорий, таких как реляционная алгебра, теория графов, а также рассмотрение в терминах теории типов без использования теории множеств напрямую, а также разбор отличий от [ассоциативной модели данных Саймона Вильямса](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf) [[3]](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf).
+В данной статье была продемонстрирована лишь малая часть всех наработок по теории связей, которые накопились за несколько лет работы и исследований. В следующих статьях постепенно будут раскрыты и другие проекции теории связей в терминах иных теорий, таких как реляционная алгебра, теория графов, а также рассмотрение в терминах теории типов без использования теории множеств напрямую, а также разбор отличий от [ассоциативной модели данных Саймона Вильямса](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf) [[3]](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf) [[5]](https://link.springer.com/content/pdf/10.1057/palgrave.jdm.3240049.pdf).
 
 Мы также планируем спроецировать теорию связей в саму себя, показав, что она может использоваться как мета-теория. Это также откроет дверь для проекции теории множеств и теории типов в теорию связей, что означает завершение цикла определения (теория связей определяется в теории множеств, которая сама может быть определена в теории связей). Мы также сможем сравнить теорию множеств, теорию типов, теорию графов, реляционную алгебру и теорию связей, что поможет нам проверить эквивалентность этих теорий или, по крайней мере, получить точную биективную функцию преобразования между ними.
 
@@ -70,6 +70,7 @@
 2. Bender, Edward A.; Williamson, S. Gill (2010). ["Lists, Decisions and Graphs. With an Introduction to Probability.", section 2, definition 6, page 161](https://books.google.com/books?id=vaXv_yhefG8C)
 3. Simon Williams, Great Britain (1988), [The Associative Model Of Data](https://web.archive.org/web/20181219134621/http://sentences.com/docs/amd.pdf)
 4. Homan, J. V., & Kovacs, P. J. (2009). [A Comparison of the Relational Database Model and the Associative Database Model](https://www.researchgate.net/publication/255670856_A_COMPARISON_OF_THE_RELATIONAL_DATABASE_MODEL_AND_THE_ASSOCIATIVE_DATABASE_MODEL). Issues in Information Systems, X(1), 208.
+5. Simon Williams (2001). [The Associative Model of Data](https://link.springer.com/content/pdf/10.1057/palgrave.jdm.3240049.pdf). Journal of Database Marketing, 8(4), 336–359.
 
 ---
 

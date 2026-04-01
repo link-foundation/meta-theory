@@ -1,11 +1,13 @@
 (**
   SetDefinitions.v - Определение множеств в терминах последовательностей связей.
 
-  Множество определяется как упорядоченная уникальная последовательность —
-  то есть дерево связей-дуплетов, листья которого образуют строго
-  возрастающий список без дубликатов.
+  Множество определяется как последовательность связей-дуплетов,
+  листья которой образуют строго возрастающий список без дубликатов.
 
-  Это ключевой шаг: имея последовательности, определённые как деревья связей,
+  Как и последовательность, множество идентифицируется ссылкой (Link)
+  на корень дерева в ассоциативной сети.
+
+  Это ключевой шаг: имея последовательности, определённые через связи-дуплеты,
   мы теперь определяем множества как особый вид последовательностей.
   Таким образом, множества также выражены исключительно через связи.
 *)
@@ -22,53 +24,37 @@ Require Import SetSequenceEquivalence.
 
 (** * Множества как упорядоченные уникальные последовательности связей *)
 
-(** Множество ссылок — это дерево связей (последовательность),
-    листья которого образуют строго возрастающий список (без дубликатов). *)
-Definition LinkSet := LinkTree.
+(** Множество ссылок — это ссылка (Link) на корень дерева связей
+    в ассоциативной сети, листья которого образуют строго возрастающий
+    список без дубликатов. Как и последовательность, множество — это Link. *)
+Definition LinkSet := Link.
 
 (** Предикат: является ли дерево связей корректным множеством
     (упорядоченная уникальная последовательность листьев) *)
-Definition IsValidSet (s : LinkSet) : Prop :=
+Definition IsValidSetTree (s : LinkTree) : Prop :=
   IsOrderedUniqueSequence (TreeToList s).
 
-(** Пустое множество не может быть представлено деревом (дерево всегда содержит хотя бы один лист) *)
+(** Множество из одного элемента — ссылка на сам элемент *)
+Definition SingletonSet (value : Link) : LinkSet := value.
 
-(** Множество из одного элемента *)
-Definition SingletonSet (value : Link) : LinkSet :=
-  Leaf value.
-
-(** Преобразование списка ссылок в множество (сбалансированное дерево после сортировки и удаления дубликатов) *)
-Definition ListToSet (l : list Link) : option LinkSet :=
-  ListToBalancedTree (toOrderedUnique l).
-
-(** Преобразование множества обратно в список ссылок *)
-Definition SetToList (s : LinkSet) : list Link :=
-  TreeToList s.
-
-(** Принадлежность элемента множеству *)
-Definition InSet (x : Link) (s : LinkSet) : Prop :=
-  In x (SetToList s).
-
-(** Объединение двух множеств *)
-Definition SetUnion (s1 s2 : LinkSet) : option LinkSet :=
-  ListToSet ((SetToList s1) ++ (SetToList s2)).
-
-(** Пересечение двух множеств *)
-Fixpoint list_intersect (l1 l2 : list Link) : list Link :=
-  match l1 with
-  | nil => nil
-  | x :: rest =>
-    if existsb (Nat.eqb x) l2
-    then x :: list_intersect rest l2
-    else list_intersect rest l2
+(** Преобразование списка ссылок в множество: сортировка, удаление дубликатов,
+    построение сбалансированного дерева и запись в ассоциативную сеть.
+    Возвращает ссылку на корень (= множество) и сеть дуплетов. *)
+Definition ListToSet (l : list Link) (offset : nat)
+    : option (LinkSet * AssociativeNetworkDupletList) :=
+  let sorted := toOrderedUnique l in
+  match ListToBalancedTree sorted with
+  | None => None
+  | Some t => Some (TreeToSequence t offset, TreeToDupletList t offset)
   end.
 
-Definition SetIntersection (s1 s2 : LinkSet) : option LinkSet :=
-  ListToSet (list_intersect (SetToList s1) (SetToList s2)).
+(** Принадлежность элемента множеству (проверка через дерево) *)
+Definition InSetTree (x : Link) (s : LinkTree) : Prop :=
+  In x (TreeToList s).
 
-(** Подмножество: s1 ⊆ s2 *)
-Definition IsSubset (s1 s2 : LinkSet) : Prop :=
-  forall x, InSet x s1 -> InSet x s2.
+(** Подмножество: s1 ⊆ s2 (через деревья) *)
+Definition IsSubsetTree (s1 s2 : LinkTree) : Prop :=
+  forall x, InSetTree x s1 -> InSetTree x s2.
 
 (** * Теорема: ListToSet всегда содержит упорядоченные уникальные элементы *)
 
@@ -91,11 +77,8 @@ Qed.
 (** * Примеры *)
 
 (** Создание множества из списка с дубликатами *)
-Compute ListToSet [3; 1; 4; 1; 5; 9; 2; 6; 5; 3].
-(* Множество {1, 2, 3, 4, 5, 6, 9} в виде сбалансированного дерева *)
+Compute ListToSet [3; 1; 4; 1; 5; 9; 2; 6; 5; 3] 10.
+(* Множество {1, 2, 3, 4, 5, 6, 9} в ассоциативной сети *)
 
 (** Множество из одного элемента *)
 Compute SingletonSet 42.
-
-(** Объединение множеств *)
-Compute SetUnion (SingletonSet 1) (SingletonSet 2).

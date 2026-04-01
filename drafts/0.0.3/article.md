@@ -190,7 +190,7 @@ L × L × L = {
 
 ![Рисунок 9](images/figure-9.png)
 
-**Рис. 9.** Таблица всех возможных вариантов значений связи-триплета, получаемая рекурсивным декартовым произведением множества { 1, 2 } на само себя, то есть { 1, 2 } × { 1, 2 } × { 1, 2 }. **Примечание:** первая ссылка может интерпретироваться как начало, вторая как тип, а третья как конец; пользователь сам определяет, как интерпретировать компоненты вектора ссылок в соответствии с решаемой задачей.
+**Рис. 9.** Таблица всех возможных вариантов значений связи-триплета, получаемая рекурсивным декартовым произведением множества { 1, 2 } на само себя, то есть { 1, 2 } × { 1, 2 } × { 1, 2 }. **Примечание:** первая ссылка может интерпретироваться как начало, вторая как тип, а третья как конец; пользователь сам определяет, как интерпретировать компоненты кортежа ссылок в соответствии с решаемой задачей.
 
 **Сеть связей-триплетов** определяется как:
 
@@ -248,7 +248,7 @@ L × L × L = {
 
 В этом примере используются n-кортежи переменной длины в качестве значений связей.
 
-Последовательности (вектора) по сути эквивалентны по выразительной силе реляционной модели — факт, который ещё предстоит доказать в рамках разрабатываемой теории. Однако, когда мы заметили, что связей-дуплетов и связей-триплетов достаточно для представления последовательностей любого размера, появилось предположение об отсутствии необходимости использовать последовательности напрямую, поскольку они представимы связями-дуплетами.
+Последовательности (кортежи) по сути эквивалентны по выразительной силе реляционной модели — факт, который ещё предстоит доказать в рамках разрабатываемой теории. Однако, когда мы заметили, что связей-дуплетов и связей-триплетов достаточно для представления последовательностей любого размера, появилось предположение об отсутствии необходимости использовать последовательности напрямую, поскольку они представимы связями-дуплетами.
 
 ### Итоги сравнения
 
@@ -288,27 +288,27 @@ L × L × L = {
 
 ### Определения теории связей в рамках теории множеств
 
-**Ссылка на вектор** — это уникальный идентификатор или порядковый номер, который связан с определённым вектором, представляющим последовательность ссылок на другие вектора.
+**Ссылка на кортеж** — это уникальный идентификатор или порядковый номер, который связан с определённым кортежем, представляющим последовательность ссылок на другие кортежи.
 
-Множество ссылок на вектора:
+Множество ссылок на кортежи:
 
 > $\displaystyle \mathbf{L ⊆ ℕ_0}$
 
-**Вектор ссылок** — это вектор, состоящий из нуля или более ссылок на вектора, где количество ссылок соответствует количеству элементов вектора.
+**Кортеж ссылок** — это кортеж, состоящий из нуля или более ссылок на кортежи, где количество ссылок соответствует количеству элементов кортежа.
 
-Множество всех векторов ссылок длины $n ∈ ℕ_0$:
+Множество всех кортежей ссылок длины $n ∈ ℕ_0$:
 
 > $\displaystyle \mathbf{V_n = L^n}$
 
-Декартова степень $L^n$ всегда даёт вектор длины $n$, так как все его компоненты одного и того же типа $L$.
-Другими словами, $L^n$ представляет собой множество всех возможных n-элементных векторов (по сути n-кортежей), где каждый элемент принадлежит множеству $L$.
+Декартова степень $L^n$ всегда даёт кортеж длины $n$, так как все его компоненты одного и того же типа $L$.
+Другими словами, $L^n$ представляет собой множество всех возможных n-элементных кортежей (по сути n-кортежей), где каждый элемент принадлежит множеству $L$.
 
-**Ассоциация** — это упорядоченная пара, состоящая из ссылки на вектор и вектора ссылок. Эта структура служит для отображения между ссылками и векторами.
+**Ассоциация** — это упорядоченная пара, состоящая из ссылки на кортеж и кортежа ссылок. Эта структура служит для отображения между ссылками и кортежами.
 
 > $\displaystyle \mathbf{A = L \times V_n}$
 
-**Ассоциативная сеть векторов длины n** (или n-мерная ассоциативная сеть) определяется семейством функций $\{anetv^n\}$, где каждая функция $anetv^n: L → V_n$ отображает ссылку $l ∈ L$ в вектор ссылок длины $n$, принадлежащий $V_n$, тем самым идентифицируя точки в n-мерном пространстве.
-$n$ в $anetv^n$ указывает на то, что функция возвращает вектора, содержащие $n$ ссылок. Каждая n-мерная ассоциативная сеть таким образом представляет последовательность точек в n-мерном пространстве.
+**Ассоциативная сеть кортежей длины n** (или n-мерная ассоциативная сеть) определяется семейством функций $\{anetv^n\}$, где каждая функция $anetv^n: L → V_n$ отображает ссылку $l ∈ L$ в кортеж ссылок длины $n$, принадлежащий $V_n$, тем самым идентифицируя точки в n-мерном пространстве.
+$n$ в $anetv^n$ указывает на то, что функция возвращает кортежи, содержащие $n$ ссылок. Каждая n-мерная ассоциативная сеть таким образом представляет последовательность точек в n-мерном пространстве.
 
 **Семейство функций:**
 
@@ -316,7 +316,7 @@ $n$ в $anetv^n$ указывает на то, что функция возвр�
 
 Здесь символ объединения $∪_f$ обозначает агрегацию всех функций в семействе $\{anetv^n\}$, а символ $⊆$ указывает на то, что эти упорядоченные пары — рассматриваемые как функциональные бинарные отношения — являются подмножеством множества $A$ всех ассоциаций.
 
-**Множество дуплетов (упорядоченных пар или двумерных векторов) ссылок:**
+**Множество дуплетов (упорядоченных пар или двумерных кортежей) ссылок:**
 
 > $\displaystyle \mathbf{D = L^2}$
 
@@ -328,13 +328,13 @@ $n$ в $anetv^n$ указывает на то, что функция возвр�
 
 Каждая ассоциативная сеть дуплетов таким образом представляет последовательность точек в двумерном пространстве.
 
-Пустой вектор (вектор длины ноль) представлен пустым кортежем, обозначаемым как $()$ или $∅$.
+Пустой кортеж (кортеж длины ноль) представлен пустым кортежем, обозначаемым как $()$ или $∅$.
 
 **Ассоциативная сеть вложенных упорядоченных пар:**
 
 > $\displaystyle \mathbf{anetl: L → NP}\textbf{, где }\mathbf{NP = \{(∅, ∅) | (l, np), l ∈ L, np ∈ NP\} }$
 
-$NP$ — это множество вложенных упорядоченных пар, состоящее из пустых пар и пар, содержащих один или более элементов. Таким образом, вектор длины $n \in \mathbb{N}_0$ может быть представлен как вложенные упорядоченные пары.
+$NP$ — это множество вложенных упорядоченных пар, состоящее из пустых пар и пар, содержащих один или более элементов. Таким образом, кортеж длины $n \in \mathbb{N}_0$ может быть представлен как вложенные упорядоченные пары.
 
 ### Проекция теории связей в теорию типов (Rocq) через теорию множеств
 
@@ -359,26 +359,26 @@ Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
 
-(* Множество ссылок на вектора: L ⊆ ℕ₀ *)
+(* Множество ссылок на кортежи: L ⊆ ℕ₀ *)
 Definition Link := nat.
 
 (* Значение Link по умолчанию: ноль *)
 Definition LinkDefault : Link := 0.
 
-(* Множество векторов ссылок длины n ∈ ℕ₀: VectorOfLinks ⊆ Lⁿ *)
-Definition VectorOfLinks (n : nat) := t Link n.
+(* Множество кортежей ссылок длины n ∈ ℕ₀: TupleOfLinks ⊆ Lⁿ *)
+Definition TupleOfLinks (n : nat) := t Link n.
 
-(* Значение VectorOfLinks по умолчанию *)
-Definition VectorOfLinksDefault (n : nat) : VectorOfLinks n := Vector.const LinkDefault n.
+(* Значение TupleOfLinks по умолчанию *)
+Definition TupleOfLinksDefault (n : nat) : TupleOfLinks n := Vector.const LinkDefault n.
 
-(* Множество всех ассоциаций: Association = Link × VectorOfLinks *)
-Definition Association (n : nat) := prod Link (VectorOfLinks n).
+(* Множество всех ассоциаций: Association = Link × TupleOfLinks *)
+Definition Association (n : nat) := prod Link (TupleOfLinks n).
 
-(* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → VectorOfLinks} *)
-Definition AssociativeNetworkVectorFunction (n : nat) := Link -> VectorOfLinks n.
+(* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) из семейства функций {anetvⁿ : Link → TupleOfLinks} *)
+Definition AssociativeNetworkTupleFunction (n : nat) := Link -> TupleOfLinks n.
 
-(* Ассоциативная сеть векторов длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
-Definition AssociativeNetworkVectorList (n : nat) := list (VectorOfLinks n).
+(* Ассоциативная сеть кортежей длины n (или n-мерная ассоциативная сеть) в виде последовательности *)
+Definition AssociativeNetworkTupleList (n : nat) := list (TupleOfLinks n).
 
 (* Вложенные упорядоченные пары *)
 Definition NestedPair := list Link.
@@ -407,50 +407,50 @@ Definition AssociativeNetworkDupletList := list Duplet.
 [[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/AssociativeNetworkConversions.v)
 
 ```rocq
-(* Функция преобразования VectorOfLinks в NestedPair *)
-Fixpoint VectorOfLinksToNestedPair {n : nat} (v : VectorOfLinks n) : NestedPair :=
+(* Функция преобразования TupleOfLinks в NestedPair *)
+Fixpoint TupleOfLinksToNestedPair {n : nat} (v : TupleOfLinks n) : NestedPair :=
   match v with
   | Vector.nil _ => List.nil
-  | Vector.cons _ h _ t => List.cons h (VectorOfLinksToNestedPair t)
+  | Vector.cons _ h _ t => List.cons h (TupleOfLinksToNestedPair t)
   end.
 
-(* Функция преобразования AssociativeNetworkVectorFunction в AssociativeNetworkNestedPairFunction *)
-Definition VectorFunctionToNestedPairFunction {n : nat} (a: AssociativeNetworkVectorFunction n) : AssociativeNetworkNestedPairFunction :=
-  fun id => VectorOfLinksToNestedPair (a id).
+(* Функция преобразования AssociativeNetworkTupleFunction в AssociativeNetworkNestedPairFunction *)
+Definition TupleFunctionToNestedPairFunction {n : nat} (a: AssociativeNetworkTupleFunction n) : AssociativeNetworkNestedPairFunction :=
+  fun id => TupleOfLinksToNestedPair (a id).
 
-(* Функция преобразования AssociativeNetworkVectorList в AssociativeNetworkNestedPairList *)
-Definition VectorListToNestedPairList {n: nat} (net: AssociativeNetworkVectorList n) : AssociativeNetworkNestedPairList :=
-  map VectorOfLinksToNestedPair net.
+(* Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkNestedPairList *)
+Definition TupleListToNestedPairList {n: nat} (net: AssociativeNetworkTupleList n) : AssociativeNetworkNestedPairList :=
+  map TupleOfLinksToNestedPair net.
 
-(* Функция преобразования NestedPair в VectorOfLinks, возвращающая option *)
-Fixpoint NestedPairToVectorOfLinksOption (n: nat) (p: NestedPair) : option (VectorOfLinks n) :=
+(* Функция преобразования NestedPair в TupleOfLinks, возвращающая option *)
+Fixpoint NestedPairToTupleOfLinksOption (n: nat) (p: NestedPair) : option (TupleOfLinks n) :=
   match n, p with
   | 0, List.nil => Some (Vector.nil nat)
   | S n', List.cons f p' =>
-  match NestedPairToVectorOfLinksOption n' p' with
+  match NestedPairToTupleOfLinksOption n' p' with
   | None => None
   | Some t => Some (Vector.cons nat f n' t)
   end
   | _, _ => None
   end.
 
-(* Функция преобразования NestedPair в VectorOfLinks с использованием VectorOfLinksDefault *)
-Definition NestedPairToVectorOfLinks (n: nat) (p: NestedPair) : VectorOfLinks n :=
-  match NestedPairToVectorOfLinksOption n p with
-  | None => VectorOfLinksDefault n
+(* Функция преобразования NestedPair в TupleOfLinks с использованием TupleOfLinksDefault *)
+Definition NestedPairToTupleOfLinks (n: nat) (p: NestedPair) : TupleOfLinks n :=
+  match NestedPairToTupleOfLinksOption n p with
+  | None => TupleOfLinksDefault n
   | Some t => t
   end.
 
-(* Функция преобразования AssociativeNetworkNestedPairFunction в AssociativeNetworkVectorFunction *)
-Definition NestedPairFunctionToVectorFunction { n: nat } (net: AssociativeNetworkNestedPairFunction) : AssociativeNetworkVectorFunction n :=
-  fun id => match NestedPairToVectorOfLinksOption n (net id) with
+(* Функция преобразования AssociativeNetworkNestedPairFunction в AssociativeNetworkTupleFunction *)
+Definition NestedPairFunctionToTupleFunction { n: nat } (net: AssociativeNetworkNestedPairFunction) : AssociativeNetworkTupleFunction n :=
+  fun id => match NestedPairToTupleOfLinksOption n (net id) with
   | Some t => t
-  | None => VectorOfLinksDefault n
+  | None => TupleOfLinksDefault n
   end.
 
-(* Функция преобразования AssociativeNetworkNestedPairList в AssociativeNetworkVectorList *)
-Definition NestedPairListToVectorList {n: nat} (net : AssociativeNetworkNestedPairList) : AssociativeNetworkVectorList n :=
-  map (NestedPairToVectorOfLinks n) net.
+(* Функция преобразования AssociativeNetworkNestedPairList в AssociativeNetworkTupleList *)
+Definition NestedPairListToTupleList {n: nat} (net : AssociativeNetworkNestedPairList) : AssociativeNetworkTupleList n :=
+  map (NestedPairToTupleOfLinks n) net.
 
 (* Функция преобразования NestedPair в AssociativeNetworkDupletList со смещением индексации *)
 Fixpoint NestedPairToDupletList_ (offset: nat) (np: NestedPair) : AssociativeNetworkDupletList :=
@@ -500,7 +500,7 @@ Definition DupletListToNestedPair (anet: AssociativeNetworkDupletList) : NestedP
   Теперь всё готово для преобразования ассоциативной сети вложенных упорядоченных пар anetl : Link → NestedPair
   в ассоциативную сеть дуплетов anetd : Link → Link².
 
-  Данное преобразование можно делать по-разному: с сохранением исходных ссылок на вектора
+  Данное преобразование можно делать по-разному: с сохранением исходных ссылок на кортежи
   либо с переиндексацией. Переиндексацию можно не делать, если написать дополнительную функцию для
   ассоциативной сети дуплетов, которая возвращает вложенную упорядоченную пару по её ссылке.
 *)
@@ -539,15 +539,15 @@ Fixpoint DupletListOffsetNestedPair_ (anet: AssociativeNetworkDupletList) (offse
 Definition DupletListOffsetNestedPair (anet: AssociativeNetworkDupletList) (index: nat) : nat :=
   DupletListOffsetNestedPair_ anet 0 index.
 
-(* Функция преобразования AssociativeNetworkVectorList в AssociativeNetworkDupletList *)
-Definition VectorListToDupletList {n : nat} (anetv: AssociativeNetworkVectorList n) : AssociativeNetworkDupletList :=
-  NestedPairListToDupletList (VectorListToNestedPairList anetv).
+(* Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkDupletList *)
+Definition TupleListToDupletList {n : nat} (anetv: AssociativeNetworkTupleList n) : AssociativeNetworkDupletList :=
+  NestedPairListToDupletList (TupleListToNestedPairList anetv).
 
 (*
   Теперь всё готово для преобразования ассоциативной сети дуплетов anetd : Link → Link²
   в ассоциативную сеть вложенных упорядоченных пар anetl : Link → NestedPair.
 
-  Данное преобразование будем делать с сохранением исходных ссылок на вектора.
+  Данное преобразование будем делать с сохранением исходных ссылок на кортежи.
   Переиндексацию можно не делать, потому что есть функция DupletListOffsetNestedPair для
   ассоциативной сети дуплетов, которая возвращает смещение вложенной УП по ссылке на неё.
 *)
@@ -584,20 +584,20 @@ Definition DupletListToNestedPairList (anetd: AssociativeNetworkDupletList) : As
 [[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/AssociativeNetworkEquivalence.v)
 
 ```rocq
-(* Предикат эквивалентности двух ассоциативных сетей векторов длины n,
-   anet1 и anet2 типа AssociativeNetworkVectorFunction.
+(* Предикат эквивалентности двух ассоциативных сетей кортежей длины n,
+   anet1 и anet2 типа AssociativeNetworkTupleFunction.
 
    Данный предикат описывает свойство «эквивалентности» для таких сетей.
-   Он утверждает, что anet1 и anet2 считаются «эквивалентными», если для каждой ссылки id вектор,
-   связанный с id в anet1, точно совпадает с вектором, связанным с тем же id в anet2.
+   Он утверждает, что anet1 и anet2 считаются «эквивалентными», если для каждой ссылки id кортеж,
+   связанный с id в anet1, точно совпадает с кортежем, связанным с тем же id в anet2.
 *)
-Definition VectorFunctionEquivalence {n: nat} (anet1: AssociativeNetworkVectorFunction n) (anet2: AssociativeNetworkVectorFunction n) : Prop :=
+Definition TupleFunctionEquivalence {n: nat} (anet1: AssociativeNetworkTupleFunction n) (anet2: AssociativeNetworkTupleFunction n) : Prop :=
   forall id, anet1 id = anet2 id.
 
-(* Предикат эквивалентности двух ассоциативных сетей векторов длины n,
-   anet1 и anet2 типа AssociativeNetworkVectorList.
+(* Предикат эквивалентности двух ассоциативных сетей кортежей длины n,
+   anet1 и anet2 типа AssociativeNetworkTupleList.
 *)
-Definition VectorListEquivalence {n: nat} (anet1: AssociativeNetworkVectorList n) (anet2: AssociativeNetworkVectorList n) : Prop :=
+Definition TupleListEquivalence {n: nat} (anet1: AssociativeNetworkTupleList n) (anet2: AssociativeNetworkTupleList n) : Prop :=
   anet1 = anet2.
 
 (* Предикат эквивалентности для ассоциативных сетей дуплетов AssociativeNetworkDupletFunction *)
@@ -612,8 +612,8 @@ Definition DupletListEquivalence (anet1: AssociativeNetworkDupletList) (anet2: A
 [[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/AssociativeNetworkLemmas.v)
 
 ```rocq
-(* Лемма о сохранении длины векторов ассоциативной сети *)
-Lemma VectorOfLinksDimensionPreserved : forall {l: nat} (t: VectorOfLinks l), List.length (VectorOfLinksToNestedPair t) = l.
+(* Лемма о сохранении длины кортежей ассоциативной сети *)
+Lemma TupleOfLinksDimensionPreserved : forall {l: nat} (t: TupleOfLinks l), List.length (TupleOfLinksToNestedPair t) = l.
 Proof.
   intros l t.
   induction t.
@@ -622,25 +622,25 @@ Proof.
 Qed.
 
 
-(* Лемма о взаимном обращении функций NestedPairToVectorOfLinksOption и VectorOfLinksToNestedPair
+(* Лемма о взаимном обращении функций NestedPairToTupleOfLinksOption и TupleOfLinksToNestedPair
 
-   NestedPairToVectorOfLinksInverse доказывает, что каждый вектор VectorOfLinks без потери данных может быть преобразован в NestedPair
-   с помощью VectorOfLinksToNestedPair и обратно в VectorOfLinks с помощью NestedPairToVectorOfLinksOption.
+   NestedPairToTupleOfLinksInverse доказывает, что каждый кортеж TupleOfLinks без потери данных может быть преобразован в NestedPair
+   с помощью TupleOfLinksToNestedPair и обратно в TupleOfLinks с помощью NestedPairToTupleOfLinksOption.
 
-   В формальном виде forall n: nat, forall t: VectorOfLinks n, NestedPairToVectorOfLinksOption n (VectorOfLinksToNestedPair t) = Some t говорит о том,
-   что для всякого натурального числа n и каждого вектора VectorOfLinks длины n,
-   мы можем преобразовать VectorOfLinks в NestedPair с помощью VectorOfLinksToNestedPair,
-   затем обратно преобразовать результат в VectorOfLinks с помощью NestedPairToVectorOfLinksOption n,
-   и в итоге получить тот же вектор VectorOfLinks, что и в начале.
+   В формальном виде forall n: nat, forall t: TupleOfLinks n, NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = Some t говорит о том,
+   что для всякого натурального числа n и каждого кортежа TupleOfLinks длины n,
+   мы можем преобразовать TupleOfLinks в NestedPair с помощью TupleOfLinksToNestedPair,
+   затем обратно преобразовать результат в TupleOfLinks с помощью NestedPairToTupleOfLinksOption n,
+   и в итоге получить тот же кортеж TupleOfLinks, что и в начале.
 
    Это свойство очень важно, потому что оно гарантирует,
-   что эти две функции образуют обратную пару на множестве преобразуемых векторов VectorOfLinks и NestedPair.
+   что эти две функции образуют обратную пару на множестве преобразуемых кортежей TupleOfLinks и NestedPair.
    Когда вы применяете обе функции к значениям в этом множестве, вы в итоге получаете исходное значение.
    Это означает, что никакая информация не теряется при преобразованиях,
-   так что можно свободно конвертировать между VectorOfLinks и NestedPair,
+   так что можно свободно конвертировать между TupleOfLinks и NestedPair,
    если это требуется в реализации или доказательствах.
 *)
-Lemma NestedPairToVectorOfLinksInverse: forall n: nat, forall t: VectorOfLinks n, NestedPairToVectorOfLinksOption n (VectorOfLinksToNestedPair t) = Some t.
+Lemma NestedPairToTupleOfLinksInverse: forall n: nat, forall t: TupleOfLinks n, NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = Some t.
 Proof.
   intros n.
   induction t as [| h n' t' IH].
@@ -650,33 +650,33 @@ Qed.
 
 
 (*
-  Теорема обёртывания и восстановления ассоциативной сети векторов:
+  Теорема обёртывания и восстановления ассоциативной сети кортежей:
 
-  Пусть дана ассоциативная сеть векторов длины n, обозначенная как anetvⁿ : Link → Vⁿ.
+  Пусть дана ассоциативная сеть кортежей длины n, обозначенная как anetvⁿ : Link → Vⁿ.
   Определим операцию отображения этой сети в ассоциативную сеть вложенных упорядоченных пар anetl : Link → NestedPair,
   где NestedPair = {(∅,∅) | (l, np), l ∈ Link, np ∈ NestedPair}.
   Затем определим обратное отображение из ассоциативной сети вложенных упорядоченных пар обратно
-  в ассоциативную сеть векторов длины n.
+  в ассоциативную сеть кортежей длины n.
 
   Теорема утверждает:
 
-  Для любой ассоциативной сети векторов длины n, anetvⁿ, применение операции преобразования
+  Для любой ассоциативной сети кортежей длины n, anetvⁿ, применение операции преобразования
   в ассоциативную сеть вложенных упорядоченных пар и обратное преобразование обратно
-  в ассоциативную сеть векторов длины n обеспечивает восстановление исходной сети anetvⁿ.
+  в ассоциативную сеть кортежей длины n обеспечивает восстановление исходной сети anetvⁿ.
   Иначе говоря:
 
   ∀ anetvⁿ : Link → Vⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
 *)
-Theorem VectorFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkVectorFunction n),
-  VectorFunctionEquivalence anet (fun id => match NestedPairToVectorOfLinksOption n ((VectorFunctionToNestedPairFunction anet) id) with
+Theorem TupleFunctionEquivalenceAfterTransforms : forall {n: nat} (anet: AssociativeNetworkTupleFunction n),
+  TupleFunctionEquivalence anet (fun id => match NestedPairToTupleOfLinksOption n ((TupleFunctionToNestedPairFunction anet) id) with
   | Some t => t
   | None => anet id
   end).
 Proof.
   intros n net id.
-  unfold VectorFunctionToNestedPairFunction.
+  unfold TupleFunctionToNestedPairFunction.
   simpl.
-  rewrite NestedPairToVectorOfLinksInverse.
+  rewrite NestedPairToTupleOfLinksInverse.
   reflexivity.
 Qed.
 
@@ -705,7 +705,7 @@ Notation "{ }" := (nil) (at level 0).
 Notation "{ x , .. , y }" := (cons x .. (cons y nil) ..) (at level 0).
 
 (* Трёхмерная ассоциативная сеть *)
-Definition complexExampleNetwork : AssociativeNetworkVectorFunction 3 :=
+Definition complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=
   fun id => match id with
   | 0 => [0; 0; 0]
   | 1 => [1; 1; 2]
@@ -715,27 +715,27 @@ Definition complexExampleNetwork : AssociativeNetworkVectorFunction 3 :=
   | S _ => [0; 0; 0]
   end.
 
-(* Вектора ссылок *)
-Definition exampleTuple0 : VectorOfLinks 0 := [].
-Definition exampleTuple1 : VectorOfLinks 1 := [0].
-Definition exampleTuple4 : VectorOfLinks 4 := [3; 2; 1; 0].
+(* Кортежи ссылок *)
+Definition exampleTuple0 : TupleOfLinks 0 := [].
+Definition exampleTuple1 : TupleOfLinks 1 := [0].
+Definition exampleTuple4 : TupleOfLinks 4 := [3; 2; 1; 0].
 
-(* Преобразование векторов ссылок во вложенные упорядоченные пары (списки) *)
-Definition nestedPair0 := VectorOfLinksToNestedPair exampleTuple0.
-Definition nestedPair1 := VectorOfLinksToNestedPair exampleTuple1.
-Definition nestedPair4 := VectorOfLinksToNestedPair exampleTuple4.
+(* Преобразование кортежей ссылок во вложенные упорядоченные пары (списки) *)
+Definition nestedPair0 := TupleOfLinksToNestedPair exampleTuple0.
+Definition nestedPair1 := TupleOfLinksToNestedPair exampleTuple1.
+Definition nestedPair4 := TupleOfLinksToNestedPair exampleTuple4.
 
 Compute nestedPair0. (* Ожидается результат: { } *)
 Compute nestedPair1. (* Ожидается результат: {0} *)
 Compute nestedPair4. (* Ожидается результат: {3, 2, 1, 0} *)
 
 (* Вычисление значений преобразованной функции трёхмерной ассоциативной сети *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 0. (* Ожидается результат: {0, 0, 0} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 1. (* Ожидается результат: {1, 1, 2} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 2. (* Ожидается результат: {2, 4, 0} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 3. (* Ожидается результат: {3, 0, 5} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 4. (* Ожидается результат: {4, 1, 1} *)
-Compute (VectorFunctionToNestedPairFunction complexExampleNetwork) 5. (* Ожидается результат: {0, 0, 0} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 0. (* Ожидается результат: {0, 0, 0} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 1. (* Ожидается результат: {1, 1, 2} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 2. (* Ожидается результат: {2, 4, 0} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 3. (* Ожидается результат: {3, 0, 5} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 4. (* Ожидается результат: {4, 1, 1} *)
+Compute (TupleFunctionToNestedPairFunction complexExampleNetwork) 5. (* Ожидается результат: {0, 0, 0} *)
 
 (* Ассоциативная сеть вложенных упорядоченных пар *)
 Definition testPairsNetwork : AssociativeNetworkNestedPairFunction :=
@@ -749,8 +749,8 @@ Definition testPairsNetwork : AssociativeNetworkNestedPairFunction :=
   end.
 
 (* Преобразованная ассоциативная сеть вложенных УП в трёхмерную ассоциативную сеть (размерность должна совпадать) *)
-Definition testTuplesNetwork : AssociativeNetworkVectorFunction 3 :=
-  NestedPairFunctionToVectorFunction testPairsNetwork.
+Definition testTuplesNetwork : AssociativeNetworkTupleFunction 3 :=
+  NestedPairFunctionToTupleFunction testPairsNetwork.
 
 (* Вычисление значений преобразованной функции ассоциативной сети вложенных УП *)
 Compute testTuplesNetwork 0. (* Ожидается результат: [5; 0; 8] *)
@@ -813,15 +813,15 @@ Compute DupletListOffsetNestedPair testDupletList 5. (* Ожидается ре�
 Compute DupletListOffsetNestedPair testDupletList 6. (* Ожидается результат: 12 *)
 Compute DupletListOffsetNestedPair testDupletList 7. (* Ожидается результат: 12 *)
 
-(* Определяем трёхмерную ассоциативную сеть как последовательность векторов длины 3 *)
-Definition testVectorList : AssociativeNetworkVectorList 3 :=
+(* Определяем трёхмерную ассоциативную сеть как последовательность кортежей длины 3 *)
+Definition testTupleList : AssociativeNetworkTupleList 3 :=
   { [0; 0; 0], [1; 1; 2], [2; 4; 0], [3; 0; 5], [4; 1; 1], [0; 0; 0] }.
 
 (* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
-Definition testVectorsToDupletList : AssociativeNetworkDupletList := VectorListToDupletList testVectorList.
+Definition testTuplesToDupletList : AssociativeNetworkDupletList := TupleListToDupletList testTupleList.
 
 (* Вычисление трёхмерной ассоциативной сети преобразованной в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП *)
-Compute testVectorsToDupletList.
+Compute testTuplesToDupletList.
 (* Ожидается результат:
 { (0, 1), (0, 2), (0, 2),
   (1, 4), (1, 5), (2, 5),
@@ -831,8 +831,8 @@ Compute testVectorsToDupletList.
   (0, 16), (0, 17), (0, 17)} *)
 
 (* Преобразованная трёхмерная ассоциативная сеть в ассоциативную сеть дуплетов через ассоциативную сеть вложенных УП и обратно в трёхмерную ассоциативную сеть *)
-Definition resultTuplesNetwork : AssociativeNetworkVectorList 3 :=
-  NestedPairListToVectorList (DupletListToNestedPairList testVectorsToDupletList).
+Definition resultTuplesNetwork : AssociativeNetworkTupleList 3 :=
+  NestedPairListToTupleList (DupletListToNestedPairList testTuplesToDupletList).
 
 (* Итоговая проверка эквивалентности ассоциативных сетей *)
 Compute resultTuplesNetwork.
@@ -868,7 +868,7 @@ Deep делает всё программное обеспечение на пл
 
 ## Заключение
 
-В этой статье мы рассмотрели математический базис реляционной алгебры и теории графов, а также изложили определения теории связей в терминах теории множеств и спроецировали их в теорию типов. Мы также определили набор функций и лемм, необходимых для доказательства возможности эквивалентного преобразования из любого вектора/последовательности во вложенные связи-дуплеты и обратно. А значит, достаточно только одной формулы для представления любого возможного типа информации:
+В этой статье мы рассмотрели математический базис реляционной алгебры и теории графов, а также изложили определения теории связей в терминах теории множеств и спроецировали их в теорию типов. Мы также определили набор функций и лемм, необходимых для доказательства возможности эквивалентного преобразования из любого кортежа/последовательности во вложенные связи-дуплеты и обратно. А значит, достаточно только одной формулы для представления любого возможного типа информации:
 
 > $\displaystyle L \to L^2$
 

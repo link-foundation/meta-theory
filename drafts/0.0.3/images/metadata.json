@@ -42,7 +42,7 @@
   {
     "figureNum": 9,
     "filename": "figure-9.png",
-    "caption": "Figure 9. A table of all possible variants of triplet-link values that can be obtained by taking the Cartesian product of the set { 1, 2 } with itself recursively, i.e., { 1, 2 } × { 1, 2 } × { 1, 2 }. Note: The first reference can be interpreted as the beginning, the second as the type, and the third as the end; the user determines how to interpret the components of the reference vector in accordance with the task at hand."
+    "caption": "Figure 9. A table of all possible variants of triplet-link values that can be obtained by taking the Cartesian product of the set { 1, 2 } with itself recursively, i.e., { 1, 2 } × { 1, 2 } × { 1, 2 }. Note: The first reference can be interpreted as the beginning, the second as the type, and the third as the end; the user determines how to interpret the components of the reference tuple in accordance with the task at hand."
   },
   {
     "figureNum": 10,

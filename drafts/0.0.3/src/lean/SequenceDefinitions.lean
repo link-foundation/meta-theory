@@ -3,7 +3,7 @@
 
   Последовательность — это вложенная структура связей-дуплетов,
   хранимая в ассоциативной сети. Последовательность идентифицируется
-  ссылкой (Link) на корень дерева дуплетов.
+  ссылкой (Reference) на корень дерева дуплетов.
 
   Каждый внутренний узел дерева — это связь-дуплет (ссылка_на_левое, ссылка_на_правое).
   Листья — это элементы последовательности (ссылки).
@@ -30,16 +30,16 @@ import AssociativeNetworkConversions
 
 -- * Последовательность — это ссылка на корень дерева в ассоциативной сети
 
-/-- Последовательность идентифицируется ссылкой (Link) на корень дерева дуплетов,
-    хранимого в ассоциативной сети. Это не отдельный тип — это просто Link. -/
-abbrev LinkSequence := Link
+/-- Последовательность идентифицируется ссылкой (Reference) на корень дерева дуплетов,
+    хранимого в ассоциативной сети. Это не отдельный тип — это просто Reference. -/
+abbrev LinkSequence := Reference
 
 -- * Вспомогательное дерево для построения последовательностей
 
 /-- LinkTree — промежуточная структура для алгоритмов построения деревьев.
     Конечный результат всегда записывается в ассоциативную сеть дуплетов. -/
 inductive LinkTree where
-  | Leaf : Link → LinkTree
+  | Leaf : Reference → LinkTree
   | Node : LinkTree → LinkTree → LinkTree
   deriving Repr
 
@@ -68,7 +68,7 @@ def TreeToSequence (t : LinkTree) (offset : Nat) : LinkSequence :=
   | .Node _ _ => offset
 
 -- Получение листьев дерева (элементов последовательности) слева направо
-def TreeToList : LinkTree → List Link
+def TreeToList : LinkTree → List Reference
   | .Leaf x => [x]
   | .Node l r => TreeToList l ++ TreeToList r
 
@@ -76,7 +76,7 @@ def TreeToList : LinkTree → List Link
 
 /-- Правая лестница: (1, (2, (3, 4)))
     Каждый следующий элемент вкладывается вправо. -/
-def ListToRightStaircase : List Link → Option LinkTree
+def ListToRightStaircase : List Reference → Option LinkTree
   | [] => none
   | [x] => some (.Leaf x)
   | x :: rest =>
@@ -86,11 +86,11 @@ def ListToRightStaircase : List Link → Option LinkTree
 
 /-- Левая лестница: (((1, 2), 3), 4)
     Каждый следующий элемент вкладывается влево. -/
-def ListToLeftStaircase_ : LinkTree → List Link → LinkTree
+def ListToLeftStaircase_ : LinkTree → List Reference → LinkTree
   | acc, [] => acc
   | acc, x :: rest => ListToLeftStaircase_ (.Node acc (.Leaf x)) rest
 
-def ListToLeftStaircase : List Link → Option LinkTree
+def ListToLeftStaircase : List Reference → Option LinkTree
   | [] => none
   | [x] => some (.Leaf x)
   | x :: rest => some (ListToLeftStaircase_ (.Leaf x) rest)
@@ -99,7 +99,7 @@ def ListToLeftStaircase : List Link → Option LinkTree
     Список делится пополам, каждая половина рекурсивно превращается в дерево.
     Адаптировано из BalancedVariantConverter.
     Использует fuel-параметр для гарантии завершения. -/
-def ListToBalancedTree (l : List Link) (fuel : Nat := l.length + 1) : Option LinkTree :=
+def ListToBalancedTree (l : List Reference) (fuel : Nat := l.length + 1) : Option LinkTree :=
   match fuel with
   | 0 => none
   | fuel' + 1 =>
@@ -117,7 +117,7 @@ def ListToBalancedTree (l : List Link) (fuel : Nat := l.length + 1) : Option Lin
 -- * Полное преобразование: список → ассоциативная сеть дуплетов + ссылка на корень
 
 /-- Преобразование списка в последовательность (ссылку на корень) и ассоциативную сеть -/
-def ListToSequence (l : List Link) (offset : Nat)
+def ListToSequence (l : List Reference) (offset : Nat)
     : Option (LinkSequence × AssociativeNetworkDupletList) :=
   match ListToBalancedTree l with
   | none => none
@@ -131,8 +131,8 @@ def listGetD (l : List α) (n : Nat) (default : α) : α :=
   | _ :: rest, n + 1 => listGetD rest n default
 
 /-- Чтение последовательности из ассоциативной сети дуплетов -/
-def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Link) (fuel : Nat)
-    : List Link :=
+def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Reference) (fuel : Nat)
+    : List Reference :=
   match fuel with
   | 0 => []
   | fuel' + 1 =>
@@ -142,7 +142,7 @@ def ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Link) (fuel : Na
     else
       [root]
 
-def ReadSequence (anet : AssociativeNetworkDupletList) (root : LinkSequence) : List Link :=
+def ReadSequence (anet : AssociativeNetworkDupletList) (root : LinkSequence) : List Reference :=
   ReadSequence_ anet root (anet.length + 1)
 
 -- * Примеры
@@ -169,7 +169,7 @@ def ReadSequence (anet : AssociativeNetworkDupletList) (root : LinkSequence) : L
 #eval do let t ← ListToLeftStaircase [1, 2, 3, 4]; return TreeToList t   -- [1, 2, 3, 4]
 
 -- Пустая последовательность
-#eval ListToSequence ([] : List Link) 5
+#eval ListToSequence ([] : List Reference) 5
 -- Ожидается: none
 
 -- Последовательность из одного элемента

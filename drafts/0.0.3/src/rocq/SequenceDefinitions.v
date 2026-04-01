@@ -3,7 +3,7 @@
 
   Последовательность — это вложенная структура связей-дуплетов,
   хранимая в ассоциативной сети. Последовательность идентифицируется
-  ссылкой (Link) на корень дерева дуплетов.
+  ссылкой (Reference) на корень дерева дуплетов.
 
   Каждый внутренний узел дерева — это связь-дуплет (ссылка_на_левое, ссылка_на_правое).
   Листья — это связи-ссылающиеся-на-себя (элемент, элемент).
@@ -36,9 +36,9 @@ Require Import AssociativeNetworkConversions.
 
 (** * Последовательность — это ссылка на корень дерева в ассоциативной сети *)
 
-(** Последовательность идентифицируется ссылкой (Link) на корень дерева дуплетов,
-    хранимого в ассоциативной сети. Это не отдельный тип — это просто Link. *)
-Definition LinkSequence := Link.
+(** Последовательность идентифицируется ссылкой (Reference) на корень дерева дуплетов,
+    хранимого в ассоциативной сети. Это не отдельный тип — это просто Reference. *)
+Definition LinkSequence := Reference.
 
 (** * Вспомогательное дерево для построения последовательностей
 
@@ -47,7 +47,7 @@ Definition LinkSequence := Link.
     Конечный результат всегда записывается в ассоциативную сеть дуплетов. *)
 
 Inductive LinkTree : Type :=
-  | Leaf : Link -> LinkTree
+  | Leaf : Reference -> LinkTree
   | Node : LinkTree -> LinkTree -> LinkTree.
 
 (** * Запись дерева в ассоциативную сеть дуплетов *)
@@ -80,7 +80,7 @@ Definition TreeToSequence (t : LinkTree) (offset : nat) : LinkSequence :=
   end.
 
 (** Получение листьев дерева (элементов последовательности) слева направо *)
-Fixpoint TreeToList (t : LinkTree) : list Link :=
+Fixpoint TreeToList (t : LinkTree) : list Reference :=
   match t with
   | Leaf x => [x]
   | Node l r => TreeToList l ++ TreeToList r
@@ -90,7 +90,7 @@ Fixpoint TreeToList (t : LinkTree) : list Link :=
 
 (** Правая лестница: (1, (2, (3, 4)))
     Каждый следующий элемент вкладывается вправо. *)
-Fixpoint ListToRightStaircase (l : list Link) : option LinkTree :=
+Fixpoint ListToRightStaircase (l : list Reference) : option LinkTree :=
   match l with
   | [] => None
   | [x] => Some (Leaf x)
@@ -103,13 +103,13 @@ Fixpoint ListToRightStaircase (l : list Link) : option LinkTree :=
 
 (** Левая лестница: (((1, 2), 3), 4)
     Каждый следующий элемент вкладывается влево. *)
-Fixpoint ListToLeftStaircase_ (acc : LinkTree) (l : list Link) : LinkTree :=
+Fixpoint ListToLeftStaircase_ (acc : LinkTree) (l : list Reference) : LinkTree :=
   match l with
   | [] => acc
   | x :: rest => ListToLeftStaircase_ (Node acc (Leaf x)) rest
   end.
 
-Definition ListToLeftStaircase (l : list Link) : option LinkTree :=
+Definition ListToLeftStaircase (l : list Reference) : option LinkTree :=
   match l with
   | [] => None
   | [x] => Some (Leaf x)
@@ -120,7 +120,7 @@ Definition ListToLeftStaircase (l : list Link) : option LinkTree :=
     Список делится пополам, каждая половина рекурсивно превращается в дерево.
     Адаптировано из BalancedVariantConverter.
     Использует fuel-параметр для гарантии завершения. *)
-Fixpoint ListToBalancedTree_ (l : list Link) (fuel : nat) : option LinkTree :=
+Fixpoint ListToBalancedTree_ (l : list Reference) (fuel : nat) : option LinkTree :=
   match fuel with
   | 0 => None
   | S fuel' =>
@@ -138,13 +138,13 @@ Fixpoint ListToBalancedTree_ (l : list Link) (fuel : nat) : option LinkTree :=
     end
   end.
 
-Definition ListToBalancedTree (l : list Link) : option LinkTree :=
+Definition ListToBalancedTree (l : list Reference) : option LinkTree :=
   ListToBalancedTree_ l (S (length l)).
 
 (** * Полное преобразование: список → ассоциативная сеть дуплетов + ссылка на корень *)
 
 (** Преобразование списка в последовательность (ссылку на корень) и ассоциативную сеть *)
-Definition ListToSequence (l : list Link) (offset : nat)
+Definition ListToSequence (l : list Reference) (offset : nat)
     : option (LinkSequence * AssociativeNetworkDupletList) :=
   match ListToBalancedTree l with
   | None => None
@@ -152,8 +152,8 @@ Definition ListToSequence (l : list Link) (offset : nat)
   end.
 
 (** Чтение последовательности из ассоциативной сети дуплетов *)
-Fixpoint ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Link) (fuel : nat)
-    : list Link :=
+Fixpoint ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Reference) (fuel : nat)
+    : list Reference :=
   match fuel with
   | 0 => []
   | S fuel' =>
@@ -166,7 +166,7 @@ Fixpoint ReadSequence_ (anet : AssociativeNetworkDupletList) (root : Link) (fuel
       [root]
   end.
 
-Definition ReadSequence (anet : AssociativeNetworkDupletList) (root : LinkSequence) : list Link :=
+Definition ReadSequence (anet : AssociativeNetworkDupletList) (root : LinkSequence) : list Reference :=
   ReadSequence_ anet root (S (length anet)).
 
 (** * Примеры *)

@@ -6,55 +6,55 @@
 -/
 import AssociativeNetworkDefinitions
 
--- Функция преобразования TupleOfLinks в LinkList
-def TupleOfLinksToLinkList {n : Nat} (v : TupleOfLinks n) : LinkList :=
+-- Функция преобразования TupleOfReferences в ReferenceList
+def TupleOfReferencesToReferenceList {n : Nat} (v : TupleOfReferences n) : ReferenceList :=
   v.toList
 
--- Функция преобразования AssociativeNetworkTupleFunction в AssociativeNetworkLinkListFunction
-def TupleFunctionToLinkListFunction {n : Nat} (a : AssociativeNetworkTupleFunction n) : AssociativeNetworkLinkListFunction :=
-  fun id => TupleOfLinksToLinkList (a id)
+-- Функция преобразования AssociativeNetworkTupleFunction в AssociativeNetworkReferenceListFunction
+def TupleFunctionToReferenceListFunction {n : Nat} (a : AssociativeNetworkTupleFunction n) : AssociativeNetworkReferenceListFunction :=
+  fun id => TupleOfReferencesToReferenceList (a id)
 
--- Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkLinkListList
-def TupleListToLinkListList {n : Nat} (net : AssociativeNetworkTupleList n) : AssociativeNetworkLinkListList :=
-  net.map TupleOfLinksToLinkList
+-- Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkReferenceListList
+def TupleListToReferenceListList {n : Nat} (net : AssociativeNetworkTupleList n) : AssociativeNetworkReferenceListList :=
+  net.map TupleOfReferencesToReferenceList
 
--- Функция преобразования LinkList в TupleOfLinks, возвращающая option
-def LinkListToTupleOfLinksOption (n : Nat) (p : LinkList) : Option (TupleOfLinks n) :=
+-- Функция преобразования ReferenceList в TupleOfReferences, возвращающая option
+def ReferenceListToTupleOfReferencesOption (n : Nat) (p : ReferenceList) : Option (TupleOfReferences n) :=
   let arr := p.toArray
   if h : arr.size = n then
     some ⟨arr, h⟩
   else
     none
 
--- Функция преобразования LinkList в TupleOfLinks с использованием TupleOfLinksDefault
-def LinkListToTupleOfLinks (n : Nat) (p : LinkList) : TupleOfLinks n :=
-  match LinkListToTupleOfLinksOption n p with
-  | none => TupleOfLinksDefault n
+-- Функция преобразования ReferenceList в TupleOfReferences с использованием TupleOfReferencesDefault
+def ReferenceListToTupleOfReferences (n : Nat) (p : ReferenceList) : TupleOfReferences n :=
+  match ReferenceListToTupleOfReferencesOption n p with
+  | none => TupleOfReferencesDefault n
   | some t => t
 
--- Функция преобразования AssociativeNetworkLinkListFunction в AssociativeNetworkTupleFunction
-def LinkListFunctionToTupleFunction {n : Nat} (net : AssociativeNetworkLinkListFunction) : AssociativeNetworkTupleFunction n :=
-  fun id => match LinkListToTupleOfLinksOption n (net id) with
+-- Функция преобразования AssociativeNetworkReferenceListFunction в AssociativeNetworkTupleFunction
+def ReferenceListFunctionToTupleFunction {n : Nat} (net : AssociativeNetworkReferenceListFunction) : AssociativeNetworkTupleFunction n :=
+  fun id => match ReferenceListToTupleOfReferencesOption n (net id) with
   | some t => t
-  | none => TupleOfLinksDefault n
+  | none => TupleOfReferencesDefault n
 
--- Функция преобразования AssociativeNetworkLinkListList в AssociativeNetworkTupleList
-def LinkListListToTupleList {n : Nat} (net : AssociativeNetworkLinkListList) : AssociativeNetworkTupleList n :=
-  net.map (LinkListToTupleOfLinks n)
+-- Функция преобразования AssociativeNetworkReferenceListList в AssociativeNetworkTupleList
+def ReferenceListListToTupleList {n : Nat} (net : AssociativeNetworkReferenceListList) : AssociativeNetworkTupleList n :=
+  net.map (ReferenceListToTupleOfReferences n)
 
--- Функция преобразования LinkList в AssociativeNetworkDupletList со смещением индексации
-def LinkListToDupletList_ (offset : Nat) : LinkList → AssociativeNetworkDupletList
+-- Функция преобразования ReferenceList в AssociativeNetworkDupletList со смещением индексации
+def ReferenceListToDupletList_ (offset : Nat) : ReferenceList → AssociativeNetworkDupletList
   | [] => []
   | [h] => [(h, offset)]
-  | h :: t => (h, offset + 1) :: LinkListToDupletList_ (offset + 1) t
+  | h :: t => (h, offset + 1) :: ReferenceListToDupletList_ (offset + 1) t
 
--- Функция преобразования LinkList в AssociativeNetworkDupletList
-def LinkListToDupletList (np : LinkList) : AssociativeNetworkDupletList :=
-  LinkListToDupletList_ 0 np
+-- Функция преобразования ReferenceList в AssociativeNetworkDupletList
+def ReferenceListToDupletList (np : ReferenceList) : AssociativeNetworkDupletList :=
+  ReferenceListToDupletList_ 0 np
 
--- Функция добавления LinkList в хвост AssociativeNetworkDupletList
-def AddLinkListToDupletList (anet : AssociativeNetworkDupletList) (np : LinkList) : AssociativeNetworkDupletList :=
-  anet ++ LinkListToDupletList_ anet.length np
+-- Функция добавления ReferenceList в хвост AssociativeNetworkDupletList
+def AddReferenceListToDupletList (anet : AssociativeNetworkDupletList) (np : ReferenceList) : AssociativeNetworkDupletList :=
+  anet ++ ReferenceListToDupletList_ anet.length np
 
 -- Функция отрезает голову anetd и возвращает хвост начиная с offset
 def DupletListBehead (anet : AssociativeNetworkDupletList) : Nat → AssociativeNetworkDupletList
@@ -63,37 +63,37 @@ def DupletListBehead (anet : AssociativeNetworkDupletList) : Nat → Associative
     | [] => []
     | _ :: t => DupletListBehead t n
 
--- Функция преобразования AssociativeNetworkDupletList в LinkList с индексацией в начале AssociativeNetworkDupletList начиная с offset
-def DupletListToLinkList_ (anet : AssociativeNetworkDupletList) (offset : Nat) (index : Nat) : LinkList :=
+-- Функция преобразования AssociativeNetworkDupletList в ReferenceList с индексацией в начале AssociativeNetworkDupletList начиная с offset
+def DupletListToReferenceList_ (anet : AssociativeNetworkDupletList) (offset : Nat) (index : Nat) : ReferenceList :=
   match anet with
   | [] => []
   | (x, next_index) :: tail_anet =>
     if offset == index then
-      x :: DupletListToLinkList_ tail_anet (offset + 1) next_index
+      x :: DupletListToReferenceList_ tail_anet (offset + 1) next_index
     else
-      DupletListToLinkList_ tail_anet (offset + 1) index
+      DupletListToReferenceList_ tail_anet (offset + 1) index
 
--- Функция чтения LinkList из AssociativeNetworkDupletList по индексу дуплета
-def DupletListReadLinkList (anet : AssociativeNetworkDupletList) (index : Nat) : LinkList :=
-  DupletListToLinkList_ anet 0 index
+-- Функция чтения ReferenceList из AssociativeNetworkDupletList по индексу дуплета
+def DupletListReadReferenceList (anet : AssociativeNetworkDupletList) (index : Nat) : ReferenceList :=
+  DupletListToReferenceList_ anet 0 index
 
--- Функция преобразования AssociativeNetworkDupletList в LinkList начиная с головы списка ассоциативной сети
-def DupletListToLinkList (anet : AssociativeNetworkDupletList) : LinkList :=
-  DupletListReadLinkList anet 0
+-- Функция преобразования AssociativeNetworkDupletList в ReferenceList начиная с головы списка ассоциативной сети
+def DupletListToReferenceList (anet : AssociativeNetworkDupletList) : ReferenceList :=
+  DupletListReadReferenceList anet 0
 
--- Функция добавления AssociativeNetworkLinkListList в AssociativeNetworkDupletList
-def AddLinkListListToDupletList : AssociativeNetworkDupletList → AssociativeNetworkLinkListList → AssociativeNetworkDupletList
+-- Функция добавления AssociativeNetworkReferenceListList в AssociativeNetworkDupletList
+def AddReferenceListListToDupletList : AssociativeNetworkDupletList → AssociativeNetworkReferenceListList → AssociativeNetworkDupletList
   | anetd, [] => anetd
-  | anetd, h :: t => AddLinkListListToDupletList (AddLinkListToDupletList anetd h) t
+  | anetd, h :: t => AddReferenceListListToDupletList (AddReferenceListToDupletList anetd h) t
 
--- Функция преобразования AssociativeNetworkLinkListList в AssociativeNetworkDupletList
-def LinkListListToDupletList : AssociativeNetworkLinkListList → AssociativeNetworkDupletList
+-- Функция преобразования AssociativeNetworkReferenceListList в AssociativeNetworkDupletList
+def ReferenceListListToDupletList : AssociativeNetworkReferenceListList → AssociativeNetworkDupletList
   | [] => []
-  | h :: t => AddLinkListListToDupletList (LinkListToDupletList h) t
+  | h :: t => AddReferenceListListToDupletList (ReferenceListToDupletList h) t
 
--- Функция поиска LinkList в хвосте AssociativeNetworkDupletList начинающемуся с offset по её порядковому номеру.
--- Возвращает offset LinkList.
-def DupletListOffsetLinkList_ (anet : AssociativeNetworkDupletList) (offset : Nat) (index : Nat) : Nat :=
+-- Функция поиска ReferenceList в хвосте AssociativeNetworkDupletList начинающемуся с offset по её порядковому номеру.
+-- Возвращает offset ReferenceList.
+def DupletListOffsetReferenceList_ (anet : AssociativeNetworkDupletList) (offset : Nat) (index : Nat) : Nat :=
   match anet with
   | [] => offset + anet.length
   | (_, next_index) :: tail_anet =>
@@ -101,38 +101,38 @@ def DupletListOffsetLinkList_ (anet : AssociativeNetworkDupletList) (offset : Na
     | 0 => offset
     | Nat.succ index' =>
       if offset == next_index then
-        DupletListOffsetLinkList_ tail_anet (offset + 1) index'
+        DupletListOffsetReferenceList_ tail_anet (offset + 1) index'
       else
-        DupletListOffsetLinkList_ tail_anet (offset + 1) index
+        DupletListOffsetReferenceList_ tail_anet (offset + 1) index
 
--- Функция поиска LinkList в AssociativeNetworkDupletList по её порядковому номеру. Возвращает offset LinkList.
-def DupletListOffsetLinkList (anet : AssociativeNetworkDupletList) (index : Nat) : Nat :=
-  DupletListOffsetLinkList_ anet 0 index
+-- Функция поиска ReferenceList в AssociativeNetworkDupletList по её порядковому номеру. Возвращает offset ReferenceList.
+def DupletListOffsetReferenceList (anet : AssociativeNetworkDupletList) (index : Nat) : Nat :=
+  DupletListOffsetReferenceList_ anet 0 index
 
 -- Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkDupletList
 def TupleListToDupletList {n : Nat} (anetv : AssociativeNetworkTupleList n) : AssociativeNetworkDupletList :=
-  LinkListListToDupletList (TupleListToLinkListList anetv)
+  ReferenceListListToDupletList (TupleListToReferenceListList anetv)
 
--- Функция отрезает первую LinkList из AssociativeNetworkDupletList и возвращает хвост
-def DupletListBeheadLinkList (anet : AssociativeNetworkDupletList) (offset : Nat) : AssociativeNetworkDupletList :=
+-- Функция отрезает первую ReferenceList из AssociativeNetworkDupletList и возвращает хвост
+def DupletListBeheadReferenceList (anet : AssociativeNetworkDupletList) (offset : Nat) : AssociativeNetworkDupletList :=
   match anet with
   | [] => []
   | (_, next_index) :: tail_anet =>
     if offset == next_index then
       tail_anet
     else
-      DupletListBeheadLinkList tail_anet (offset + 1)
+      DupletListBeheadReferenceList tail_anet (offset + 1)
 
--- Функция преобразования LinkList и AssociativeNetworkDupletList со смещения offset в AssociativeNetworkLinkListList
-def DupletListToLinkListList_ (anetd : AssociativeNetworkDupletList) (np : LinkList) (offset : Nat) : AssociativeNetworkLinkListList :=
+-- Функция преобразования ReferenceList и AssociativeNetworkDupletList со смещения offset в AssociativeNetworkReferenceListList
+def DupletListToReferenceListList_ (anetd : AssociativeNetworkDupletList) (np : ReferenceList) (offset : Nat) : AssociativeNetworkReferenceListList :=
   match anetd with
-  | [] => []  -- отбрасываем LinkList даже если она недостроена
+  | [] => []  -- отбрасываем ReferenceList даже если она недостроена
   | (x, next_index) :: tail_anet =>
-    if offset == next_index then  -- конец LinkList, переходим к следующей LinkList
-      (np ++ [x]) :: DupletListToLinkListList_ tail_anet [] (offset + 1)
-    else  -- ещё не конец LinkList, парсим ассоциативную сеть дуплетов дальше
-      DupletListToLinkListList_ tail_anet (np ++ [x]) (offset + 1)
+    if offset == next_index then  -- конец ReferenceList, переходим к следующей ReferenceList
+      (np ++ [x]) :: DupletListToReferenceListList_ tail_anet [] (offset + 1)
+    else  -- ещё не конец ReferenceList, парсим ассоциативную сеть дуплетов дальше
+      DupletListToReferenceListList_ tail_anet (np ++ [x]) (offset + 1)
 
--- Функция преобразования AssociativeNetworkDupletList в AssociativeNetworkLinkListList
-def DupletListToLinkListList (anetd : AssociativeNetworkDupletList) : AssociativeNetworkLinkListList :=
-  DupletListToLinkListList_ anetd [] LinkDefault
+-- Функция преобразования AssociativeNetworkDupletList в AssociativeNetworkReferenceListList
+def DupletListToReferenceListList (anetd : AssociativeNetworkDupletList) : AssociativeNetworkReferenceListList :=
+  DupletListToReferenceListList_ anetd [] ReferenceDefault

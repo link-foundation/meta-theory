@@ -4,7 +4,7 @@
   определены в терминах связей.
 
   Этот файл замыкает цикл определений:
-  1. Связи (Link) и ссылки определены как натуральные числа (ℕ₀)
+  1. Связи (Reference) и ссылки определены как натуральные числа (ℕ₀)
   2. Последовательности определены как деревья связей-дуплетов в ассоциативной сети
   3. Множества определены как упорядоченные уникальные последовательности связей
   4. Теперь мы переопределяем связи и ссылки через множества и последовательности
@@ -28,16 +28,16 @@ open SetSequenceEquivalence
   определённого как упорядоченное уникальное дерево связей-дуплетов
   в ассоциативной сети.
 
-  В исходном определении: Link := ℕ₀ (натуральное число)
+  В исходном определении: Reference := ℕ₀ (натуральное число)
   В мета-определении: MetaLink — это лист дерева, хранимого в сети,
-  где LinkSet — это Link (ссылка на корень дерева в сети).
+  где LinkSet — это Reference (ссылка на корень дерева в сети).
 
   Таким образом, мета-ссылка определена через связи, которые определены
   через мета-ссылки — цикл замкнут.
 -/
 
 -- Мета-ссылка: элемент множества, определённого через деревья связей
-abbrev MetaLink := Link
+abbrev MetaLink := Reference
 
 -- Мета-пространство ссылок: ссылка на корень дерева в ассоциативной сети
 abbrev MetaLinkSpace := LinkSet
@@ -52,7 +52,7 @@ abbrev MetaAssociativeNetwork := MetaLink → MetaDuplet
 abbrev MetaAssociativeNetworkList := List MetaDuplet
 
 -- Создание списка мета-ссылок заданного размера
-def makeMetaLinkSpace_ : Nat → List Link
+def makeMetaLinkSpace_ : Nat → List Reference
   | 0 => [0]
   | n + 1 => makeMetaLinkSpace_ n ++ [n + 1]
 
@@ -94,19 +94,19 @@ theorem meta_link_space_elements_valid (size : Nat) :
   Цикл определений теории связей как мета-теории:
 
   Уровень 0 (базовый):
-    Link := ℕ₀
-    Duplet := Link × Link
-    AssociativeNetwork := Link → Duplet
+    Reference := ℕ₀
+    Duplet := Reference × Reference
+    AssociativeNetwork := Reference → Duplet
 
   Уровень 1 (последовательности через связи):
-    LinkSequence := Link  (ссылка на корень дерева дуплетов в ассоциативной сети)
+    LinkSequence := Reference  (ссылка на корень дерева дуплетов в ассоциативной сети)
     Дерево дуплетов хранится в AssociativeNetworkDupletList
 
   Уровень 2 (множества через последовательности):
-    LinkSet := Link  (ссылка на корень, с инвариантом IsOrderedUniqueSequence)
+    LinkSet := Reference  (ссылка на корень, с инвариантом IsOrderedUniqueSequence)
 
   Уровень 3 (мета-определения через множества):
-    MetaLink := Link
+    MetaLink := Reference
     MetaDuplet := MetaLink × MetaLink
     MetaAssociativeNetwork := MetaLink → MetaDuplet
 

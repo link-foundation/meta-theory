@@ -4,7 +4,7 @@
   Множество определяется как последовательность связей-дуплетов,
   листья которой образуют строго возрастающий список без дубликатов.
 
-  Как и последовательность, множество идентифицируется ссылкой (Link)
+  Как и последовательность, множество идентифицируется ссылкой (Reference)
   на корень дерева в ассоциативной сети.
 
   Это ключевой шаг: имея последовательности, определённые через связи-дуплеты,
@@ -20,22 +20,22 @@ open SetSequenceEquivalence
 
 -- * Множества как упорядоченные уникальные последовательности связей
 
-/-- Множество ссылок — это ссылка (Link) на корень дерева связей
+/-- Множество ссылок — это ссылка (Reference) на корень дерева связей
     в ассоциативной сети, листья которого образуют строго возрастающий
-    список без дубликатов. Как и последовательность, множество — это Link. -/
-abbrev LinkSet := Link
+    список без дубликатов. Как и последовательность, множество — это Reference. -/
+abbrev LinkSet := Reference
 
 -- Предикат: является ли дерево связей корректным множеством
 def IsValidSetTree (s : LinkTree) : Prop :=
   IsOrderedUniqueSequence (TreeToList s)
 
 -- Множество из одного элемента — ссылка на сам элемент
-def SingletonSet (value : Link) : LinkSet := value
+def SingletonSet (value : Reference) : LinkSet := value
 
 /-- Преобразование списка ссылок в множество: сортировка, удаление дубликатов,
     построение сбалансированного дерева и запись в ассоциативную сеть.
     Возвращает ссылку на корень (= множество) и сеть дуплетов. -/
-def ListToSet (l : List Link) (offset : Nat)
+def ListToSet (l : List Reference) (offset : Nat)
     : Option (LinkSet × AssociativeNetworkDupletList) :=
   let sorted := toOrderedUnique l
   match ListToBalancedTree sorted with
@@ -43,7 +43,7 @@ def ListToSet (l : List Link) (offset : Nat)
   | some t => some (TreeToSequence t offset, TreeToDupletList t offset)
 
 -- Принадлежность элемента множеству (проверка через дерево)
-def InSetTree (x : Link) (s : LinkTree) : Prop :=
+def InSetTree (x : Reference) (s : LinkTree) : Prop :=
   x ∈ TreeToList s
 
 -- Подмножество: s1 ⊆ s2 (через деревья)
@@ -52,12 +52,12 @@ def IsSubsetTree (s1 s2 : LinkTree) : Prop :=
 
 -- * Теорема: toOrderedUnique всегда содержит упорядоченные уникальные элементы
 
-theorem ListToSet_elements_valid (l : List Link) :
+theorem ListToSet_elements_valid (l : List Reference) :
     IsOrderedUniqueSequence (toOrderedUnique l) := by
   exact toOrderedUnique_is_ascending l
 
 -- Элемент принадлежит множеству тогда и только тогда, когда он принадлежит исходному списку
-theorem ListToSet_membership (x : Link) (l : List Link) :
+theorem ListToSet_membership (x : Reference) (l : List Reference) :
     x ∈ toOrderedUnique l ↔ x ∈ l := by
   exact mem_toOrderedUnique x l
 

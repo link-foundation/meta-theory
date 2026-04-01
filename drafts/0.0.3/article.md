@@ -342,15 +342,13 @@ $NP$ — это множество вложенных упорядоченных
 
 [Rocq](https://rocq-prover.org/) (ранее известный как [Coq](https://ru.wikipedia.org/wiki/Coq)) — это интерактивное средство доказательства теорем, основанное на теории типов высшего порядка, также известной как Исчисление Индуктивных Построений (Calculus of Inductive Constructions, CIC). Это мощная среда для формализации сложных математических теорем, проверки доказательств на корректность и извлечения работающего программного кода из формально проверенных спецификаций. Rocq широко используется в академических кругах для формализации математики, а также в IT-индустрии для верификации программного обеспечения и оборудования.
 
-> В 2024 году проект Coq был [переименован в Rocq](https://rocq-prover.org/). Все ссылки на документацию и исходный код в данной статье используют актуальное название Rocq.
-
 Решение применить Rocq для описания теории связей в рамках теории типов было обусловлено необходимостью строгой формализации доказательств и гарантирования логической корректности в рамках разработки теории связей. Использование Rocq позволяет выразить свойства и операции над связями в точных и надёжных терминах, благодаря системе типов Rocq и мощным средствам для создания и проверки доказательств.
 
 В преддверии обширной работы по доказательству эквивалентности реляционной модели и ассоциативной сети дуплетов, мы представляем в этом разделе начальные шаги, выполненные с использованием системы доказательств Rocq. На первом этапе стоит задача формализации структур ассоциативных сетей через определения базовых типов, функций и структур внутри Rocq.
 
 #### Определения ассоциативных сетей
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/ANetDefs.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-definitions.v)
 
 ```rocq
 Require Import PeanoNat.
@@ -406,7 +404,7 @@ Definition ANetDl := list D.
 
 #### Функции преобразования ассоциативных сетей
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/ANetConv.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-conversions.v)
 
 ```rocq
 (* Функция преобразования Vn в NP *)
@@ -583,7 +581,7 @@ Definition ANetDlToANetLl (anetd: ANetDl) : ANetLl :=
 
 #### Предикаты эквивалентности ассоциативных сетей
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/ANetEquiv.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-equivalence.v)
 
 ```rocq
 (* Предикат эквивалентности двух ассоциативных сетей векторов длины n,
@@ -611,7 +609,7 @@ Definition ANetDl_equiv (anet1: ANetDl) (anet2: ANetDl) : Prop := anet1 = anet2.
 
 #### Леммы эквивалентности ассоциативных сетей
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/ANetLemmas.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-lemmas.v)
 
 ```rocq
 (* Лемма о сохранении длины векторов ассоциативной сети *)
@@ -699,7 +697,7 @@ Qed.
 
 #### Примеры преобразований между ассоциативными сетями
 
-[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/ANetExamples.v)
+[[Ссылка на исходный код]](https://github.com/link-foundation/meta-theory/blob/main/drafts/0.0.3/src/associative-network-examples.v)
 
 ```rocq
 (* Нотация записи списков *)

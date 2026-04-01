@@ -5,8 +5,8 @@ Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
-Require Import ANetDefs.
-Require Import ANetConv.
+Require Import associative-network-definitions.
+Require Import associative-network-conversions.
 
 (* Нотация записи списков *)
 Notation "{ }" := (nil) (at level 0).

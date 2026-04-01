@@ -5,7 +5,7 @@ Require Import List.
 Require Import Coq.Init.Datatypes.
 Import ListNotations.
 Import VectorNotations.
-Require Import ANetDefs.
+Require Import associative-network-definitions.
 
 (* Функция преобразования Vn в NP *)
 Fixpoint VnToNP {n : nat} (v : Vn n) : NP :=

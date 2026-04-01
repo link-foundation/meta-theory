@@ -85,6 +85,7 @@ abbrev LinkSequence := Reference
 inductive LinkTree where
   | Leaf : Reference → LinkTree
   | Node : LinkTree → LinkTree → LinkTree
+  deriving Repr
 
 -- Запись дерева в сеть дуплетов
 def TreeToDupletList_ : LinkTree → Nat → NetworkDupletList × Nat

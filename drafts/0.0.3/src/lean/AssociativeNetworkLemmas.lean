@@ -13,10 +13,27 @@ theorem TupleOfLinksDimensionPreserved {l : Nat} (t : TupleOfLinks l) :
     (TupleOfLinksToLinkList t).length = l := by
   simp [TupleOfLinksToLinkList]
 
--- Лемма о взаимном обращении функций LinkListToTupleOfLinksOption и TupleOfLinksToLinkList
---
--- LinkListToTupleOfLinksInverse доказывает, что каждый кортеж TupleOfLinks без потери данных может быть преобразован в LinkList
--- с помощью TupleOfLinksToLinkList и обратно в TupleOfLinks с помощью LinkListToTupleOfLinksOption.
+/-
+  Лемма о взаимном обращении функций LinkListToTupleOfLinksOption и TupleOfLinksToLinkList
+
+  LinkListToTupleOfLinksInverse доказывает, что каждый кортеж TupleOfLinks без потери данных
+  может быть преобразован в LinkList с помощью TupleOfLinksToLinkList и обратно в TupleOfLinks
+  с помощью LinkListToTupleOfLinksOption.
+
+  В формальном виде forall n: Nat, forall t: TupleOfLinks n,
+  LinkListToTupleOfLinksOption n (TupleOfLinksToLinkList t) = some t говорит о том,
+  что для всякого натурального числа n и каждого кортежа TupleOfLinks длины n,
+  мы можем преобразовать TupleOfLinks в LinkList с помощью TupleOfLinksToLinkList,
+  затем обратно преобразовать результат в TupleOfLinks с помощью LinkListToTupleOfLinksOption n,
+  и в итоге получить тот же кортеж TupleOfLinks, что и в начале.
+
+  Это свойство очень важно, потому что оно гарантирует,
+  что эти две функции образуют обратную пару на множестве преобразуемых кортежей TupleOfLinks и LinkList.
+  Когда вы применяете обе функции к значениям в этом множестве, вы в итоге получаете исходное значение.
+  Это означает, что никакая информация не теряется при преобразованиях,
+  так что можно свободно конвертировать между TupleOfLinks и LinkList,
+  если это требуется в реализации или доказательствах.
+-/
 theorem LinkListToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
     LinkListToTupleOfLinksOption n (TupleOfLinksToLinkList t) = some t := by
   simp [LinkListToTupleOfLinksOption, TupleOfLinksToLinkList]
@@ -24,6 +41,19 @@ theorem LinkListToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
 
 /-
   Теорема обёртывания и восстановления ассоциативной сети кортежей:
+
+  Пусть дана ассоциативная сеть кортежей длины n, обозначенная как anetvⁿ : Link → Tⁿ.
+  Определим операцию отображения этой сети в ассоциативную сеть списков ссылок anetl : Link → LinkList,
+  где LinkList = {(∅,∅) | (l, ll), l ∈ Link, ll ∈ LinkList}.
+  Затем определим обратное отображение из ассоциативной сети списков ссылок обратно
+  в ассоциативную сеть кортежей длины n.
+
+  Теорема утверждает:
+
+  Для любой ассоциативной сети кортежей длины n, anetvⁿ, применение операции преобразования
+  в ассоциативную сеть списков ссылок и обратное преобразование обратно
+  в ассоциативную сеть кортежей длины n обеспечивает восстановление исходной сети anetvⁿ.
+  Иначе говоря:
 
   ∀ anetvⁿ : Link → Tⁿ, обратно(вперёд(anetvⁿ)) = anetvⁿ.
 -/

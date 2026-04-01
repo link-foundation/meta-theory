@@ -8,7 +8,7 @@
 
 **Published:** April 1, 2025 (updated August 10, 2025)
 
-**Reading time: 27 min | Difficulty: Medium | Views: 5249**
+**Reading time: 27 min | Difficulty: Medium | Views: 5259**
 
 **Hubs:** Data Engineering, Open source, Mathematics, Abnormal programming, Programming
 
@@ -942,6 +942,6 @@ Which is rendered as SVG (clickable):
 
 **Hubs:** [Data Engineering](https://habr.com/en/hubs/data_engineering/), [Open source](https://habr.com/en/hubs/open_source/), [Mathematics](https://habr.com/en/hubs/maths/), [Abnormal programming](https://habr.com/en/hubs/crazydev/), [Programming](https://habr.com/en/hubs/programming/)
 
-**Votes: +10 | Views: 5249**
+**Votes: +10 | Views: 5259**
 
 **Author:** [Константин Дьяченко (Konard)](https://habr.com/en/users/Konard/)

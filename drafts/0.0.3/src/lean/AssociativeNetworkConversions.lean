@@ -81,6 +81,15 @@ def DupletListReadReferenceList (anet : AssociativeNetworkDupletList) (index : N
 def DupletListToReferenceList (anet : AssociativeNetworkDupletList) : ReferenceList :=
   DupletListReadReferenceList anet 0
 
+/-
+  Теперь всё готово для преобразования ассоциативной сети вложенных упорядоченных пар anetl : Reference → ReferenceList
+  в ассоциативную сеть дуплетов anetd : Reference → Reference².
+
+  Данное преобразование можно делать по-разному: с сохранением исходных ссылок на кортежи
+  либо с переиндексацией. Переиндексацию можно не делать, если написать дополнительную функцию для
+  ассоциативной сети дуплетов, которая возвращает вложенную упорядоченную пару по её ссылке.
+-/
+
 -- Функция добавления AssociativeNetworkReferenceListList в AssociativeNetworkDupletList
 def AddReferenceListListToDupletList : AssociativeNetworkDupletList → AssociativeNetworkReferenceListList → AssociativeNetworkDupletList
   | anetd, [] => anetd
@@ -112,6 +121,15 @@ def DupletListOffsetReferenceList (anet : AssociativeNetworkDupletList) (index :
 -- Функция преобразования AssociativeNetworkTupleList в AssociativeNetworkDupletList
 def TupleListToDupletList {n : Nat} (anetv : AssociativeNetworkTupleList n) : AssociativeNetworkDupletList :=
   ReferenceListListToDupletList (TupleListToReferenceListList anetv)
+
+/-
+  Теперь всё готово для преобразования ассоциативной сети дуплетов anetd : Reference → Reference²
+  в ассоциативную сеть вложенных упорядоченных пар anetl : Reference → ReferenceList.
+
+  Данное преобразование будем делать с сохранением исходных ссылок на кортежи.
+  Переиндексацию можно не делать, потому что есть функция DupletListOffsetReferenceList для
+  ассоциативной сети дуплетов, которая возвращает смещение вложенной УП по ссылке на неё.
+-/
 
 -- Функция отрезает первую ReferenceList из AssociativeNetworkDupletList и возвращает хвост
 def DupletListBeheadReferenceList (anet : AssociativeNetworkDupletList) (offset : Nat) : AssociativeNetworkDupletList :=

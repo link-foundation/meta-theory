@@ -11,31 +11,15 @@ import AssociativeNetworkEquivalence
 -- Лемма о сохранении длины кортежей ассоциативной сети
 theorem TupleOfLinksDimensionPreserved {l : Nat} (t : TupleOfLinks l) :
     (TupleOfLinksToNestedPair t).length = l := by
-  simp [TupleOfLinksToNestedPair]
-  exact t.toList_length
+  simp [TupleOfLinksToNestedPair, Vector.toList_length]
 
 -- Лемма о взаимном обращении функций NestedPairToTupleOfLinksOption и TupleOfLinksToNestedPair
 --
 -- NestedPairToTupleOfLinksInverse доказывает, что каждый кортеж TupleOfLinks без потери данных может быть преобразован в NestedPair
 -- с помощью TupleOfLinksToNestedPair и обратно в TupleOfLinks с помощью NestedPairToTupleOfLinksOption.
---
--- В формальном виде forall n: nat, forall t: TupleOfLinks n, NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = Some t говорит о том,
--- что для всякого натурального числа n и каждого кортежа TupleOfLinks длины n,
--- мы можем преобразовать TupleOfLinks в NestedPair с помощью TupleOfLinksToNestedPair,
--- затем обратно преобразовать результат в TupleOfLinks с помощью NestedPairToTupleOfLinksOption n,
--- и в итоге получить тот же кортеж TupleOfLinks, что и в начале.
---
--- Это свойство очень важно, потому что оно гарантирует,
--- что эти две функции образуют обратную пару на множестве преобразуемых кортежей TupleOfLinks и NestedPair.
--- Когда вы применяете обе функции к значениям в этом множестве, вы в итоге получаете исходное значение.
--- Это означает, что никакая информация не теряется при преобразованиях,
--- так что можно свободно конвертировать между TupleOfLinks и NestedPair,
--- если это требуется в реализации или доказательствах.
 theorem NestedPairToTupleOfLinksInverse (n : Nat) (t : TupleOfLinks n) :
     NestedPairToTupleOfLinksOption n (TupleOfLinksToNestedPair t) = some t := by
-  simp [NestedPairToTupleOfLinksOption, TupleOfLinksToNestedPair]
-  simp [t.toList_length]
-  exact Vector.toList_injective.eq_iff.mpr rfl |>.symm ▸ rfl
+  simp [NestedPairToTupleOfLinksOption, TupleOfLinksToNestedPair, Vector.toList_length]
 
 /-
   Теорема обёртывания и восстановления ассоциативной сети кортежей:

@@ -55,6 +55,7 @@
 
 ```rocq
 Require Import NetworkDefinitions.
+Require Import NetworkConversions.
 Require Import SequenceDefinitions.
 Require Import SetDefinitions.
 Require Import SetSequenceEquivalence.
@@ -97,9 +98,12 @@ Theorem meta_reference_space_elements_valid : forall (size : nat),
 
 ```lean
 import NetworkDefinitions
+import NetworkConversions
 import SequenceDefinitions
 import SetDefinitions
 import SetSequenceEquivalence
+
+open SetSequenceEquivalence
 
 -- Мета-ссылка: элемент множества, определённого через связи-дуплеты
 abbrev MetaReference := Reference

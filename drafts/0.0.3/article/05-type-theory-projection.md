@@ -170,7 +170,7 @@ Definition ReferenceListFunctionToTupleFunction { n: nat } (net: NetworkReferenc
 
 (* Функция преобразования NetworkReferenceListList в NetworkTupleList *)
 Definition ReferenceListListToTupleList {n: nat} (net : NetworkReferenceListList) : NetworkTupleList n :=
-  map (ReferenceListToTupleOfReferencesn) net.
+  map (ReferenceListToTupleOfReferences n) net.
 
 (* Функция преобразования ReferenceList в NetworkDupletList со смещением индексации *)
 Fixpoint ReferenceListToDupletList_ (offset: nat) (np: ReferenceList) : NetworkDupletList :=
@@ -338,7 +338,7 @@ def ReferenceListFunctionToTupleFunction {n : Nat} (net : NetworkReferenceListFu
 
 -- Функция преобразования NetworkReferenceListList в NetworkTupleList
 def ReferenceListListToTupleList {n : Nat} (net : NetworkReferenceListList) : NetworkTupleList n :=
-  net.map (ReferenceListToTupleOfReferencesn)
+  net.map (ReferenceListToTupleOfReferences n)
 
 -- Функция преобразования ReferenceList в NetworkDupletList со смещением индексации
 def ReferenceListToDupletList_ (offset : Nat) : ReferenceList → NetworkDupletList

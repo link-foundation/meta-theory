@@ -4,7 +4,7 @@
   Функции преобразования между различными представлениями ассоциативных сетей.
   Lean 4 перевод AssociativeNetworkConversions.v (Rocq).
 -/
-import «meta-theory».AssociativeNetworkDefinitions
+import AssociativeNetworkDefinitions
 
 -- Функция преобразования TupleOfLinks в NestedPair
 def TupleOfLinksToNestedPair {n : Nat} (v : TupleOfLinks n) : NestedPair :=

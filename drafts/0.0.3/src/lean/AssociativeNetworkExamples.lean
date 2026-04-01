@@ -4,8 +4,8 @@
   Практические примеры и тесты преобразований ассоциативных сетей.
   Lean 4 перевод AssociativeNetworkExamples.v (Rocq).
 -/
-import «meta-theory».AssociativeNetworkDefinitions
-import «meta-theory».AssociativeNetworkConversions
+import AssociativeNetworkDefinitions
+import AssociativeNetworkConversions
 
 -- Трёхмерная ассоциативная сеть
 def complexExampleNetwork : AssociativeNetworkTupleFunction 3 :=

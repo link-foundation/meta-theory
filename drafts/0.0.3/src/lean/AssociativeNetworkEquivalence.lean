@@ -4,8 +4,8 @@
   Предикаты эквивалентности для различных представлений ассоциативных сетей.
   Lean 4 перевод AssociativeNetworkEquivalence.v (Rocq).
 -/
-import «meta-theory».AssociativeNetworkDefinitions
-import «meta-theory».AssociativeNetworkConversions
+import AssociativeNetworkDefinitions
+import AssociativeNetworkConversions
 
 -- Предикат эквивалентности двух ассоциативных сетей кортежей длины n,
 -- anet1 и anet2 типа AssociativeNetworkTupleFunction.

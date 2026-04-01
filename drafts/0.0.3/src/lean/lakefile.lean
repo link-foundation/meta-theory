@@ -6,5 +6,10 @@ package «meta-theory» where
 
 @[default_target]
 lean_lib «meta-theory» where
-  globs := #[.submodules `«meta-theory»]
-  srcDir := "."
+  roots := #[
+    `AssociativeNetworkDefinitions,
+    `AssociativeNetworkConversions,
+    `AssociativeNetworkEquivalence,
+    `AssociativeNetworkExamples,
+    `AssociativeNetworkLemmas
+  ]

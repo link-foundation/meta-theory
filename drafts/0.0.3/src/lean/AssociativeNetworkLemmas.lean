@@ -4,9 +4,9 @@
   Леммы и теоремы о свойствах преобразований ассоциативных сетей.
   Lean 4 перевод AssociativeNetworkLemmas.v (Rocq).
 -/
-import «meta-theory».AssociativeNetworkDefinitions
-import «meta-theory».AssociativeNetworkConversions
-import «meta-theory».AssociativeNetworkEquivalence
+import AssociativeNetworkDefinitions
+import AssociativeNetworkConversions
+import AssociativeNetworkEquivalence
 
 -- Лемма о сохранении длины кортежей ассоциативной сети
 theorem TupleOfLinksDimensionPreserved {l : Nat} (t : TupleOfLinks l) :

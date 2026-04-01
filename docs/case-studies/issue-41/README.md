@@ -4,83 +4,102 @@
 
 The 0.0.3 draft of the meta-theory article and code contained several terminological inconsistencies that caused confusion:
 
-1. **`Link` defined as `nat`** — while correct for references, the name `Link` was also used as a type alias for `Sequence` and `LinkSet`, which are conceptually different (they are references to tree roots, not just natural numbers).
+1. **`Link` defined as `nat`** — A single natural number is a **Reference** (ссылка), not a Link. A Link (связь) is an Association — a full structure like `(Reference: Reference Reference)` or `Reference → (Reference, Reference)`.
 
-2. **`Sequence := Link`** — inconsistent naming. While `LinkSet` and `LinkTree` follow the `Link*` prefix pattern, `Sequence` did not. This made it harder to understand the naming convention.
+2. **`Sequence := Link`** — inconsistent naming. While `LinkSet` and `LinkTree` follow the `Link*` prefix pattern, `Sequence` did not. Renamed to `LinkSequence`.
 
-3. **`NestedPair := list Link`** — misleading name. The type is a `list`, not a `pair`. The name "pair" suggests exactly two elements, but this structure can hold any number of elements. It was actually a list of links (references).
+3. **`NestedPair := list Link`** — misleading name. The type is a `list`, not a `pair`. Renamed to `ReferenceList` since it's a list of references (natural numbers).
 
-4. **`V_n` notation in article** — `V` traditionally denotes vectors (e.g., in physics/linear algebra) or vertices (in graph theory). Using `V` for "set of all n-tuples of links" created ambiguity with the graph theory `V` (vertices) used in the same article. `T` (tuple) is more descriptive.
+4. **`V_n` notation in article** — `V` traditionally denotes vectors or vertices in graph theory. Renamed to `T_n` (T for Tuple) to avoid ambiguity.
 
-5. **Missing links-notation references** — The article used only mathematical notation. The [links-notation](https://github.com/link-foundation/links-notation) language `(id: from to)` was only briefly mentioned in the conclusion, but should appear alongside math notation throughout.
+5. **Math notation vs links-notation confusion** — The article mixed mathematical notation with links-notation. Mathematical notation uses arrows: `$5 \to (1, 2)$`. Links-notation uses colons: `(5: 1 2)`. These are different and must not be mixed.
 
-6. **Comment asymmetry between Rocq and Lean** — Some Rocq files had extensive comments that were absent or abbreviated in the corresponding Lean files.
+6. **Comment asymmetry between Rocq and Lean** — Some Rocq files had extensive comments that were absent in the corresponding Lean files.
+
+7. **Unnecessary CI step** — The "Verification Summary" step added ~5s overhead without providing essential verification.
 
 ## Root Cause Analysis
 
-The issues stem from the organic growth of the theory formalization:
-- Early versions used terms borrowed from other domains (e.g., "NestedPair" from set-theoretic tuple representation)
-- The naming convention `Link*` was introduced with `LinkSet` and `LinkTree` but not applied retroactively to `Sequence`
-- The `V` notation was inherited from early mathematical drafts before the graph theory comparison section was added
-- The Lean port was done incrementally, and some comment synchronization was missed
+The core issue was that `Link := nat` conflated two distinct concepts:
+- **Reference** (ссылка) — a unique identifier/natural number pointing to a tuple
+- **Link/Association** (связь) — the full connection structure `(Reference × TupleOfReferences)`
+
+This conflation propagated through all type definitions and code comments, making the theory harder to understand. Additionally, `NestedPair` was a misleading name for what is simply a list of references.
+
+The mathematical notation issue arose from using links-notation format `(id: from to)` in places labeled as "mathematical notation", when the mathematical convention uses function mapping arrows `id → (from, to)`.
 
 ## Changes Made
 
-### Terminology Renames
+### Iteration 1 (Previous)
+- `Sequence` → `LinkSequence`
+- `NestedPair` → `LinkList`
+- `V_n` → `T_n` in article and code
+- Added links-notation references throughout article
+- Synchronized Lean and Rocq comments
+
+### Iteration 2 (Current — based on PR review feedback)
+
+#### Core Terminology Rename
 
 | Old Name | New Name | Reason |
 |----------|----------|--------|
-| `Sequence` | `LinkSequence` | Consistent with `LinkSet`, `LinkTree` naming |
-| `NestedPair` | `LinkList` | It's a `list Link`, not a pair |
-| `AssociativeNetworkNestedPairFunction` | `AssociativeNetworkLinkListFunction` | Follows from `NestedPair` → `LinkList` |
-| `AssociativeNetworkNestedPairList` | `AssociativeNetworkLinkListList` | Follows from `NestedPair` → `LinkList` |
-| `V_n` (in math formulas) | `T_n` | T for Tuple, avoids ambiguity with V for Vertices |
-| `Vⁿ` (in code comments) | `Tⁿ` | Consistent with article |
-| `NP` (in math formulas) | `LL` (LinkList) | Consistent with code |
+| `Link := nat` | `Reference := nat` | A nat is a Reference (ссылка), not a Link |
+| `LinkDefault` | `ReferenceDefault` | Follows from Reference rename |
+| `TupleOfLinks` | `TupleOfReferences` | Tuple of references, not links |
+| `TupleOfLinksDefault` | `TupleOfReferencesDefault` | Follows from above |
+| `LinkList` | `ReferenceList` | List of references (nat), not links |
+| `Duplet := prod Link Link` | `Duplet := prod Reference Reference` | Pair of references |
+| `AssociativeNetworkLinkList*` | `AssociativeNetworkReferenceList*` | Follows from ReferenceList |
+| `LL` (in math formulas) | `RL` (ReferenceList) | Matches code name |
 
-### Links Notation Additions
+#### Preserved Names
+- `LinkTree` — tree structure for links (associations)
+- `LinkSequence := Reference` — sequence identified by a reference to tree root
+- `LinkSet := Reference` — set identified by a reference to tree root
+- `MetaLink := Reference` — meta-link is a reference
+- `Association` — kept as is (conceptually = Link)
 
-Added [links-notation](https://github.com/link-foundation/links-notation) references alongside mathematical notation in:
-- Section 03 (theory comparison): duplet, triplet, and n-tuple examples
-- Section 04 (mathematical introduction): introductory paragraph + duplet definition
-- Section 08 (sequences and sets): sequence storage examples
-- Section 09 (meta-theory): sequence encoding examples
-- Code comments: Duplet definition (Rocq + Lean), sequence headers
+#### Notation Fix
+- Mathematical notation now consistently uses arrows: `$5 \to (1, 2)$`
+- Links-notation consistently uses colons: `(5: 1 2)`
+- These are explicitly distinguished as different notations
 
-### Comment Synchronization
-
-- Expanded Lean `AssociativeNetworkLemmas.lean` comments to match Rocq detail level
-- Added links-notation examples to sequence definition headers in both Rocq and Lean
+#### CI Improvement
+- Removed "Verification Summary" step from CI workflow to speed up iterations
 
 ## Files Modified
 
-### Code (Rocq)
-- `AssociativeNetworkDefinitions.v` — `NestedPair` → `LinkList`, links-notation comment
-- `AssociativeNetworkConversions.v` — all `NestedPair` → `LinkList`
-- `AssociativeNetworkEquivalence.v` — no changes needed
-- `AssociativeNetworkExamples.v` — all `NestedPair` → `LinkList`
-- `AssociativeNetworkLemmas.v` — `NestedPair` → `LinkList`, `Vⁿ` → `Tⁿ`
-- `SequenceDefinitions.v` — `Sequence` → `LinkSequence`, links-notation header
-- `SetDefinitions.v` — no changes needed (already uses `LinkSet`)
-- `MetaDefinitions.v` — comment update for `LinkSequence`
-- `SetSequenceEquivalence.v` — no changes needed
+### Code (14 files)
+All 9 Rocq files and 5 Lean files updated with `Reference` terminology:
+- `AssociativeNetworkDefinitions.{v,lean}` — core type rename
+- `AssociativeNetworkConversions.{v,lean}` — all function names and comments
+- `AssociativeNetworkExamples.{v,lean}` — variable names and function calls
+- `AssociativeNetworkLemmas.{v,lean}` — theorem names and comments
+- `SequenceDefinitions.{v,lean}` — `LinkSequence := Reference`
+- `SetDefinitions.{v,lean}` — `LinkSet := Reference`
+- `MetaDefinitions.{v,lean}` — `MetaLink := Reference`
 
-### Code (Lean)
-- Mirror of all Rocq changes above
-- Additional comment expansion in `AssociativeNetworkLemmas.lean`
+### Article (4 files)
+- `04-mathematical-introduction.md` — `RL` (ReferenceList) formula
+- `05-type-theory-projection.md` — all code snippets updated
+- `08-sequences-and-sets.md` — math notation fix, code snippets updated
+- `09-meta-theory.md` — level definitions, math notation fix
 
-### Article
-- `03-theory-comparison.md` — links-notation for duplets, triplets, n-tuples
-- `04-mathematical-introduction.md` — `V_n` → `T_n`, links-notation intro + duplet
-- `05-type-theory-projection.md` — `NestedPair` → `LinkList`, `Vⁿ` → `Tⁿ` in code snippets
-- `08-sequences-and-sets.md` — `Sequence` → `LinkSequence`, links-notation
-- `09-meta-theory.md` — `Sequence` → `LinkSequence`, links-notation
+### CI (1 file)
+- `.github/workflows/verification.yml` — removed Verification Summary job
 
-## Term Reduction Summary
+## Term Hierarchy (After Changes)
 
-The total number of distinct type/concept names was reduced by consolidating the naming pattern:
+```
+Reference := ℕ₀                           (unique identifier)
+TupleOfReferences(n) := Reference^n        (n-tuple of references)
+Association(n) := Reference × TupleOfReferences(n)  (= Link/связь conceptually)
+Duplet := Reference × Reference            (pair of references)
+ReferenceList := List Reference             (list of references)
 
-**Before:** `Link`, `Sequence`, `LinkSet`, `LinkTree`, `NestedPair`, `Duplet`, `TupleOfLinks`
-**After:** `Link`, `LinkSequence`, `LinkSet`, `LinkTree`, `LinkList`, `Duplet`, `TupleOfLinks`
+LinkSequence := Reference                   (reference to tree root)
+LinkSet := Reference                        (reference to ordered unique tree root)
+LinkTree := Leaf Reference | Node LinkTree LinkTree  (tree structure)
 
-The `Link*` prefix now consistently indicates types that are aliases for `Link` (references to tree roots or elements in the associative network).
+AssociativeNetwork : Reference → Duplet     (the fundamental structure L → L²)
+```

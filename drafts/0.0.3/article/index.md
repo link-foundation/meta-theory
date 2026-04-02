@@ -9,10 +9,10 @@
 3. [Сравнение теорий](03-theory-comparison.md)
 4. [Математическое введение в теорию связей](04-mathematical-introduction.md)
 5. [Проекция теории связей в теорию типов (Rocq и Lean)](05-type-theory-projection.md)
-6. [Практическая реализация](06-practical-implementation.md)
-7. [Заключение](07-conclusion.md)
-8. [Последовательности и множества, определённые в терминах связей](08-sequences-and-sets.md)
-9. [Теория связей как мета-теория](09-meta-theory.md)
+6. [Последовательности и множества, определённые в терминах связей](06-sequences-and-sets.md)
+7. [Теория связей как мета-теория](07-meta-theory.md)
+8. [Практическая реализация](08-practical-implementation.md)
+9. [Заключение](09-conclusion.md)
 10. [История изменений](10-changelog.md)
 
 ## Исходный код

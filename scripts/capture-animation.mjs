@@ -15,8 +15,9 @@
  * Options:
  *   --output PATH         Output file path (default: docs/animations/capture.gif)
  *   --max-size N           Max dimension for the larger side (default: 1024)
+ *   --viewport WxH         Browser viewport size (default: 1920x1080)
  *   --interval N           Capture interval in ms (default: 50)
- *   --fps N                Output GIF frames per second (default: derived from interval)
+ *   --fps N                Output GIF frames per second (default: derived from real timing)
  *   --speed N              Playback speed multiplier (default: 1.0, e.g. 0.5 = half speed)
  *   --delay N              Explicit GIF frame delay in ms (overrides --fps/--speed)
  *   --loop-timeout N       Max seconds to wait for loop (default: 60)
@@ -46,10 +47,12 @@ function parseArgs() {
     url: null,
     output: join(ROOT_DIR, 'docs', 'animations', 'capture.gif'),
     maxSize: 1024,
+    viewportWidth: 1920,  // 16:9 default to match common SVG/page layouts
+    viewportHeight: 1080,
     interval: 50,
-    fps: null,     // null = derived from interval
+    fps: null,     // null = derived from real capture timing
     speed: 1.0,    // playback speed multiplier (0.5 = half speed, 2.0 = double)
-    delay: null,   // null = auto-calculated from interval/fps/speed
+    delay: null,   // null = auto-calculated from real timestamps/fps/speed
     loopTimeout: 60,
     staticTimeout: 60,
     similarity: 0.99,
@@ -67,6 +70,12 @@ function parseArgs() {
         case '--max-size':
           options.maxSize = parseInt(args[++i], 10);
           break;
+        case '--viewport': {
+          const vp = args[++i].split('x');
+          options.viewportWidth = parseInt(vp[0], 10);
+          options.viewportHeight = parseInt(vp[1], 10);
+          break;
+        }
         case '--interval':
           options.interval = parseInt(args[++i], 10);
           break;
@@ -347,6 +356,7 @@ async function captureFrames(page, options) {
   const { interval, loopTimeout, staticTimeout, similarity } = options;
 
   const frames = [];
+  const timestamps = []; // real capture timestamps for accurate GIF timing
   const simHistory = []; // similarity-to-first for each frame
   let firstFrame = null;
   let lastChangeTime = Date.now();
@@ -364,7 +374,9 @@ async function captureFrames(page, options) {
   console.log(`   Similarity threshold: ${similarity}`);
 
   while (true) {
+    const captureStart = Date.now();
     const buffer = await page.screenshot({ type: 'png', fullPage: false });
+    timestamps.push(captureStart);
     frameIndex++;
 
     if (firstFrame === null) {
@@ -415,10 +427,13 @@ async function captureFrames(page, options) {
           if (loopLength >= 10 && Math.abs(peakSim1 - peakSim2) < 0.02) {
             // Trim frames to one complete cycle: from start to second peak
             const cycleEnd = peakIndices[peakIndices.length - 1];
+            const cycleDuration = timestamps[cycleEnd - 1] - timestamps[0];
             console.log(`   Loop detected: cycle length = ${loopLength} frames`);
             console.log(`   Peak similarities: ${(peakSim1 * 100).toFixed(1)}%, ${(peakSim2 * 100).toFixed(1)}%`);
+            console.log(`   Real cycle duration: ${cycleDuration}ms`);
             console.log(`   Trimming to ${cycleEnd} frames (one complete cycle)`);
             frames.length = cycleEnd;
+            timestamps.length = cycleEnd;
             break;
           }
         }
@@ -449,19 +464,39 @@ async function captureFrames(page, options) {
     await new Promise(r => setTimeout(r, interval));
   }
 
-  console.log(`   Total frames captured: ${frames.length}`);
-  return frames;
+  // Compute real average interval from timestamps
+  if (timestamps.length >= 2) {
+    const totalTime = timestamps[timestamps.length - 1] - timestamps[0];
+    const avgInterval = totalTime / (timestamps.length - 1);
+    console.log(`   Total frames captured: ${frames.length}`);
+    console.log(`   Real average interval: ${avgInterval.toFixed(1)}ms (requested: ${interval}ms)`);
+    console.log(`   Screenshot overhead: ~${(avgInterval - interval).toFixed(1)}ms per frame`);
+  } else {
+    console.log(`   Total frames captured: ${frames.length}`);
+  }
+
+  return { frames, timestamps };
 }
 
 /**
- * Assemble PNG frames into a GIF
+ * Assemble PNG frames into a GIF.
+ * @param {Buffer[]} frames - PNG frame buffers
+ * @param {number} defaultDelay - Default delay in ms (used when perFrameDelays not provided)
+ * @param {string} outputPath - Output file path
+ * @param {number[]|null} perFrameDelays - Per-frame delays in ms (optional)
  */
-function assembleGif(frames, delay, outputPath) {
+function assembleGif(frames, defaultDelay, outputPath, perFrameDelays) {
   const firstPng = PNG.sync.read(frames[0]);
   const width = firstPng.width;
   const height = firstPng.height;
 
-  console.log(`\nAssembling GIF (${frames.length} frames, ${delay}ms delay, ${width}x${height})...`);
+  const usePerFrame = perFrameDelays && perFrameDelays.length === frames.length;
+  if (usePerFrame) {
+    const avgDelay = perFrameDelays.reduce((a, b) => a + b, 0) / perFrameDelays.length;
+    console.log(`\nAssembling GIF (${frames.length} frames, avg ${avgDelay.toFixed(1)}ms delay, ${width}x${height})...`);
+  } else {
+    console.log(`\nAssembling GIF (${frames.length} frames, ${defaultDelay}ms delay, ${width}x${height})...`);
+  }
 
   const encoder = new GIFEncoder(width, height, 'neuquant', false);
 
@@ -470,13 +505,20 @@ function assembleGif(frames, delay, outputPath) {
     mkdirSync(outputDir, { recursive: true });
   }
 
-  encoder.setDelay(delay);
   encoder.setRepeat(0); // loop forever
   encoder.setQuality(10);
+
+  if (!usePerFrame) {
+    encoder.setDelay(defaultDelay);
+  }
+
   encoder.start();
 
-  for (const frame of frames) {
-    const png = PNG.sync.read(frame);
+  for (let i = 0; i < frames.length; i++) {
+    if (usePerFrame) {
+      encoder.setDelay(perFrameDelays[i]);
+    }
+    const png = PNG.sync.read(frames[i]);
     encoder.addFrame(png.data);
   }
 
@@ -518,18 +560,24 @@ async function main() {
 
   console.log(`\nAnimation Capture Settings:`);
   console.log(`   URL: ${options.url}`);
+  console.log(`   Viewport: ${options.viewportWidth}x${options.viewportHeight}`);
   console.log(`   Max size: ${options.maxSize}px`);
   console.log(`   Capture interval: ${options.interval}ms`);
   console.log(`   Speed: ${options.speed}x`);
-  console.log(`   GIF frame delay: ${effectiveDelay}ms (~${effectiveFps} fps)`);
+  if (options.delay !== null) {
+    console.log(`   GIF frame delay: ${effectiveDelay}ms (explicit)`);
+  } else if (options.fps !== null) {
+    console.log(`   GIF frame delay: ${effectiveDelay}ms (~${effectiveFps} fps, from --fps)`);
+  } else {
+    console.log(`   GIF frame delay: auto (from real capture timestamps)`);
+  }
   console.log(`   Output: ${options.output}`);
   console.log(`   Auto-crop: ${options.crop}`);
 
-  // Use a large viewport for capturing, we'll resize later
-  const viewportSize = Math.max(options.maxSize, 1024);
+  // Use configured viewport (default 1920x1080 to match common page layouts)
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
-    viewport: { width: viewportSize, height: viewportSize }
+    viewport: { width: options.viewportWidth, height: options.viewportHeight }
   });
   const page = await context.newPage();
 
@@ -539,13 +587,15 @@ async function main() {
     // Let the page initialize and animation start
     await new Promise(r => setTimeout(r, 2000));
 
-    // Capture frames
-    let frames = await captureFrames(page, options);
+    // Capture frames with real timestamps
+    const { frames: rawFrames, timestamps } = await captureFrames(page, options);
 
-    if (frames.length < 2) {
+    if (rawFrames.length < 2) {
       console.error('Error: Not enough frames captured. The page may not have an animation.');
       process.exit(1);
     }
+
+    let frames = rawFrames;
 
     // Auto-crop to content
     if (options.crop) {
@@ -561,8 +611,34 @@ async function main() {
     const finalPng = PNG.sync.read(frames[0]);
     console.log(`   Final frame size: ${finalPng.width}x${finalPng.height}`);
 
+    // Compute per-frame delays from real timestamps when no explicit delay/fps is set
+    let perFrameDelays = null;
+    if (options.delay === null && options.fps === null && timestamps.length >= 2) {
+      // Use real capture timestamps for accurate playback timing
+      perFrameDelays = [];
+      for (let i = 0; i < frames.length; i++) {
+        let realDelay;
+        if (i < timestamps.length - 1) {
+          realDelay = timestamps[i + 1] - timestamps[i];
+        } else {
+          // Last frame: use average of previous delays
+          const totalTime = timestamps[timestamps.length - 1] - timestamps[0];
+          realDelay = totalTime / (timestamps.length - 1);
+        }
+        // Apply speed multiplier: slower speed = longer delay
+        realDelay = Math.round(realDelay / options.speed);
+        // GIF minimum delay is 20ms (browsers clamp lower values to 100ms)
+        realDelay = Math.max(20, realDelay);
+        perFrameDelays.push(realDelay);
+      }
+      const avgDelay = perFrameDelays.reduce((a, b) => a + b, 0) / perFrameDelays.length;
+      console.log(`\nTiming: using real capture timestamps`);
+      console.log(`   Average real delay: ${avgDelay.toFixed(1)}ms (speed: ${options.speed}x)`);
+      console.log(`   Effective FPS: ~${(1000 / avgDelay).toFixed(1)}`);
+    }
+
     // Assemble GIF
-    assembleGif(frames, effectiveDelay, options.output);
+    assembleGif(frames, effectiveDelay, options.output, perFrameDelays);
 
     console.log('\nDone!');
   } catch (error) {

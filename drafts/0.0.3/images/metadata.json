@@ -32,7 +32,7 @@
   {
     "figureNum": 7,
     "filename": "figure-7.png",
-    "caption": "Figure 7. This is a graphical representation of the Cartesian product in the form of a matrix, which displays all possible link values. The links that define a specific network are highlighted in orange. In other words, out of 9 possible link value variants, only 3 links are selected, corresponding to the size of the set L."
+    "caption": "Figure 7. This is a graphical representation of the Cartesian product in the form of a matrix, which displays all possible link values. The links that define a specific network are highlighted in orange. In other words, out of 9 possible link value variants, only 3 links are selected, corresponding to the size of the set R."
   },
   {
     "figureNum": 8,

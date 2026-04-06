@@ -408,7 +408,7 @@
      id="g1071"
      style="display:inline">
     <text
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46700001px;line-height:125%;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0;word-spacing:0;display:inline;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46700001px;line-height:125%;font-family:Calibri;-inkscape-font-specification:Calibri;letter-spacing:0;word-spacing:0;display:none;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"
        word-spacing="0"
        letter-spacing="0"
@@ -417,7 +417,7 @@
        font-style="normal"
        font-stretch="normal"
        font-size="8.467"
-       display="inline"
+       display="none"
        y="68.254997"
        x="7.0340347"
        id="text949"><tspan
@@ -431,7 +431,7 @@
          x="7.0340347"
          id="tspan947">Graph theory</tspan></text>
     <text
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46700001px;line-height:125%;font-family:Cambria;-inkscape-font-specification:Cambria;letter-spacing:0;word-spacing:0;display:inline;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46700001px;line-height:125%;font-family:Cambria;-inkscape-font-specification:Cambria;letter-spacing:0;word-spacing:0;display:none;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"
        word-spacing="0"
        letter-spacing="0"
@@ -440,7 +440,7 @@
        font-style="normal"
        font-stretch="normal"
        font-size="8.467"
-       display="inline"
+       display="none"
        y="68.254997"
        x="92.350624"
        id="text955"><tspan

@@ -16,7 +16,9 @@
  *   --output PATH         Output file path (default: docs/animations/capture.gif)
  *   --max-size N           Max dimension for the larger side (default: 1024)
  *   --interval N           Capture interval in ms (default: 50)
- *   --delay N              GIF frame delay in ms (default: 50)
+ *   --fps N                Output GIF frames per second (default: derived from interval)
+ *   --speed N              Playback speed multiplier (default: 1.0, e.g. 0.5 = half speed)
+ *   --delay N              Explicit GIF frame delay in ms (overrides --fps/--speed)
  *   --loop-timeout N       Max seconds to wait for loop (default: 60)
  *   --static-timeout N     Max seconds with no change before stopping (default: 60)
  *   --similarity N         Pixel similarity threshold 0-1 (default: 0.99)
@@ -45,7 +47,9 @@ function parseArgs() {
     output: join(ROOT_DIR, 'docs', 'animations', 'capture.gif'),
     maxSize: 1024,
     interval: 50,
-    delay: 50,
+    fps: null,     // null = derived from interval
+    speed: 1.0,    // playback speed multiplier (0.5 = half speed, 2.0 = double)
+    delay: null,   // null = auto-calculated from interval/fps/speed
     loopTimeout: 60,
     staticTimeout: 60,
     similarity: 0.99,
@@ -65,6 +69,12 @@ function parseArgs() {
           break;
         case '--interval':
           options.interval = parseInt(args[++i], 10);
+          break;
+        case '--fps':
+          options.fps = parseFloat(args[++i]);
+          break;
+        case '--speed':
+          options.speed = parseFloat(args[++i]);
           break;
         case '--delay':
           options.delay = parseInt(args[++i], 10);
@@ -486,11 +496,32 @@ function assembleGif(frames, delay, outputPath) {
 async function main() {
   const options = parseArgs();
 
+  // Compute effective GIF frame delay:
+  // - If --delay is explicitly set, use it directly
+  // - Otherwise, derive from interval, fps, and speed
+  //   Default behavior: GIF plays at the same speed as the original animation
+  //   (delay = interval), adjusted by --speed multiplier
+  let effectiveDelay;
+  if (options.delay !== null) {
+    effectiveDelay = options.delay;
+  } else if (options.fps !== null) {
+    // fps overrides interval-based calculation
+    effectiveDelay = Math.round(1000 / options.fps / options.speed);
+  } else {
+    // Match original animation speed: delay = capture interval / speed
+    effectiveDelay = Math.round(options.interval / options.speed);
+  }
+  // GIF minimum delay is 20ms (browsers clamp lower values to 100ms)
+  effectiveDelay = Math.max(20, effectiveDelay);
+
+  const effectiveFps = Math.round(1000 / effectiveDelay);
+
   console.log(`\nAnimation Capture Settings:`);
   console.log(`   URL: ${options.url}`);
   console.log(`   Max size: ${options.maxSize}px`);
   console.log(`   Capture interval: ${options.interval}ms`);
-  console.log(`   GIF frame delay: ${options.delay}ms`);
+  console.log(`   Speed: ${options.speed}x`);
+  console.log(`   GIF frame delay: ${effectiveDelay}ms (~${effectiveFps} fps)`);
   console.log(`   Output: ${options.output}`);
   console.log(`   Auto-crop: ${options.crop}`);
 
@@ -531,7 +562,7 @@ async function main() {
     console.log(`   Final frame size: ${finalPng.width}x${finalPng.height}`);
 
     // Assemble GIF
-    assembleGif(frames, options.delay, options.output);
+    assembleGif(frames, effectiveDelay, options.output);
 
     console.log('\nDone!');
   } catch (error) {

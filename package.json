@@ -17,7 +17,8 @@
     "download:screenshots": "node scripts/download.mjs --all --screenshot",
     "download:markdown-images": "node scripts/download-markdown-images.mjs --all",
     "download:all": "npm run download:articles && npm run download:markdown-images && npm run download:screenshots && npm run verify",
-    "capture:animation": "node scripts/capture-animation.mjs"
+    "capture:animation": "node scripts/capture-animation.mjs",
+    "capture:itself": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.gif"
   },
   "repository": {
     "type": "git",

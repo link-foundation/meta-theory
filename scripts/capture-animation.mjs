@@ -16,7 +16,7 @@
  *   --output PATH         Output file path (default: docs/animations/capture.gif)
  *   --max-size N           Max dimension for the larger side (default: 1024)
  *   --viewport WxH         Browser viewport size (default: 1920x1080)
- *   --interval N           Capture interval in ms (default: 50)
+ *   --interval N           Capture interval in ms (default: 0, as fast as possible)
  *   --fps N                Output GIF frames per second (default: derived from real timing)
  *   --speed N              Playback speed multiplier (default: 1.0, e.g. 0.5 = half speed)
  *   --delay N              Explicit GIF frame delay in ms (overrides --fps/--speed)
@@ -49,7 +49,7 @@ function parseArgs() {
     maxSize: 1024,
     viewportWidth: 1920,  // 16:9 default to match common SVG/page layouts
     viewportHeight: 1080,
-    interval: 50,
+    interval: 0,  // 0 = capture as fast as possible (screenshot overhead is the bottleneck)
     fps: null,     // null = derived from real capture timing
     speed: 1.0,    // playback speed multiplier (0.5 = half speed, 2.0 = double)
     delay: null,   // null = auto-calculated from real timestamps/fps/speed
@@ -121,28 +121,27 @@ function parseArgs() {
 }
 
 /**
- * Compare two PNG buffers pixel-by-pixel and return similarity ratio (0-1)
+ * Compare two raw RGBA pixel buffers using sampling for speed.
+ * Compares every Nth pixel (step) for fast approximate similarity.
+ * Returns similarity ratio (0-1).
  */
-function compareFrames(bufA, bufB) {
-  const pngA = PNG.sync.read(bufA);
-  const pngB = PNG.sync.read(bufB);
-
-  if (pngA.width !== pngB.width || pngA.height !== pngB.height) return 0;
-
-  const totalPixels = pngA.width * pngA.height;
+function comparePixelData(dataA, dataB, totalPixels, step = 4) {
   let matchingPixels = 0;
+  let sampledPixels = 0;
+  const len = totalPixels * 4;
 
-  for (let i = 0; i < pngA.data.length; i += 4) {
-    const dr = Math.abs(pngA.data[i] - pngB.data[i]);
-    const dg = Math.abs(pngA.data[i + 1] - pngB.data[i + 1]);
-    const db = Math.abs(pngA.data[i + 2] - pngB.data[i + 2]);
+  for (let i = 0; i < len; i += 4 * step) {
+    sampledPixels++;
+    const dr = Math.abs(dataA[i] - dataB[i]);
+    const dg = Math.abs(dataA[i + 1] - dataB[i + 1]);
+    const db = Math.abs(dataA[i + 2] - dataB[i + 2]);
     // Allow small per-channel differences for anti-aliasing
     if (dr <= 2 && dg <= 2 && db <= 2) {
       matchingPixels++;
     }
   }
 
-  return matchingPixels / totalPixels;
+  return matchingPixels / sampledPixels;
 }
 
 /**
@@ -311,32 +310,17 @@ function resizePng(buffer, maxSize) {
 
   const dst = new PNG({ width: newW, height: newH });
 
-  // Bilinear interpolation
+  // Nearest-neighbor interpolation for sharp, crisp output (no blur)
   for (let y = 0; y < newH; y++) {
     for (let x = 0; x < newW; x++) {
-      const srcX = (x / newW) * src.width;
-      const srcY = (y / newH) * src.height;
-
-      const x0 = Math.floor(srcX);
-      const y0 = Math.floor(srcY);
-      const x1 = Math.min(x0 + 1, src.width - 1);
-      const y1 = Math.min(y0 + 1, src.height - 1);
-
-      const fx = srcX - x0;
-      const fy = srcY - y0;
-
+      const srcX = Math.min(Math.floor((x / newW) * src.width), src.width - 1);
+      const srcY = Math.min(Math.floor((y / newH) * src.height), src.height - 1);
+      const srcIdx = (srcY * src.width + srcX) * 4;
       const dstIdx = (y * newW + x) * 4;
-
-      for (let c = 0; c < 4; c++) {
-        const v00 = src.data[(y0 * src.width + x0) * 4 + c];
-        const v10 = src.data[(y0 * src.width + x1) * 4 + c];
-        const v01 = src.data[(y1 * src.width + x0) * 4 + c];
-        const v11 = src.data[(y1 * src.width + x1) * 4 + c];
-
-        const top = v00 + (v10 - v00) * fx;
-        const bottom = v01 + (v11 - v01) * fx;
-        dst.data[dstIdx + c] = Math.round(top + (bottom - top) * fy);
-      }
+      dst.data[dstIdx] = src.data[srcIdx];
+      dst.data[dstIdx + 1] = src.data[srcIdx + 1];
+      dst.data[dstIdx + 2] = src.data[srcIdx + 2];
+      dst.data[dstIdx + 3] = src.data[srcIdx + 3];
     }
   }
 
@@ -355,14 +339,15 @@ function resizePng(buffer, maxSize) {
 async function captureFrames(page, options) {
   const { interval, loopTimeout, staticTimeout, similarity } = options;
 
-  const frames = [];
-  const timestamps = []; // real capture timestamps for accurate GIF timing
-  const simHistory = []; // similarity-to-first for each frame
-  let firstFrame = null;
+  const frames = [];       // PNG buffers for GIF assembly
+  const timestamps = [];   // real capture timestamps for accurate GIF timing
+  const simHistory = [];   // similarity-to-first for each frame
+  let firstPixels = null;  // decoded pixel data of first frame (cached for fast comparison)
+  let lastPixels = null;   // decoded pixel data of previous frame
+  let totalPixels = 0;     // pixel count for comparison
   let lastChangeTime = Date.now();
   const startTime = Date.now();
   let frameIndex = 0;
-  let lastFrame = null;
 
   // For peak detection: track local maxima of similarity to first frame
   let peakIndices = [];
@@ -379,18 +364,23 @@ async function captureFrames(page, options) {
     timestamps.push(captureStart);
     frameIndex++;
 
-    if (firstFrame === null) {
-      firstFrame = buffer;
-      lastFrame = buffer;
+    // Decode PNG once per frame (avoid repeated decoding in comparisons)
+    const decoded = PNG.sync.read(buffer);
+    const currentPixels = decoded.data;
+
+    if (firstPixels === null) {
+      firstPixels = currentPixels;
+      lastPixels = currentPixels;
+      totalPixels = decoded.width * decoded.height;
       frames.push(buffer);
       simHistory.push(1.0);
-      console.log(`   Frame 1 captured (reference frame)`);
+      console.log(`   Frame 1 captured (reference frame, ${decoded.width}x${decoded.height})`);
       await new Promise(r => setTimeout(r, interval));
       continue;
     }
 
-    // Check if frame differs from previous frame
-    const simToPrev = compareFrames(buffer, lastFrame);
+    // Check if frame differs from previous frame (using cached pixel data)
+    const simToPrev = comparePixelData(currentPixels, lastPixels, totalPixels);
     const isStatic = simToPrev >= similarity;
 
     if (!isStatic) {
@@ -399,10 +389,10 @@ async function captureFrames(page, options) {
 
     // Always store the frame (even near-duplicates help with smooth GIF)
     frames.push(buffer);
-    lastFrame = buffer;
+    lastPixels = currentPixels;
 
-    // Compute similarity to first frame for loop detection
-    const simToFirst = compareFrames(buffer, firstFrame);
+    // Compute similarity to first frame for loop detection (using cached first frame pixels)
+    const simToFirst = comparePixelData(currentPixels, firstPixels, totalPixels);
     simHistory.push(simToFirst);
 
     // Peak detection: find local maxima in similarity-to-first
@@ -470,7 +460,7 @@ async function captureFrames(page, options) {
     const avgInterval = totalTime / (timestamps.length - 1);
     console.log(`   Total frames captured: ${frames.length}`);
     console.log(`   Real average interval: ${avgInterval.toFixed(1)}ms (requested: ${interval}ms)`);
-    console.log(`   Screenshot overhead: ~${(avgInterval - interval).toFixed(1)}ms per frame`);
+    console.log(`   Effective capture FPS: ~${(1000 / avgInterval).toFixed(1)}`);
   } else {
     console.log(`   Total frames captured: ${frames.length}`);
   }
@@ -498,7 +488,7 @@ function assembleGif(frames, defaultDelay, outputPath, perFrameDelays) {
     console.log(`\nAssembling GIF (${frames.length} frames, ${defaultDelay}ms delay, ${width}x${height})...`);
   }
 
-  const encoder = new GIFEncoder(width, height, 'neuquant', false);
+  const encoder = new GIFEncoder(width, height, 'octree', false);
 
   const outputDir = dirname(outputPath);
   if (!existsSync(outputDir)) {
@@ -506,7 +496,6 @@ function assembleGif(frames, defaultDelay, outputPath, perFrameDelays) {
   }
 
   encoder.setRepeat(0); // loop forever
-  encoder.setQuality(10);
 
   if (!usePerFrame) {
     encoder.setDelay(defaultDelay);

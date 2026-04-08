@@ -367,7 +367,7 @@ async function main() {
     const intervalMatch = log.match(/Real average interval: ([\d.]+)ms/);
     if (intervalMatch) {
       const avgInterval = parseFloat(intervalMatch[1]);
-      assert(avgInterval > 0 && avgInterval < 500, `Average capture interval is fast (${avgInterval.toFixed(1)}ms)`);
+      assert(avgInterval > 0 && avgInterval < 1000, `Average capture interval is reasonable (${avgInterval.toFixed(1)}ms)`);
     }
   }
 

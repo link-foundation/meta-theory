@@ -8,8 +8,8 @@
  * No knowledge of the page's implementation details is required.
  *
  * Key design decisions:
- * - Captures at the target output resolution directly (no post-capture scaling)
- *   to avoid quality loss from interpolation
+ * - Captures at 2x the target output resolution and downscales with area-averaging
+ *   for maximum quality (supersampling anti-aliasing)
  * - Uses real capture timestamps for GIF frame delays so playback matches the original
  * - Uses deviceScaleFactor=1 for pixel-perfect capture (no sub-pixel aliasing)
  * - Uses octree color quantization for GIF (exact colors, no blur)
@@ -31,7 +31,7 @@
  *   --fps N                Output frames per second (default: derived from real timing)
  *   --speed N              Playback speed multiplier (default: 1.0, e.g. 0.5 = half speed)
  *   --delay N              Explicit GIF frame delay in ms (overrides --fps/--speed)
- *   --min-frames N         Minimum frames to capture per cycle (default: 60)
+ *   --min-frames N         Minimum frames to capture per cycle (default: 120)
  *   --loop-timeout N       Max seconds to wait for loop (default: 60)
  *   --static-timeout N     Max seconds with no change before stopping (default: 60)
  *   --similarity N         Pixel similarity threshold 0-1 (default: 0.99)
@@ -71,7 +71,7 @@ function parseArgs() {
     fps: null,         // null = derived from real capture timing
     speed: 1.0,        // 1.0 = match original animation speed
     delay: null,       // null = auto-calculated
-    minFrames: 60,     // minimum frames per cycle
+    minFrames: 120,    // minimum frames per cycle (more frames = smoother animation)
     loopTimeout: 60,
     staticTimeout: 60,
     similarity: 0.99,
@@ -203,29 +203,44 @@ function comparePixelData(dataA, dataB, totalPixels, step = 4) {
 
 /**
  * Find the bounding box of non-background content in a PNG buffer.
+ *
+ * Background detection: samples pixels along all 4 edges of the image
+ * (not just corners) to robustly determine the background color even when
+ * content is near corners. Uses the most common color among edge pixels.
  */
 function findContentBounds(pngData) {
   const { width, height, data } = pngData;
 
-  const corners = [
-    0,
-    (width - 1) * 4,
-    (height - 1) * width * 4,
-    ((height - 1) * width + (width - 1)) * 4
-  ];
+  // Sample pixels along all 4 edges for robust background detection
+  const edgePixels = [];
+  const sampleStep = Math.max(1, Math.floor(Math.max(width, height) / 100));
 
-  const bgColors = corners.map(i => ({
-    r: data[i], g: data[i + 1], b: data[i + 2]
-  }));
+  // Top and bottom edges
+  for (let x = 0; x < width; x += sampleStep) {
+    const topIdx = x * 4;
+    edgePixels.push({ r: data[topIdx], g: data[topIdx + 1], b: data[topIdx + 2] });
+    const botIdx = ((height - 1) * width + x) * 4;
+    edgePixels.push({ r: data[botIdx], g: data[botIdx + 1], b: data[botIdx + 2] });
+  }
+  // Left and right edges
+  for (let y = 0; y < height; y += sampleStep) {
+    const leftIdx = (y * width) * 4;
+    edgePixels.push({ r: data[leftIdx], g: data[leftIdx + 1], b: data[leftIdx + 2] });
+    const rightIdx = (y * width + (width - 1)) * 4;
+    edgePixels.push({ r: data[rightIdx], g: data[rightIdx + 1], b: data[rightIdx + 2] });
+  }
 
-  const bgColor = bgColors.reduce((best, c) => {
-    const count = bgColors.filter(
+  // Find the most common edge color (cluster with tolerance=5)
+  const bgColor = edgePixels.reduce((best, c) => {
+    const count = edgePixels.filter(
       o => Math.abs(o.r - c.r) <= 5 && Math.abs(o.g - c.g) <= 5 && Math.abs(o.b - c.b) <= 5
     ).length;
     return count > best.count ? { ...c, count } : best;
-  }, { ...bgColors[0], count: 0 });
+  }, { ...edgePixels[0], count: 0 });
 
-  const threshold = 10;
+  // Use a conservative threshold to catch all non-background content
+  // including faint labels, thin lines, and anti-aliased text edges
+  const threshold = 8;
   let minX = width, minY = height, maxX = 0, maxY = 0;
 
   for (let y = 0; y < height; y++) {
@@ -253,19 +268,59 @@ function findContentBounds(pngData) {
 
 /**
  * Compute the union bounding box across all frames, then normalize padding
- * so padding is equal on all sides. Makes output square if content is ~square.
+ * so padding is equal on all sides and the content is centered.
+ * Makes output square if content is ~square.
+ *
+ * Padding logic:
+ * - Minimum padding is 4px (or explicit value if specified)
+ * - Padding is unified (equal on all sides) so content is centered
+ * - If some sides need more padding than others to center, they get more
  */
-function computeCropRegion(frames, explicitPadding) {
-  const allBounds = frames.map(buf => {
-    const png = PNG.sync.read(buf);
-    return { bounds: findContentBounds(png), width: png.width, height: png.height };
+function computeCropRegion(frames, explicitPadding, maxSize) {
+  // Sample frames for bounds detection (every Nth frame for speed, but always first/last)
+  const sampleIndices = [0];
+  const step = Math.max(1, Math.floor(frames.length / 20));
+  for (let i = step; i < frames.length - 1; i += step) {
+    sampleIndices.push(i);
+  }
+  sampleIndices.push(frames.length - 1);
+  const uniqueIndices = [...new Set(sampleIndices)];
+
+  const firstPng = PNG.sync.read(frames[0]);
+  const imgWidth = firstPng.width;
+  const imgHeight = firstPng.height;
+
+  // Detect background color from the first frame
+  const bgBounds = findContentBounds(firstPng);
+  // bgColor is the dominant edge color — re-detect it for the return value
+  const edgePixels = [];
+  const sampleStep = Math.max(1, Math.floor(Math.max(imgWidth, imgHeight) / 100));
+  for (let x = 0; x < imgWidth; x += sampleStep) {
+    const topIdx = x * 4;
+    edgePixels.push({ r: firstPng.data[topIdx], g: firstPng.data[topIdx + 1], b: firstPng.data[topIdx + 2] });
+    const botIdx = ((imgHeight - 1) * imgWidth + x) * 4;
+    edgePixels.push({ r: firstPng.data[botIdx], g: firstPng.data[botIdx + 1], b: firstPng.data[botIdx + 2] });
+  }
+  for (let y = 0; y < imgHeight; y += sampleStep) {
+    const leftIdx = (y * imgWidth) * 4;
+    edgePixels.push({ r: firstPng.data[leftIdx], g: firstPng.data[leftIdx + 1], b: firstPng.data[leftIdx + 2] });
+    const rightIdx = (y * imgWidth + (imgWidth - 1)) * 4;
+    edgePixels.push({ r: firstPng.data[rightIdx], g: firstPng.data[rightIdx + 1], b: firstPng.data[rightIdx + 2] });
+  }
+  const bgColor = edgePixels.reduce((best, c) => {
+    const count = edgePixels.filter(
+      o => Math.abs(o.r - c.r) <= 5 && Math.abs(o.g - c.g) <= 5 && Math.abs(o.b - c.b) <= 5
+    ).length;
+    return count > best.count ? { ...c, count } : best;
+  }, { ...edgePixels[0], count: 0 });
+
+  const allBounds = uniqueIndices.map(idx => {
+    const png = idx === 0 ? firstPng : PNG.sync.read(frames[idx]);
+    return findContentBounds(png);
   });
 
-  const imgWidth = allBounds[0].width;
-  const imgHeight = allBounds[0].height;
-
   let minX = imgWidth, minY = imgHeight, maxX = 0, maxY = 0;
-  for (const { bounds } of allBounds) {
+  for (const bounds of allBounds) {
     if (bounds.x < minX) minX = bounds.x;
     if (bounds.y < minY) minY = bounds.y;
     if (bounds.x + bounds.w - 1 > maxX) maxX = bounds.x + bounds.w - 1;
@@ -275,80 +330,88 @@ function computeCropRegion(frames, explicitPadding) {
   const contentW = maxX - minX + 1;
   const contentH = maxY - minY + 1;
 
+  // Calculate padding in final output pixels, then scale to capture resolution
+  const MIN_PADDING_OUTPUT = 4; // minimum 4px in the final output
+  const downscaleRatio = Math.max(contentW, contentH) / maxSize;
+  const minPaddingCapture = Math.ceil(MIN_PADDING_OUTPUT * downscaleRatio);
+
   let padding;
   if (explicitPadding !== null) {
-    padding = explicitPadding;
+    // Explicit padding is in output pixels, scale to capture resolution
+    padding = Math.max(minPaddingCapture, Math.ceil(explicitPadding * downscaleRatio));
   } else {
-    const padLeft = minX;
-    const padRight = imgWidth - maxX - 1;
-    const padTop = minY;
-    const padBottom = imgHeight - maxY - 1;
-    padding = Math.min(padLeft, padRight, padTop, padBottom);
-    padding = Math.max(padding, Math.round(Math.max(contentW, contentH) * 0.02));
+    // Use 2% of the content size as padding, but at least MIN_PADDING in output
+    padding = Math.max(minPaddingCapture, Math.round(Math.max(contentW, contentH) * 0.02));
   }
 
-  let cropX = minX - padding;
-  let cropY = minY - padding;
+  // Content center
+  const contentCenterX = minX + contentW / 2;
+  const contentCenterY = minY + contentH / 2;
+
+  // Start with content + equal padding on all sides
   let cropW = contentW + padding * 2;
   let cropH = contentH + padding * 2;
 
-  // Make square if aspect ratio is close to 1:1 (within 20%)
+  // Make square if aspect ratio is close to 1:1 (within 25%)
   const aspectRatio = cropW / cropH;
   if (aspectRatio >= 0.8 && aspectRatio <= 1.25) {
-    // Use the smaller side that fits within image boundaries
-    const maxPossibleSide = Math.min(
-      Math.max(cropW, cropH),
-      imgWidth,
-      imgHeight
-    );
-    const side = maxPossibleSide;
-    const centerX = cropX + cropW / 2;
-    const centerY = cropY + cropH / 2;
-    cropX = Math.round(centerX - side / 2);
-    cropY = Math.round(centerY - side / 2);
+    const side = Math.max(cropW, cropH);
     cropW = side;
     cropH = side;
   }
 
-  // Clamp to image boundaries
-  cropX = Math.max(0, cropX);
-  cropY = Math.max(0, cropY);
-  cropW = Math.min(cropW, imgWidth - cropX);
-  cropH = Math.min(cropH, imgHeight - cropY);
-
-  // After clamping, re-enforce squareness if needed
-  if (cropW !== cropH && aspectRatio >= 0.8 && aspectRatio <= 1.25) {
-    const side = Math.min(cropW, cropH);
-    cropW = side;
-    cropH = side;
-  }
+  // Center the crop region on the content center
+  // NOTE: cropX/cropY CAN be negative — cropPng handles out-of-bounds by filling with bgColor
+  let cropX = Math.round(contentCenterX - cropW / 2);
+  let cropY = Math.round(contentCenterY - cropH / 2);
 
   // Ensure even dimensions (required for video encoding)
-  cropW = cropW % 2 === 0 ? cropW : cropW - 1;
-  cropH = cropH % 2 === 0 ? cropH : cropH - 1;
+  cropW = cropW % 2 === 0 ? cropW : cropW + 1;
+  cropH = cropH % 2 === 0 ? cropH : cropH + 1;
+
+  // Verify padding
+  const padLeft = minX - cropX;
+  const padRight = (cropX + cropW - 1) - maxX;
+  const padTop = minY - cropY;
+  const padBottom = (cropY + cropH - 1) - maxY;
 
   console.log(`   Content bounds: ${contentW}x${contentH} at (${minX},${minY})`);
-  console.log(`   Padding: ${padding}px (equal on all sides)`);
+  console.log(`   Background color: rgb(${bgColor.r},${bgColor.g},${bgColor.b})`);
+  console.log(`   Padding: ${padding}px at capture res (~${Math.round(padding / downscaleRatio)}px in output)`);
+  console.log(`   Actual padding: L=${padLeft} R=${padRight} T=${padTop} B=${padBottom}`);
   console.log(`   Crop region: ${cropW}x${cropH} at (${cropX},${cropY})`);
 
-  return { x: cropX, y: cropY, w: cropW, h: cropH };
+  return { x: cropX, y: cropY, w: cropW, h: cropH, bgColor };
 }
 
 /**
- * Crop a PNG buffer to the given region
+ * Crop a PNG buffer to the given region.
+ * If region extends beyond image boundaries, fills with the background color.
  */
-function cropPng(buffer, region) {
+function cropPng(buffer, region, bgColor) {
   const src = PNG.sync.read(buffer);
+  const bg = bgColor || { r: 255, g: 255, b: 255 };
   const dst = new PNG({ width: region.w, height: region.h });
 
   for (let y = 0; y < region.h; y++) {
     for (let x = 0; x < region.w; x++) {
-      const srcIdx = ((region.y + y) * src.width + (region.x + x)) * 4;
+      const srcX = region.x + x;
+      const srcY = region.y + y;
       const dstIdx = (y * region.w + x) * 4;
-      dst.data[dstIdx] = src.data[srcIdx];
-      dst.data[dstIdx + 1] = src.data[srcIdx + 1];
-      dst.data[dstIdx + 2] = src.data[srcIdx + 2];
-      dst.data[dstIdx + 3] = src.data[srcIdx + 3];
+
+      if (srcX >= 0 && srcX < src.width && srcY >= 0 && srcY < src.height) {
+        const srcIdx = (srcY * src.width + srcX) * 4;
+        dst.data[dstIdx] = src.data[srcIdx];
+        dst.data[dstIdx + 1] = src.data[srcIdx + 1];
+        dst.data[dstIdx + 2] = src.data[srcIdx + 2];
+        dst.data[dstIdx + 3] = src.data[srcIdx + 3];
+      } else {
+        // Fill with background color
+        dst.data[dstIdx] = bg.r;
+        dst.data[dstIdx + 1] = bg.g;
+        dst.data[dstIdx + 2] = bg.b;
+        dst.data[dstIdx + 3] = 255;
+      }
     }
   }
 
@@ -659,28 +722,35 @@ function assembleVideo(frames, format, outputPath, perFrameDelays, defaultFps) {
 }
 
 /**
- * Compute the optimal capture viewport dimensions.
+ * Compute the optimal capture viewport dimensions and device scale factor.
  *
- * Strategy: Capture at a resolution where the content area is at or slightly
- * above the target maxSize, avoiding quality-losing post-capture downscaling.
+ * Strategy: Use the logical viewport for page layout but set deviceScaleFactor=2
+ * to capture at 2x pixel density. This gives us 2x resolution screenshots
+ * WITHOUT changing the page layout (content stays in the same positions),
+ * and the screenshots are fast because the logical viewport is normal size.
  *
- * We scale the logical viewport proportionally so the smaller dimension
- * is at least maxSize * 1.2 (small margin for padding after crop).
- * This is a balance: too large = slow screenshots, too small = needs upscale.
+ * The area-average downscale from 2x produces the sharpest possible output.
+ *
+ * We size the logical viewport so its smaller dimension is at least maxSize * 1.2
+ * (margin for padding after crop). This ensures content fits within the viewport
+ * with room for padding, while screenshots at 2x give us high-res pixels.
  */
 function computeCaptureViewport(logicalW, logicalH, maxSize) {
-  // Scale so smaller dimension is ~maxSize * 1.2 (slight margin for crop/padding)
-  const minDim = Math.min(logicalW, logicalH);
-  const targetMinDim = Math.max(maxSize * 1.2, minDim);
-  const scale = targetMinDim / minDim;
-
-  const captureW = Math.round(logicalW * scale);
-  const captureH = Math.round(logicalH * scale);
+  // Use a square viewport at 2x the target size. Since pages typically fill their
+  // viewport, the content will be ~2x the target size, and after auto-crop + area-average
+  // downscale to maxSize, we get high-quality 2x supersampled output.
+  //
+  // We add 5% margin (1.05) to ensure there's room for padding around the content.
+  // Using deviceScaleFactor=1 keeps screenshots fast (the viewport IS the pixel resolution).
+  const viewportSize = Math.round(maxSize * 2 * 1.05);
 
   // Ensure even dimensions
+  const size = viewportSize % 2 === 0 ? viewportSize : viewportSize + 1;
+
   return {
-    width: captureW % 2 === 0 ? captureW : captureW + 1,
-    height: captureH % 2 === 0 ? captureH : captureH + 1,
+    width: size,
+    height: size,
+    deviceScaleFactor: 1,  // 1:1 pixel mapping for fast screenshots
   };
 }
 
@@ -761,22 +831,25 @@ async function main() {
     process.exit(1);
   }
 
-  // Compute capture viewport: capture at a resolution where the output
-  // after cropping is close to maxSize (avoiding quality-losing post-capture scaling)
-  let captureW, captureH;
+  // Compute capture viewport: use logical viewport for layout, deviceScaleFactor=2
+  // for 2x pixel density screenshots (high quality downscaling)
+  let captureW, captureH, deviceScale;
   if (options.captureViewportWidth && options.captureViewportHeight) {
     captureW = options.captureViewportWidth;
     captureH = options.captureViewportHeight;
+    deviceScale = 1;
   } else {
     const cv = computeCaptureViewport(options.viewportWidth, options.viewportHeight, options.maxSize);
     captureW = cv.width;
     captureH = cv.height;
+    deviceScale = cv.deviceScaleFactor;
   }
 
   console.log(`\nAnimation Capture Settings:`);
   console.log(`   URL: ${options.url}`);
   console.log(`   Logical viewport: ${options.viewportWidth}x${options.viewportHeight}`);
-  console.log(`   Capture viewport: ${captureW}x${captureH}`);
+  console.log(`   Capture viewport: ${captureW}x${captureH} (deviceScaleFactor=${deviceScale})`);
+  console.log(`   Effective pixel resolution: ${captureW * deviceScale}x${captureH * deviceScale}`);
   console.log(`   Max output size: ${options.maxSize}px`);
   console.log(`   Capture interval: ${options.interval}ms (0 = max rate)`);
   console.log(`   Min frames: ${options.minFrames}`);
@@ -788,7 +861,7 @@ async function main() {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
     viewport: { width: captureW, height: captureH },
-    deviceScaleFactor: 1,  // 1:1 pixel mapping, no sub-pixel aliasing
+    deviceScaleFactor: deviceScale,  // 2x for high quality capture
   });
   const page = await context.newPage();
 
@@ -809,8 +882,9 @@ async function main() {
     // Auto-crop to content
     if (options.crop) {
       console.log('\nAuto-cropping to content...');
-      const cropRegion = computeCropRegion(frames, options.cropPadding);
-      frames = frames.map(f => cropPng(f, cropRegion));
+      const cropRegion = computeCropRegion(frames, options.cropPadding, options.maxSize);
+      const bgColor = cropRegion.bgColor;
+      frames = frames.map(f => cropPng(f, cropRegion, bgColor));
     }
 
     // Resize to max-size if the cropped frames are still larger

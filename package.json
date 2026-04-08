@@ -18,7 +18,11 @@
     "download:markdown-images": "node scripts/download-markdown-images.mjs --all",
     "download:all": "npm run download:articles && npm run download:markdown-images && npm run download:screenshots && npm run verify",
     "capture:animation": "node scripts/capture-animation.mjs",
-    "capture:itself": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.gif --speed 0.5"
+    "capture:itself": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.gif --extract-keyframes",
+    "capture:itself:slow": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.gif --speed 0.5 --extract-keyframes",
+    "capture:itself:mp4": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.mp4 --format mp4",
+    "capture:itself:webm": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.webm --format webm",
+    "test:capture": "node scripts/test-capture-quality.mjs"
   },
   "repository": {
     "type": "git",

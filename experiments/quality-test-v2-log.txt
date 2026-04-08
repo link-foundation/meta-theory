@@ -1,0 +1,44 @@
+=== Animation Capture Quality Tests ===
+
+Step 1: Running animation capture...
+   Command: node /tmp/gh-issue-solver-1775647646167/scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output test-output/test-capture.gif --extract-keyframes --max-size 512 --min-frames 30 --loop-timeout 45 --verbose
+   Capture completed successfully.
+
+Step 2: Validating GIF output...
+  ✓ GIF output file exists
+  ✓ GIF is GIF89a format
+  ✓ GIF has valid dimensions (512x512)
+  ✓ GIF dimensions within max size (512x512)
+  ✓ GIF has sufficient frames (124 >= 15)
+  ✓ GIF file size is reasonable (1430.8 KB > 10 KB)
+  ✓ GIF aspect ratio is near square (1.00)
+
+Step 3: Validating key frames...
+  ✓ Key frames directory exists
+  ✓ At least 3 key frames extracted (3)
+  ✓ Key frame keyframe-first-0.png has content (2.6% non-background)
+  ✓ Key frame keyframe-first-0.png has valid dimensions (512x512)
+  ✓ Key frame keyframe-last-123.png has content (4.4% non-background)
+  ✓ Key frame keyframe-last-123.png has valid dimensions (512x512)
+  ✓ Key frame keyframe-middle-62.png has content (2.9% non-background)
+  ✓ Key frame keyframe-middle-62.png has valid dimensions (512x512)
+  ✓ Key frames are different (94.8% similarity)
+
+Step 4: Browser live key frame comparison...
+  ✓ Live frame 0 has content (4.0%)
+  ✓ Live frame 1 has content (3.9%)
+  ✓ Live frame 2 has content (4.3%)
+
+Step 5: Video format validation...
+  ✓ MP4 file generated (651.1 KB)
+  ✓ MP4 has a video stream
+  ✓ MP4 uses H.264 codec (h264)
+  ✓ MP4 has valid width (512)
+  ✓ WebM file generated (412.9 KB)
+
+Step 6: Timing verification...
+  ✓ Uses real capture timestamps for GIF timing
+  ✓ Cycle duration is reasonable (14890ms)
+  ✓ Average capture interval is fast (121.1ms)
+
+=== Results: 27 passed, 0 failed ===

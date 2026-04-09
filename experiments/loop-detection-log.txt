@@ -1,0 +1,73 @@
+Loading page...
+
+=== Screenshot-based similarity profile ===
+Frame 0: reference (512x512)
+Frame 10: sim=95.4% (503ms)
+Frame 20: sim=95.9% (1004ms)
+Frame 30: sim=96.1% (1501ms)
+Frame 40: sim=96.2% (2001ms)
+Frame 50: sim=96.3% (2500ms)
+Frame 60: sim=96.0% (2967ms)
+Frame 70: sim=95.7% (3417ms)
+Frame 80: sim=95.3% (3921ms)
+Frame 90: sim=94.8% (4420ms)
+Frame 100: sim=94.7% (4920ms)
+Frame 110: sim=95.4% (5418ms)
+Frame 120: sim=95.8% (5921ms)
+Frame 130: sim=96.0% (6417ms)
+Frame 140: sim=96.1% (6903ms)
+Frame 150: sim=96.2% (7400ms)
+Frame 160: sim=96.0% (7902ms)
+Frame 170: sim=95.7% (8407ms)
+Frame 180: sim=95.4% (8902ms)
+Frame 190: sim=94.9% (9388ms)
+
+=== Peak Analysis ===
+Peak at frame 5: sim=95.3% time=255ms
+Peak at frame 20: sim=95.9% time=1004ms
+Peak at frame 28: sim=96.0% time=1402ms
+Peak at frame 30: sim=96.1% time=1501ms
+Peak at frame 33: sim=96.1% time=1651ms
+Peak at frame 36: sim=96.1% time=1801ms
+Peak at frame 40: sim=96.2% time=2001ms
+Peak at frame 43: sim=96.1% time=2156ms
+Peak at frame 49: sim=96.3% time=2454ms
+Peak at frame 60: sim=96.0% time=2967ms
+Peak at frame 66: sim=95.9% time=3250ms
+Peak at frame 81: sim=95.4% time=3971ms
+Peak at frame 96: sim=94.6% time=4722ms
+Peak at frame 99: sim=94.8% time=4874ms
+Peak at frame 102: sim=97.4% time=5024ms
+Peak at frame 108: sim=95.3% time=5319ms
+Peak at frame 113: sim=95.5% time=5572ms
+Peak at frame 127: sim=96.0% time=6267ms
+Peak at frame 131: sim=96.1% time=6471ms
+Peak at frame 135: sim=96.1% time=6673ms
+Peak at frame 138: sim=96.1% time=6817ms
+Peak at frame 142: sim=96.2% time=7003ms
+Peak at frame 145: sim=96.1% time=7153ms
+Peak at frame 151: sim=96.3% time=7454ms
+Peak at frame 161: sim=96.0% time=7952ms
+Peak at frame 167: sim=95.8% time=8255ms
+Peak at frame 195: sim=94.6% time=9633ms
+Peak at frame 197: sim=94.6% time=9722ms
+
+Estimated loop: 15 frames, 749ms duration
+
+Similarity profile saved to experiments/similarity-profile.json
+
+=== CDP Screencast similarity profile ===
+Captured 1800 screencast frames in 30s
+FPS: 60.0
+
+=== Screencast Peak Analysis ===
+Significant peak at frame 300: sim=100.0% time=4999ms
+Significant peak at frame 600: sim=100.0% time=9998ms
+Significant peak at frame 900: sim=100.0% time=14997ms
+Significant peak at frame 1200: sim=100.0% time=19997ms
+Significant peak at frame 1500: sim=100.0% time=24996ms
+
+Estimated loop (screencast): 300 frames, 4999ms duration
+Expected output frame count at capture FPS: 300
+
+Screencast similarity profile saved to experiments/screencast-similarity-profile.json

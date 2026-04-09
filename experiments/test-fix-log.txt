@@ -1,0 +1,96 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Capture mode: screencast
+   Logical viewport: 1920x1080
+   Source (capture) viewport: 270x270 (deviceScaleFactor=1)
+   Effective source resolution: 270x270
+   Target max output size: 256px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 30
+   Speed: 1x
+   Format: GIF
+   Output: experiments/test-fix.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames via CDP screencast (JPEG quality: 100, min-frames: 30)...
+   Screencast resolution: 270x270
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 270x270)
+   First similarity peak at frame 4 (sim=93.0%)
+   Frame 51 captured (0.9s elapsed, ~59.2 FPS, sim=89.5%)
+   Frame 101 captured (1.7s elapsed, ~59.7 FPS, sim=90.1%)
+   Frame 151 captured (2.5s elapsed, ~59.8 FPS, sim=90.7%)
+   Frame 201 captured (3.4s elapsed, ~59.8 FPS, sim=89.6%)
+   Frame 251 captured (4.2s elapsed, ~59.9 FPS, sim=88.0%)
+   Frame 301 captured (5.0s elapsed, ~59.9 FPS, sim=100.0%)
+   Frame 351 captured (5.9s elapsed, ~59.9 FPS, sim=89.5%)
+   Frame 401 captured (6.7s elapsed, ~59.9 FPS, sim=90.1%)
+   Frame 451 captured (7.5s elapsed, ~59.9 FPS, sim=90.7%)
+   Frame 501 captured (8.4s elapsed, ~59.9 FPS, sim=89.6%)
+   Frame 551 captured (9.2s elapsed, ~59.9 FPS, sim=88.0%)
+   Frame 601 captured (10.0s elapsed, ~60.0 FPS, sim=98.5%)
+   Frame 651 captured (10.9s elapsed, ~60.0 FPS, sim=89.5%)
+   Frame 701 captured (11.7s elapsed, ~60.0 FPS, sim=90.1%)
+   Frame 751 captured (12.5s elapsed, ~60.0 FPS, sim=90.7%)
+   Frame 801 captured (13.4s elapsed, ~60.0 FPS, sim=89.6%)
+   Frame 851 captured (14.2s elapsed, ~60.0 FPS, sim=88.0%)
+   Frame 901 captured (15.0s elapsed, ~60.0 FPS, sim=98.5%)
+   Frame 951 captured (15.9s elapsed, ~60.0 FPS, sim=89.5%)
+   Frame 1001 captured (16.7s elapsed, ~60.0 FPS, sim=90.1%)
+   Frame 1051 captured (17.5s elapsed, ~60.0 FPS, sim=90.6%)
+   Frame 1101 captured (18.4s elapsed, ~60.0 FPS, sim=89.6%)
+   Frame 1151 captured (19.2s elapsed, ~60.0 FPS, sim=88.0%)
+   Frame 1201 captured (20.0s elapsed, ~60.0 FPS, sim=98.5%)
+   Frame 1251 captured (20.9s elapsed, ~60.0 FPS, sim=89.5%)
+   Frame 1301 captured (21.7s elapsed, ~60.0 FPS, sim=90.1%)
+   Frame 1351 captured (22.5s elapsed, ~60.0 FPS, sim=90.6%)
+   Frame 1401 captured (23.4s elapsed, ~60.0 FPS, sim=89.5%)
+   Frame 1451 captured (24.2s elapsed, ~60.0 FPS, sim=88.0%)
+   Frame 1501 captured (25.0s elapsed, ~60.0 FPS, sim=98.5%)
+   Loop detected: cycle length = 300 frames (total: 1500)
+   Peak similarities: 98.5%, 98.5%
+   Real cycle duration: 24980ms
+
+Converting 1500 JPEG frames to PNG...
+   Converted 100/1500 frames...
+   Converted 200/1500 frames...
+   Converted 300/1500 frames...
+   Converted 400/1500 frames...
+   Converted 500/1500 frames...
+   Converted 600/1500 frames...
+   Converted 700/1500 frames...
+   Converted 800/1500 frames...
+   Converted 900/1500 frames...
+   Converted 1000/1500 frames...
+   Converted 1100/1500 frames...
+   Converted 1200/1500 frames...
+   Converted 1300/1500 frames...
+   Converted 1400/1500 frames...
+   Converted 1500/1500 frames...
+   Converted 1500/1500 frames to PNG
+   Total frames captured: 1500
+   Real average interval: 16.7ms
+   Effective capture FPS: ~60.0
+
+Auto-cropping to content...
+   Content bounds: 266x266 at (2,2)
+   Background color: rgb(255,255,255)
+   Padding: 5px at capture res (~5px in output)
+   Actual padding: L=5 R=5 T=5 B=5
+   Crop region: 276x276 at (-3,-3)
+
+Resizing from 276x276 to max 256px (area-average)...
+   Final frame size: 256x256
+
+Timing: using real capture timestamps
+   Average real delay: 20.0ms (speed: 1x)
+   Effective FPS: ~49.9
+
+Assembling GIF (1500 frames, avg 20.0ms delay, 256x256)...
+   GIF saved: experiments/test-fix.gif (10475.1 KB)
+
+Done!

@@ -1,0 +1,81 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Capture mode: screencast
+   Logical viewport: 1920x1080
+   Source (capture) viewport: 1076x1076 (deviceScaleFactor=1)
+   Effective source resolution: 1076x1076
+   Target max output size: 1024px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 120
+   Speed: 1x
+   Format: GIF
+   Output: docs/animations/closed-link.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames via CDP screencast (JPEG quality: 100, min-frames: 120)...
+   Screencast resolution: 1076x1076
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 1076x1076)
+   Frame 51 captured (3.0s elapsed, ~17.2 FPS, sim=97.8%)
+   High similarity peak at frame 93 (sim=97.3%)
+   Frame 101 captured (5.6s elapsed, ~18.0 FPS, sim=96.6%)
+   Frame 151 captured (8.1s elapsed, ~18.6 FPS, sim=97.8%)
+   High similarity peak at frame 191 (sim=99.5%)
+   Potential loop at frame 191 but cycle length 98 < 120 min frames, continuing...
+   Frame 201 captured (10.9s elapsed, ~18.5 FPS, sim=96.9%)
+   Frame 251 captured (13.5s elapsed, ~18.7 FPS, sim=97.8%)
+   High similarity peak at frame 283 (sim=99.5%)
+   Potential loop at frame 283 but cycle length 92 < 120 min frames, continuing...
+   Frame 301 captured (16.1s elapsed, ~18.7 FPS, sim=97.0%)
+   Frame 351 captured (18.6s elapsed, ~18.9 FPS, sim=97.7%)
+   High similarity peak at frame 381 (sim=99.5%)
+   Potential loop at frame 381 but cycle length 98 < 120 min frames, continuing...
+   Frame 401 captured (21.3s elapsed, ~18.8 FPS, sim=97.3%)
+   Frame 451 captured (24.0s elapsed, ~18.8 FPS, sim=97.7%)
+   High similarity peak at frame 469 (sim=99.4%)
+   Potential loop at frame 469 but cycle length 88 < 120 min frames, continuing...
+   Frame 501 captured (27.1s elapsed, ~18.5 FPS, sim=97.6%)
+   Frame 551 captured (29.7s elapsed, ~18.6 FPS, sim=97.2%)
+   Frame 601 captured (32.2s elapsed, ~18.7 FPS, sim=97.7%)
+   Frame 651 captured (34.9s elapsed, ~18.6 FPS, sim=97.0%)
+   High similarity peak at frame 657 (sim=98.3%)
+   Loop detected: cycle length = 188 frames
+   Cycle: frames 469 to 657
+   Peak similarities: 99.4%, 98.3%
+   Real cycle duration: 9929ms
+   Trimmed to 188 frames (cycle 469-657)
+
+Converting 188 JPEG frames to PNG...
+   Converted 100/188 frames...
+   Converted 188/188 frames to PNG
+   Total frames captured: 188
+   Real average interval: 53.1ms
+   Effective capture FPS: ~18.8
+
+Auto-cropping to content...
+   Content bounds: 1072x1072 at (2,2)
+   Background color: rgb(255,255,255)
+   Padding: 21px at capture res (~20px in output)
+   Actual padding: L=21 R=21 T=21 B=21
+   Crop region: 1114x1114 at (-19,-19)
+
+Resizing from 1114x1114 to max 1024px (area-average)...
+   Final frame size: 1024x1024
+
+Extracting key frames...
+   Key frame first (frame 0): docs/animations/closed-link-keyframes/keyframe-first-0.png
+   Key frame middle (frame 94): docs/animations/closed-link-keyframes/keyframe-middle-94.png
+   Key frame last (frame 187): docs/animations/closed-link-keyframes/keyframe-last-187.png
+
+Timing: using real capture timestamps
+   Average real delay: 66.0ms (speed: 1x)
+   Effective FPS: ~15.2
+
+Assembling GIF (188 frames, avg 66.0ms delay, 1024x1024)...
+   GIF saved: docs/animations/closed-link.gif (5015.6 KB)
+
+Done!

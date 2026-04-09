@@ -1,0 +1,68 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Capture mode: screencast
+   Logical viewport: 1920x1080
+   Source (capture) viewport: 1076x1076 (deviceScaleFactor=1)
+   Effective source resolution: 1076x1076
+   Target max output size: 1024px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 120
+   Speed: 1x
+   Format: GIF
+   Output: docs/animations/closed-link.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames via CDP screencast (JPEG quality: 100, min-frames: 120)...
+   Screencast resolution: 1076x1076
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 1076x1076)
+   Frame 51 captured (2.8s elapsed, ~18.2 FPS, sim=97.0%)
+   Frame 101 captured (5.3s elapsed, ~18.9 FPS, sim=95.8%)
+   Frame 151 captured (7.8s elapsed, ~19.3 FPS, sim=96.9%)
+   High similarity peak at frame 196 (sim=100.0%)
+   Frame 201 captured (10.5s elapsed, ~19.2 FPS, sim=95.6%)
+   Frame 251 captured (12.9s elapsed, ~19.4 FPS, sim=96.9%)
+   Frame 301 captured (15.4s elapsed, ~19.5 FPS, sim=95.7%)
+   Frame 351 captured (17.8s elapsed, ~19.7 FPS, sim=96.9%)
+   High similarity peak at frame 399 (sim=98.4%)
+   Loop detected: cycle length = 203 frames
+   Cycle: frames 196 to 399
+   Peak similarities: 100.0%, 98.4%
+   Real cycle duration: 9949ms
+   Trimmed to 203 frames (cycle 196-399)
+
+Converting 203 JPEG frames to PNG...
+   Converted 100/203 frames...
+   Converted 200/203 frames...
+   Converted 203/203 frames to PNG
+   Total frames captured: 203
+   Real average interval: 49.3ms
+   Effective capture FPS: ~20.3
+
+Auto-cropping to content...
+   Content bounds: 1072x1072 at (2,2)
+   Background color: rgb(255,255,255)
+   Padding: 21px at capture res (~20px in output)
+   Actual padding: L=21 R=21 T=21 B=21
+   Crop region: 1114x1114 at (-19,-19)
+
+Resizing from 1114x1114 to max 1024px (area-average)...
+   Final frame size: 1024x1024
+
+Extracting key frames...
+   Key frame first (frame 0): docs/animations/closed-link-keyframes/keyframe-first-0.png
+   Key frame middle (frame 101): docs/animations/closed-link-keyframes/keyframe-middle-101.png
+   Key frame last (frame 202): docs/animations/closed-link-keyframes/keyframe-last-202.png
+
+Timing: using real capture timestamps
+   Average real delay: 62.1ms (speed: 1x)
+   Effective FPS: ~16.1
+
+Assembling GIF (203 frames, avg 62.1ms delay, 1024x1024)...
+   GIF saved: docs/animations/closed-link.gif (5423.4 KB)
+
+Done!

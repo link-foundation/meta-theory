@@ -1,0 +1,67 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Capture mode: screencast
+   Logical viewport: 1920x1080
+   Source (capture) viewport: 270x270 (deviceScaleFactor=1)
+   Effective source resolution: 270x270
+   Target max output size: 256px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 30
+   Speed: 1x
+   Format: GIF
+   Output: experiments/test-fix4.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames via CDP screencast (JPEG quality: 100, min-frames: 30)...
+   Screencast resolution: 270x270
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 270x270)
+   Frame 51 captured (0.9s elapsed, ~58.2 FPS, sim=89.5%)
+   Frame 101 captured (1.7s elapsed, ~59.2 FPS, sim=90.1%)
+   Frame 151 captured (2.5s elapsed, ~59.7 FPS, sim=90.6%)
+   Frame 201 captured (3.4s elapsed, ~59.7 FPS, sim=89.5%)
+   Frame 251 captured (4.2s elapsed, ~59.7 FPS, sim=87.9%)
+   Frame 301 captured (5.0s elapsed, ~59.8 FPS, sim=97.5%)
+   High similarity peak at frame 300 (sim=97.5%)
+   Frame 351 captured (5.9s elapsed, ~59.8 FPS, sim=89.6%)
+   Frame 401 captured (6.8s elapsed, ~58.6 FPS, sim=90.1%)
+   Frame 451 captured (7.7s elapsed, ~58.8 FPS, sim=90.5%)
+   Frame 501 captured (8.5s elapsed, ~58.9 FPS, sim=89.2%)
+   Frame 551 captured (9.3s elapsed, ~59.0 FPS, sim=87.8%)
+   High similarity peak at frame 593 (sim=97.5%)
+   Loop detected: cycle length = 293 frames
+   Cycle: frames 300 to 593
+   Peak similarities: 97.5%, 97.5%
+   Real cycle duration: 5002ms
+   Trimmed to 293 frames (cycle 300-593)
+
+Converting 293 JPEG frames to PNG...
+   Converted 100/293 frames...
+   Converted 200/293 frames...
+   Converted 293/293 frames to PNG
+   Total frames captured: 293
+   Real average interval: 17.1ms
+   Effective capture FPS: ~58.4
+
+Auto-cropping to content...
+   Content bounds: 266x266 at (2,2)
+   Background color: rgb(255,255,255)
+   Padding: 5px at capture res (~5px in output)
+   Actual padding: L=5 R=5 T=5 B=5
+   Crop region: 276x276 at (-3,-3)
+
+Resizing from 276x276 to max 256px (area-average)...
+   Final frame size: 256x256
+
+Timing: using real capture timestamps
+   Average real delay: 21.4ms (speed: 1x)
+   Effective FPS: ~46.7
+
+Assembling GIF (293 frames, avg 21.4ms delay, 256x256)...
+   GIF saved: experiments/test-fix4.gif (2047.0 KB)
+
+Done!

@@ -344,8 +344,8 @@ async function main() {
     console.log('   ffmpeg not available, skipping video tests');
   }
 
-  // Step 6: Timing verification
-  console.log('\nStep 6: Timing verification...');
+  // Step 6: Timing and loop detection verification
+  console.log('\nStep 6: Timing and loop detection verification...');
 
   const captureLogPath = join(outputDir, 'capture-log.txt');
   if (existsSync(captureLogPath)) {
@@ -355,12 +355,35 @@ async function main() {
     const usesRealTimestamps = log.includes('using real capture timestamps');
     assert(usesRealTimestamps, 'Uses real capture timestamps for GIF timing');
 
+    // Verify loop was detected (not timeout)
+    const loopDetected = log.includes('Loop detected:');
+    assert(loopDetected, 'Loop was detected (not timed out)');
+
+    // Verify the GIF contains exactly one cycle (not multiple loops)
+    const loopMatch = log.match(/Loop detected: cycle length = (\d+) frames/);
+    if (loopMatch) {
+      const cycleLength = parseInt(loopMatch[1]);
+      // At 512px capture, screencast gives ~60 FPS, so one ~5s cycle ≈ 300 frames
+      // At lower FPS, fewer frames but still represents one cycle
+      assert(cycleLength >= 15, `Cycle has enough frames (${cycleLength} >= 15)`);
+    }
+
     // Extract cycle duration
     const durationMatch = log.match(/Real cycle duration: (\d+)ms/);
     if (durationMatch) {
       const duration = parseInt(durationMatch[1]);
-      // The itself.html animation cycles in roughly 5-30 seconds
-      assert(duration >= 2000 && duration <= 60000, `Cycle duration is reasonable (${duration}ms)`);
+      // The itself.html animation cycles in roughly 4-6 seconds
+      assert(duration >= 2000 && duration <= 15000, `Cycle duration is reasonable (${duration}ms)`, `expected 4000-6000ms`);
+    }
+
+    // Verify peak similarities are high (loop detection accuracy)
+    const peakSimMatch = log.match(/Peak similarities: ([\d.]+)%, ([\d.]+)%/);
+    if (peakSimMatch) {
+      const sim1 = parseFloat(peakSimMatch[1]);
+      const sim2 = parseFloat(peakSimMatch[2]);
+      assert(sim1 >= 94, `First peak similarity is high (${sim1.toFixed(1)}% >= 94%)`);
+      assert(sim2 >= 94, `Second peak similarity is high (${sim2.toFixed(1)}% >= 94%)`);
+      assert(Math.abs(sim1 - sim2) < 3, `Peak similarities are consistent (diff=${Math.abs(sim1 - sim2).toFixed(1)}%)`);
     }
 
     // Extract average interval
@@ -368,6 +391,13 @@ async function main() {
     if (intervalMatch) {
       const avgInterval = parseFloat(intervalMatch[1]);
       assert(avgInterval > 0 && avgInterval < 1000, `Average capture interval is reasonable (${avgInterval.toFixed(1)}ms)`);
+    }
+
+    // Verify trimming happened (single cycle extracted)
+    const trimMatch = log.match(/Trimmed to (\d+) frames/);
+    if (trimMatch) {
+      const trimmedFrames = parseInt(trimMatch[1]);
+      assert(trimmedFrames >= 15, `Trimmed cycle has enough frames (${trimmedFrames})`);
     }
   }
 

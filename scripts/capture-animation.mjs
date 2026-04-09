@@ -92,7 +92,7 @@ function parseArgs() {
     targetWidth: null,          // target output width (null = from maxSize)
     targetHeight: null,         // target output height (null = from maxSize)
     targetFps: null,            // target output FPS (null = from capture timing)
-    jpegQuality: 90,            // JPEG quality for screencast capture
+    jpegQuality: 100,           // JPEG quality for screencast capture (100 = best loop detection)
     extractKeyframes: false,
     verbose: false,
   };
@@ -520,36 +520,52 @@ async function captureFrames(page, options) {
     simHistory.push(simToFirst);
 
     // Peak detection for loop
+    // Peak detection for loop — only track high-similarity peaks
+    // In screenshot mode PNG capture is lossless, but sampling noise gives 95-97% peaks
+    const MIN_LOOP_PEAK_SIM = 0.94;
+
     if (frames.length > 5) {
       if (rising && simToFirst < prevSim - 0.002) {
-        peakIndices.push(frames.length - 2);
+        const peakFrame = frames.length - 2;
+        const peakSim = simHistory[peakFrame];
         rising = false;
 
-        if (peakIndices.length === 1 && verbose) {
-          console.log(`   First similarity peak at frame ${peakIndices[0]} (sim=${(simHistory[peakIndices[0]] * 100).toFixed(1)}%)`);
-        }
+        // Only store peaks with high similarity to first frame
+        if (peakSim >= MIN_LOOP_PEAK_SIM) {
+          peakIndices.push(peakFrame);
 
-        if (peakIndices.length >= 2) {
-          const loopLength = peakIndices[peakIndices.length - 1] - peakIndices[peakIndices.length - 2];
-          const peakSim1 = simHistory[peakIndices[peakIndices.length - 2]];
-          const peakSim2 = simHistory[peakIndices[peakIndices.length - 1]];
+          if (peakIndices.length === 1 && verbose) {
+            console.log(`   First high similarity peak at frame ${peakFrame} (sim=${(peakSim * 100).toFixed(1)}%)`);
+          }
 
-          if (loopLength >= 10 && Math.abs(peakSim1 - peakSim2) < 0.02) {
+          if (peakIndices.length >= 2) {
+            const loopLength = peakIndices[peakIndices.length - 1] - peakIndices[peakIndices.length - 2];
+            const peakSim1 = simHistory[peakIndices[peakIndices.length - 2]];
+            const peakSim2 = simHistory[peakIndices[peakIndices.length - 1]];
+
+            // Accept cycle if: enough frames OR enough time (>= 2s)
+            const cycleStart = peakIndices[peakIndices.length - 2];
             const cycleEnd = peakIndices[peakIndices.length - 1];
+            const cycleDuration = timestamps[cycleEnd - 1] - timestamps[cycleStart];
+            const MIN_CYCLE_MS = 2000;
+            const meetsFrameReq = loopLength >= minFrames;
+            const meetsTimeReq = cycleDuration >= MIN_CYCLE_MS;
 
-            // Enforce minimum frames
-            if (cycleEnd < minFrames) {
-              if (verbose) {
-                console.log(`   Potential loop at frame ${cycleEnd} but need at least ${minFrames} frames, continuing...`);
-              }
-            } else {
-              const cycleDuration = timestamps[cycleEnd - 1] - timestamps[0];
-              console.log(`   Loop detected: cycle length = ${loopLength} frames (total: ${cycleEnd})`);
+            if ((meetsFrameReq || meetsTimeReq) && Math.abs(peakSim1 - peakSim2) < 0.03) {
+              console.log(`   Loop detected: cycle length = ${loopLength} frames`);
+              console.log(`   Cycle: frames ${cycleStart} to ${cycleEnd}`);
               console.log(`   Peak similarities: ${(peakSim1 * 100).toFixed(1)}%, ${(peakSim2 * 100).toFixed(1)}%`);
               console.log(`   Real cycle duration: ${cycleDuration}ms`);
-              frames.length = cycleEnd;
-              timestamps.length = cycleEnd;
+              // Slice to one cycle
+              const trimmedFrames = frames.slice(cycleStart, cycleEnd);
+              const trimmedTimestamps = timestamps.slice(cycleStart, cycleEnd);
+              frames.length = 0;
+              frames.push(...trimmedFrames);
+              timestamps.length = 0;
+              timestamps.push(...trimmedTimestamps);
               break;
+            } else if (!meetsFrameReq && !meetsTimeReq && verbose) {
+              console.log(`   Potential loop but cycle too short: ${loopLength} frames / ${cycleDuration}ms, continuing...`);
             }
           }
         }
@@ -598,12 +614,14 @@ async function captureFrames(page, options) {
  * screencast uses a push model where Chrome sends frames as they are composited.
  * JPEG encoding in the browser process is much faster than PNG.
  *
- * Frames arrive as JPEG and are converted to PNG for the processing pipeline.
+ * Loop detection: every JPEG frame is decoded and compared to the first frame.
+ * At quality 100, loop boundaries produce 100% similarity peaks, making detection
+ * trivial and accurate. Two consecutive peaks separated by >= minFrames = one loop.
  */
 async function captureFramesScreencast(page, options) {
   const { loopTimeout, staticTimeout, similarity, minFrames, verbose, jpegQuality } = options;
 
-  const frames = [];
+  const jpegBuffers = [];   // raw JPEG buffers for later PNG conversion
   const timestamps = [];
   const simHistory = [];
   let firstPixels = null;
@@ -616,6 +634,7 @@ async function captureFramesScreencast(page, options) {
   let prevSim = 0;
   let rising = true;
   let loopDetected = false;
+  let cycleStartIndex = 0;
   let cycleEndIndex = -1;
 
   // Get the page's viewport size for screencast dimensions
@@ -631,7 +650,7 @@ async function captureFramesScreencast(page, options) {
   // Create CDP session
   const cdp = await page.context().newCDPSession(page);
 
-  // Set up frame handler
+  // Set up frame handler — collect JPEG frames for later processing
   const frameQueue = [];
   let processingDone = false;
 
@@ -648,7 +667,7 @@ async function captureFramesScreencast(page, options) {
       // Session may be closed during cleanup
     }
 
-    frameQueue.push({ buffer, captureTime, timestamp: event.metadata.timestamp });
+    frameQueue.push({ buffer, captureTime });
   });
 
   // Start screencast
@@ -660,135 +679,94 @@ async function captureFramesScreencast(page, options) {
     everyNthFrame: 1,
   });
 
-  // Process frames from the queue
+  // Process frames from the queue — decode each JPEG for pixel comparison
   const processInterval = setInterval(() => {
     while (frameQueue.length > 0 && !loopDetected) {
       const { buffer: jpegBuffer, captureTime } = frameQueue.shift();
 
-      // Convert JPEG to PNG for pixel comparison and processing pipeline
-      // We use sharp-less approach: decode JPEG via a canvas-free method
-      // For now, store as JPEG and we'll convert at the end
-      // Actually, we need pixel data for comparison. Let's use the PNG approach:
-      // Convert JPEG buffer to PNG using pngjs by creating a temporary image
+      // Decode JPEG to get pixel data for loop detection comparison
+      let currentPixels;
+      try {
+        const jpegData = jpeg.decode(jpegBuffer, { useTArray: true });
+        currentPixels = Buffer.from(jpegData.data);
 
-      // For screencast, we store the raw JPEG buffer and decode only when needed
-      // for comparison. We'll batch-convert to PNG at the end for the pipeline.
+        if (firstPixels === null) {
+          firstPixels = currentPixels;
+          lastPixels = currentPixels;
+          totalPixels = jpegData.width * jpegData.height;
+        }
+      } catch {
+        continue; // skip bad frames
+      }
+
+      jpegBuffers.push(jpegBuffer);
       timestamps.push(captureTime);
-      const frameIndex = frames.length;
+      const frameIndex = jpegBuffers.length - 1;
 
-      // For pixel comparison, we need to decode. Since we're receiving JPEG,
-      // we'll use execSync with ffmpeg to convert single frames, or we can
-      // use the page.screenshot approach for just the first frame comparison.
-      // Better approach: store JPEG buffers and use a lightweight decoder.
-
-      // Since we have pngjs but not a JPEG decoder, let's capture the
-      // first frame and comparison frames via CDP captureScreenshot as PNG
-      // and use JPEG buffers for the actual output frames.
-
-      // Simplest correct approach: store all frames as JPEG buffers,
-      // do loop detection by periodically taking a PNG screenshot for comparison.
-      frames.push(jpegBuffer);
-
-      if (frameIndex % 50 === 0 && frameIndex > 0) {
-        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-        const fps = (frames.length / ((Date.now() - startTime) / 1000)).toFixed(1);
-        console.log(`   Frame ${frames.length} captured (${elapsed}s elapsed, ~${fps} FPS)`);
+      if (frameIndex === 0) {
+        simHistory.push(1.0);
+        console.log(`   Frame 1 captured (reference frame, ${captureW}x${captureH})`);
+        continue;
       }
-
-      // Check timeouts
-      const staticElapsed = (Date.now() - lastChangeTime) / 1000;
-      if (staticElapsed >= staticTimeout) {
-        console.log(`   Static timeout reached (${staticTimeout}s with no change)`);
-        loopDetected = true;
-        cycleEndIndex = frames.length;
-        break;
-      }
-
-      const totalElapsed = (Date.now() - startTime) / 1000;
-      if (totalElapsed >= loopTimeout) {
-        console.log(`   Loop timeout reached (${loopTimeout}s total)`);
-        loopDetected = true;
-        cycleEndIndex = frames.length;
-        break;
-      }
-    }
-  }, 10);
-
-  // For loop detection in screencast mode, periodically capture a PNG screenshot
-  // and compare to the first frame. This is cheaper than decoding every JPEG frame.
-  let firstPngPixels = null;
-  let lastPngPixels = null;
-  let firstPngWidth = 0;
-  let firstPngHeight = 0;
-  let comparisonCount = 0;
-
-  // Take comparison screenshots every ~250ms for loop detection
-  const comparisonInterval = setInterval(async () => {
-    if (loopDetected || processingDone) return;
-
-    try {
-      const result = await cdp.send('Page.captureScreenshot', {
-        format: 'png',
-        optimizeForSpeed: true,
-      });
-      const pngBuffer = Buffer.from(result.data, 'base64');
-      const decoded = PNG.sync.read(pngBuffer);
-      const currentPixels = decoded.data;
-      comparisonCount++;
-
-      if (firstPngPixels === null) {
-        firstPngPixels = currentPixels;
-        lastPngPixels = currentPixels;
-        firstPngWidth = decoded.width;
-        firstPngHeight = decoded.height;
-        return;
-      }
-
-      const pngTotalPixels = decoded.width * decoded.height;
 
       // Check if frame changed (for static detection)
-      const simToPrev = comparePixelData(currentPixels, lastPngPixels, pngTotalPixels);
+      const simToPrev = comparePixelData(currentPixels, lastPixels, totalPixels);
       if (simToPrev < similarity) {
         lastChangeTime = Date.now();
       }
-      lastPngPixels = currentPixels;
+      lastPixels = currentPixels;
 
       // Compare to first frame for loop detection
-      const simToFirst = comparePixelData(currentPixels, firstPngPixels, pngTotalPixels);
+      const simToFirst = comparePixelData(currentPixels, firstPixels, totalPixels);
       simHistory.push(simToFirst);
 
-      if (verbose && comparisonCount % 4 === 0) {
-        console.log(`   Comparison ${comparisonCount}: sim=${(simToFirst * 100).toFixed(1)}% (${frames.length} frames captured)`);
-      }
+      // Peak detection for loop detection
+      // Only track high-similarity peaks (near loop boundaries) to avoid
+      // false positives from internal oscillations within a single animation cycle.
+      // At JPEG quality 100, real loop peaks are 98-100%; internal oscillations 85-95%.
+      const MIN_LOOP_PEAK_SIM = 0.95;
 
-      // Peak detection for loop (same logic as screenshot mode)
-      if (simHistory.length > 5) {
+      if (jpegBuffers.length > 5) {
         if (rising && simToFirst < prevSim - 0.002) {
-          peakIndices.push({ simIndex: simHistory.length - 2, frameIndex: frames.length });
+          const peakFrame = jpegBuffers.length - 2;
+          const peakSim = simHistory[peakFrame];
           rising = false;
 
-          if (peakIndices.length === 1 && verbose) {
-            console.log(`   First similarity peak at comparison ${simHistory.length - 2} (~frame ${frames.length}, sim=${(simHistory[simHistory.length - 2] * 100).toFixed(1)}%)`);
+          if (verbose && peakSim >= MIN_LOOP_PEAK_SIM) {
+            console.log(`   High similarity peak at frame ${peakFrame} (sim=${(peakSim * 100).toFixed(1)}%)`);
           }
 
-          if (peakIndices.length >= 2) {
-            const peak1 = peakIndices[peakIndices.length - 2];
-            const peak2 = peakIndices[peakIndices.length - 1];
-            const loopFrames = peak2.frameIndex - peak1.frameIndex;
-            const peakSim1 = simHistory[peak1.simIndex];
-            const peakSim2 = simHistory[peak2.simIndex];
+          // Only store peaks with high similarity to first frame
+          if (peakSim >= MIN_LOOP_PEAK_SIM) {
+            peakIndices.push(peakFrame);
 
-            // Require loop length to be at least minFrames to avoid false positives
-            // from minor similarity oscillations within a single animation cycle
-            if (loopFrames >= minFrames && Math.abs(peakSim1 - peakSim2) < 0.02) {
-              const cycleDuration = timestamps[peak2.frameIndex - 1] - timestamps[0];
-              console.log(`   Loop detected: cycle length = ${loopFrames} frames (total: ${peak2.frameIndex})`);
-              console.log(`   Peak similarities: ${(peakSim1 * 100).toFixed(1)}%, ${(peakSim2 * 100).toFixed(1)}%`);
-              console.log(`   Real cycle duration: ${cycleDuration}ms`);
-              loopDetected = true;
-              cycleEndIndex = peak2.frameIndex;
-            } else if (loopFrames < minFrames && verbose) {
-              console.log(`   Potential loop at frame ${peak2.frameIndex} but cycle length ${loopFrames} < ${minFrames} min frames, continuing...`);
+            if (peakIndices.length >= 2) {
+              const loopLength = peakIndices[peakIndices.length - 1] - peakIndices[peakIndices.length - 2];
+              const peakSim1 = simHistory[peakIndices[peakIndices.length - 2]];
+              const peakSim2 = simHistory[peakIndices[peakIndices.length - 1]];
+
+              // Accept cycle if: (a) enough frames OR (b) enough time (>= 2s)
+              // This ensures loop detection works at both high FPS (many frames)
+              // and low FPS (fewer frames but same real-world duration)
+              const cycleStart = peakIndices[peakIndices.length - 2];
+              const cycleEnd = peakIndices[peakIndices.length - 1];
+              const cycleDuration = timestamps[cycleEnd - 1] - timestamps[cycleStart];
+              const MIN_CYCLE_MS = 2000;
+              const meetsFrameReq = loopLength >= minFrames;
+              const meetsTimeReq = cycleDuration >= MIN_CYCLE_MS;
+
+              if ((meetsFrameReq || meetsTimeReq) && Math.abs(peakSim1 - peakSim2) < 0.03) {
+                console.log(`   Loop detected: cycle length = ${loopLength} frames`);
+                console.log(`   Cycle: frames ${cycleStart} to ${cycleEnd}`);
+                console.log(`   Peak similarities: ${(peakSim1 * 100).toFixed(1)}%, ${(peakSim2 * 100).toFixed(1)}%`);
+                console.log(`   Real cycle duration: ${cycleDuration}ms`);
+                loopDetected = true;
+                cycleStartIndex = cycleStart;
+                cycleEndIndex = cycleEnd;
+                break;
+              } else if (!meetsFrameReq && !meetsTimeReq && verbose) {
+                console.log(`   Potential loop at frame ${peakIndices[peakIndices.length - 1]} but cycle length ${loopLength} frames / ${cycleDuration}ms too short, continuing...`);
+              }
             }
           }
         } else if (simToFirst > prevSim + 0.002) {
@@ -797,10 +775,30 @@ async function captureFramesScreencast(page, options) {
       }
       prevSim = simToFirst;
 
-    } catch {
-      // Page may be closing
+      if (frameIndex % 50 === 0) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        const fps = (jpegBuffers.length / ((Date.now() - startTime) / 1000)).toFixed(1);
+        console.log(`   Frame ${jpegBuffers.length} captured (${elapsed}s elapsed, ~${fps} FPS, sim=${(simToFirst * 100).toFixed(1)}%)`);
+      }
+
+      // Check timeouts
+      const staticElapsed = (Date.now() - lastChangeTime) / 1000;
+      if (staticElapsed >= staticTimeout) {
+        console.log(`   Static timeout reached (${staticTimeout}s with no change)`);
+        loopDetected = true;
+        cycleEndIndex = jpegBuffers.length;
+        break;
+      }
+
+      const totalElapsed = (Date.now() - startTime) / 1000;
+      if (totalElapsed >= loopTimeout) {
+        console.log(`   Loop timeout reached (${loopTimeout}s total)`);
+        loopDetected = true;
+        cycleEndIndex = jpegBuffers.length;
+        break;
+      }
     }
-  }, 250);
+  }, 5);
 
   // Wait for loop detection or timeout
   await new Promise(resolve => {
@@ -815,7 +813,6 @@ async function captureFramesScreencast(page, options) {
   // Stop screencast and clean up
   processingDone = true;
   clearInterval(processInterval);
-  clearInterval(comparisonInterval);
 
   try {
     await cdp.send('Page.stopScreencast');
@@ -828,19 +825,24 @@ async function captureFramesScreencast(page, options) {
     // May already be detached
   }
 
-  // Trim to cycle
-  if (cycleEndIndex > 0 && cycleEndIndex < frames.length) {
-    frames.length = cycleEndIndex;
-    timestamps.length = cycleEndIndex;
+  // Trim to one cycle (from first peak to second peak)
+  if (cycleEndIndex > 0) {
+    const trimmedBuffers = jpegBuffers.slice(cycleStartIndex, cycleEndIndex);
+    const trimmedTimestamps = timestamps.slice(cycleStartIndex, cycleEndIndex);
+    jpegBuffers.length = 0;
+    jpegBuffers.push(...trimmedBuffers);
+    timestamps.length = 0;
+    timestamps.push(...trimmedTimestamps);
+    console.log(`   Trimmed to ${jpegBuffers.length} frames (cycle ${cycleStartIndex}-${cycleEndIndex})`);
   }
 
   // Convert JPEG frames to PNG for the processing pipeline using jpeg-js + pngjs
-  console.log(`\nConverting ${frames.length} JPEG frames to PNG...`);
+  console.log(`\nConverting ${jpegBuffers.length} JPEG frames to PNG...`);
   const pngFrames = [];
 
-  for (let i = 0; i < frames.length; i++) {
+  for (let i = 0; i < jpegBuffers.length; i++) {
     try {
-      const jpegData = jpeg.decode(frames[i], { useTArray: true });
+      const jpegData = jpeg.decode(jpegBuffers[i], { useTArray: true });
       const png = new PNG({ width: jpegData.width, height: jpegData.height });
       png.data = Buffer.from(jpegData.data);
       pngFrames.push(PNG.sync.write(png));
@@ -849,12 +851,12 @@ async function captureFramesScreencast(page, options) {
     }
 
     if ((i + 1) % 100 === 0) {
-      console.log(`   Converted ${i + 1}/${frames.length} frames...`);
+      console.log(`   Converted ${i + 1}/${jpegBuffers.length} frames...`);
     }
   }
-  console.log(`   Converted ${pngFrames.length}/${frames.length} frames to PNG`);
+  console.log(`   Converted ${pngFrames.length}/${jpegBuffers.length} frames to PNG`);
 
-  const finalFrames = pngFrames.length > 0 ? pngFrames : frames;
+  const finalFrames = pngFrames.length > 0 ? pngFrames : jpegBuffers;
 
   if (timestamps.length >= 2) {
     const totalTime = timestamps[timestamps.length - 1] - timestamps[0];

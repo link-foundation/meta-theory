@@ -38,14 +38,17 @@
  *   --no-crop              Disable auto-crop to content
  *   --crop-padding N       Padding around content after crop in px (default: auto)
  *   --extract-keyframes    Extract 3 key frames as PNG for quality verification
- *   --capture-mode MODE    Capture method: screencast (CDP push, 30-60 FPS) or
+ *   --capture-mode MODE    Capture method: screencast (CDP push, 30-60 FPS),
+ *                         beginframe (deterministic frame-perfect), or
  *                         screenshot (polling, 3-8 FPS). Default: screencast
  *   --source-width N       Source capture viewport width (default: auto from max-size)
  *   --source-height N      Source capture viewport height (default: auto from max-size)
  *   --target-width N       Target output width (default: from max-size)
  *   --target-height N      Target output height (default: from max-size)
  *   --target-fps N         Target output FPS (default: derived from capture timing)
- *   --jpeg-quality N       JPEG quality for screencast capture 0-100 (default: 90)
+ *   --jpeg-quality N       JPEG quality for screencast capture 0-100 (default: 100)
+ *   --screencast-format F  Format for screencast frames: jpeg or png (default: png)
+ *   --preheat              Capture twice, use second (warmer) run for better quality
  *   --verbose              Enable verbose logging
  */
 
@@ -86,13 +89,15 @@ function parseArgs() {
     similarity: 0.99,
     crop: true,
     cropPadding: null, // null = auto
-    captureMode: 'screencast',  // 'screencast' (CDP push, high FPS) or 'screenshot' (polling)
+    captureMode: 'screencast',  // 'screencast' (CDP push), 'beginframe' (deterministic), or 'screenshot' (polling)
     sourceWidth: null,          // source capture viewport width (null = auto)
     sourceHeight: null,         // source capture viewport height (null = auto)
     targetWidth: null,          // target output width (null = from maxSize)
     targetHeight: null,         // target output height (null = from maxSize)
     targetFps: null,            // target output FPS (null = from capture timing)
     jpegQuality: 100,           // JPEG quality for screencast capture (100 = best loop detection)
+    screencastFormat: 'png',    // 'png' (lossless) or 'jpeg' for screencast frames
+    preheat: false,             // capture twice, use second (warmer) run
     extractKeyframes: false,
     verbose: false,
   };
@@ -154,8 +159,8 @@ function parseArgs() {
           break;
         case '--capture-mode':
           options.captureMode = args[++i].toLowerCase();
-          if (!['screencast', 'screenshot'].includes(options.captureMode)) {
-            console.error('Error: --capture-mode must be "screencast" or "screenshot"');
+          if (!['screencast', 'screenshot', 'beginframe'].includes(options.captureMode)) {
+            console.error('Error: --capture-mode must be "screencast", "beginframe", or "screenshot"');
             process.exit(1);
           }
           break;
@@ -176,6 +181,16 @@ function parseArgs() {
           break;
         case '--jpeg-quality':
           options.jpegQuality = parseInt(args[++i], 10);
+          break;
+        case '--screencast-format':
+          options.screencastFormat = args[++i].toLowerCase();
+          if (!['jpeg', 'png'].includes(options.screencastFormat)) {
+            console.error('Error: --screencast-format must be "jpeg" or "png"');
+            process.exit(1);
+          }
+          break;
+        case '--preheat':
+          options.preheat = true;
           break;
         case '--extract-keyframes':
           options.extractKeyframes = true;
@@ -612,16 +627,15 @@ async function captureFrames(page, options) {
  *
  * Unlike page.screenshot() which requires a full round-trip per frame,
  * screencast uses a push model where Chrome sends frames as they are composited.
- * JPEG encoding in the browser process is much faster than PNG.
  *
- * Loop detection: every JPEG frame is decoded and compared to the first frame.
- * At quality 100, loop boundaries produce 100% similarity peaks, making detection
- * trivial and accurate. Two consecutive peaks separated by >= minFrames = one loop.
+ * Loop detection uses ALL frames for pixel comparison to ensure accurate cycle
+ * boundary detection. Each frame is decoded inline for real-time similarity tracking.
+ * With lossless PNG format, loop boundaries produce exact 100% similarity peaks.
  */
 async function captureFramesScreencast(page, options) {
-  const { loopTimeout, staticTimeout, similarity, minFrames, verbose, jpegQuality } = options;
+  const { loopTimeout, staticTimeout, similarity, minFrames, verbose, jpegQuality, screencastFormat } = options;
 
-  const jpegBuffers = [];   // raw JPEG buffers for later PNG conversion
+  const frameBuffers = [];   // raw frame buffers (JPEG or PNG from screencast)
   const timestamps = [];
   const simHistory = [];
   let firstPixels = null;
@@ -637,20 +651,34 @@ async function captureFramesScreencast(page, options) {
   let cycleStartIndex = 0;
   let cycleEndIndex = -1;
 
-  // Get the page's viewport size for screencast dimensions
+  // Get the page's viewport size (may be larger than target for content margin)
   const viewportSize = page.viewportSize();
-  const captureW = viewportSize.width;
-  const captureH = viewportSize.height;
+  const viewportW = viewportSize.width;
+  const viewportH = viewportSize.height;
 
-  console.log(`\nCapturing frames via CDP screencast (JPEG quality: ${jpegQuality}, min-frames: ${minFrames})...`);
-  console.log(`   Screencast resolution: ${captureW}x${captureH}`);
+  // Screencast stream resolution: use target output size + margin for crop.
+  // The viewport may be larger (2x for content layout), but the screencast stream
+  // is scaled down by Chrome's compositor (fast GPU operation) for higher FPS.
+  // We add 10% margin for auto-crop padding.
+  const targetMaxSize = options.targetWidth ? Math.max(options.targetWidth, options.targetHeight) : options.maxSize;
+  const streamSize = Math.round(targetMaxSize * 1.1);
+  const captureW = streamSize % 2 === 0 ? streamSize : streamSize + 1;
+  const captureH = captureW;
+
+  const useJpeg = screencastFormat === 'jpeg';
+  const formatLabel = useJpeg ? `JPEG quality: ${jpegQuality}` : 'PNG (lossless)';
+
+  console.log(`\nCapturing frames via CDP screencast (${formatLabel}, min-frames: ${minFrames})...`);
+  console.log(`   Viewport (layout): ${viewportW}x${viewportH}`);
+  console.log(`   Screencast stream: ${captureW}x${captureH} (downscaled from viewport by Chrome)`);
   console.log(`   Loop timeout: ${loopTimeout}s | Static timeout: ${staticTimeout}s`);
   console.log(`   Similarity threshold: ${similarity}`);
+  console.log(`   Loop detection: comparing ALL frames (no sampling)`);
 
   // Create CDP session
   const cdp = await page.context().newCDPSession(page);
 
-  // Set up frame handler — collect JPEG frames for later processing
+  // Set up frame handler — collect frames for processing
   const frameQueue = [];
   let processingDone = false;
 
@@ -670,151 +698,144 @@ async function captureFramesScreencast(page, options) {
     frameQueue.push({ buffer, captureTime });
   });
 
-  // Start screencast
+  // Start screencast with stream resolution (not viewport resolution)
   await cdp.send('Page.startScreencast', {
-    format: 'jpeg',
-    quality: jpegQuality,
+    format: useJpeg ? 'jpeg' : 'png',
+    quality: useJpeg ? jpegQuality : 100,
     maxWidth: captureW,
     maxHeight: captureH,
     everyNthFrame: 1,
   });
 
-  // Phase 1: Fast frame collection — store all JPEG buffers without decoding.
-  // This keeps the event loop free so Chrome can push frames at full FPS.
-  // Loop detection is done separately to avoid blocking frame delivery.
-  const collectInterval = setInterval(() => {
-    while (frameQueue.length > 0 && !loopDetected) {
-      const { buffer: jpegBuffer, captureTime } = frameQueue.shift();
-      jpegBuffers.push(jpegBuffer);
-      timestamps.push(captureTime);
-
-      const frameIndex = jpegBuffers.length - 1;
-      if (frameIndex === 0) {
-        console.log(`   Frame 1 captured (reference frame, ${captureW}x${captureH})`);
-      }
-      if (frameIndex > 0 && frameIndex % 50 === 0) {
-        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-        const fps = (jpegBuffers.length / ((Date.now() - startTime) / 1000)).toFixed(1);
-        console.log(`   Frame ${jpegBuffers.length} captured (${elapsed}s elapsed, ~${fps} FPS)`);
-      }
+  // Decode a frame buffer to get raw RGBA pixel data
+  function decodeFrame(buffer) {
+    if (useJpeg) {
+      const jpegData = jpeg.decode(buffer, { useTArray: true });
+      return { pixels: Buffer.from(jpegData.data), width: jpegData.width, height: jpegData.height };
+    } else {
+      const pngData = PNG.sync.read(buffer);
+      return { pixels: pngData.data, width: pngData.width, height: pngData.height };
     }
+  }
 
-    // Check timeouts
-    if (!loopDetected && jpegBuffers.length > 0) {
+  // Process frames: collect AND compare ALL frames for loop detection.
+  // Each frame is decoded for pixel comparison to ensure accurate cycle detection.
+  const processInterval = setInterval(() => {
+    while (frameQueue.length > 0 && !loopDetected) {
+      const { buffer: frameBuffer, captureTime } = frameQueue.shift();
+
+      // Decode frame for pixel comparison
+      let currentPixels;
+      try {
+        const decoded = decodeFrame(frameBuffer);
+        currentPixels = decoded.pixels;
+
+        if (firstPixels === null) {
+          firstPixels = currentPixels;
+          lastPixels = currentPixels;
+          totalPixels = decoded.width * decoded.height;
+        }
+      } catch {
+        continue; // skip bad frames
+      }
+
+      frameBuffers.push(frameBuffer);
+      timestamps.push(captureTime);
+      const frameIndex = frameBuffers.length - 1;
+
+      if (frameIndex === 0) {
+        simHistory.push(1.0);
+        console.log(`   Frame 1 captured (reference frame, ${captureW}x${captureH})`);
+        continue;
+      }
+
+      // Check if frame changed (for static detection)
+      const simToPrev = comparePixelData(currentPixels, lastPixels, totalPixels);
+      if (simToPrev < similarity) {
+        lastChangeTime = Date.now();
+      }
+      lastPixels = currentPixels;
+
+      // Compare to first frame for loop detection
+      const simToFirst = comparePixelData(currentPixels, firstPixels, totalPixels);
+      simHistory.push(simToFirst);
+
+      // Peak detection for loop detection
+      // Only track high-similarity peaks (near loop boundaries) to avoid
+      // false positives from internal oscillations within a single animation cycle.
+      // With lossless PNG, real loop peaks are 100%; with JPEG Q100, peaks are 98-100%.
+      const MIN_LOOP_PEAK_SIM = useJpeg ? 0.95 : 0.97;
+
+      if (frameBuffers.length > 5) {
+        if (rising && simToFirst < prevSim - 0.002) {
+          const peakFrame = frameBuffers.length - 2;
+          const peakSim = simHistory[peakFrame];
+          rising = false;
+
+          if (verbose && peakSim >= MIN_LOOP_PEAK_SIM) {
+            console.log(`   High similarity peak at frame ${peakFrame} (sim=${(peakSim * 100).toFixed(1)}%)`);
+          }
+
+          // Only store peaks with high similarity to first frame
+          if (peakSim >= MIN_LOOP_PEAK_SIM) {
+            peakIndices.push(peakFrame);
+
+            if (peakIndices.length >= 2) {
+              const loopLength = peakIndices[peakIndices.length - 1] - peakIndices[peakIndices.length - 2];
+              const peakSim1 = simHistory[peakIndices[peakIndices.length - 2]];
+              const peakSim2 = simHistory[peakIndices[peakIndices.length - 1]];
+
+              // Accept cycle if: (a) enough frames OR (b) enough time (>= 2s)
+              const cycleStart = peakIndices[peakIndices.length - 2];
+              const cycleEnd = peakIndices[peakIndices.length - 1];
+              const cycleDuration = timestamps[cycleEnd - 1] - timestamps[cycleStart];
+              const MIN_CYCLE_MS = 2000;
+              const meetsFrameReq = loopLength >= minFrames;
+              const meetsTimeReq = cycleDuration >= MIN_CYCLE_MS;
+
+              if ((meetsFrameReq || meetsTimeReq) && Math.abs(peakSim1 - peakSim2) < 0.03) {
+                console.log(`   Loop detected: cycle length = ${loopLength} frames`);
+                console.log(`   Cycle: frames ${cycleStart} to ${cycleEnd}`);
+                console.log(`   Peak similarities: ${(peakSim1 * 100).toFixed(1)}%, ${(peakSim2 * 100).toFixed(1)}%`);
+                console.log(`   Real cycle duration: ${cycleDuration}ms`);
+                loopDetected = true;
+                cycleStartIndex = cycleStart;
+                cycleEndIndex = cycleEnd;
+                break;
+              } else if (!meetsFrameReq && !meetsTimeReq && verbose) {
+                console.log(`   Potential loop at frame ${peakIndices[peakIndices.length - 1]} but cycle length ${loopLength} frames / ${cycleDuration}ms too short, continuing...`);
+              }
+            }
+          }
+        } else if (simToFirst > prevSim + 0.002) {
+          rising = true;
+        }
+      }
+      prevSim = simToFirst;
+
+      if (frameIndex % 50 === 0) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        const fps = (frameBuffers.length / ((Date.now() - startTime) / 1000)).toFixed(1);
+        console.log(`   Frame ${frameBuffers.length} captured (${elapsed}s elapsed, ~${fps} FPS, sim=${(simToFirst * 100).toFixed(1)}%)`);
+      }
+
+      // Check timeouts
       const staticElapsed = (Date.now() - lastChangeTime) / 1000;
       if (staticElapsed >= staticTimeout) {
         console.log(`   Static timeout reached (${staticTimeout}s with no change)`);
         loopDetected = true;
-        cycleEndIndex = jpegBuffers.length;
+        cycleEndIndex = frameBuffers.length;
+        break;
       }
       const totalElapsed = (Date.now() - startTime) / 1000;
       if (totalElapsed >= loopTimeout) {
         console.log(`   Loop timeout reached (${loopTimeout}s total)`);
         loopDetected = true;
-        cycleEndIndex = jpegBuffers.length;
+        cycleEndIndex = frameBuffers.length;
+        break;
       }
     }
-  }, 2);
-
-  // Phase 2: Loop detection — decode every Nth frame for pixel comparison.
-  // Runs on a slower interval so it doesn't compete with frame collection.
-  // Decoding only sampled frames keeps CPU load low while providing accurate
-  // loop boundary detection with correct frame indices.
-  let nextCompareIndex = 0;
-  const COMPARE_EVERY_N = 3; // decode every 3rd frame for comparison
-
-  const compareInterval = setInterval(() => {
-    if (loopDetected || jpegBuffers.length <= nextCompareIndex) return;
-
-    // Decode the next frame to compare
-    const frameIndex = nextCompareIndex;
-    nextCompareIndex += COMPARE_EVERY_N;
-
-    let currentPixels;
-    try {
-      const jpegData = jpeg.decode(jpegBuffers[frameIndex], { useTArray: true });
-      currentPixels = Buffer.from(jpegData.data);
-
-      if (firstPixels === null) {
-        firstPixels = currentPixels;
-        lastPixels = currentPixels;
-        totalPixels = jpegData.width * jpegData.height;
-        return;
-      }
-    } catch {
-      return; // skip bad frames
-    }
-
-    // Check if frame changed (for static detection)
-    const simToPrev = comparePixelData(currentPixels, lastPixels, totalPixels);
-    if (simToPrev < similarity) {
-      lastChangeTime = Date.now();
-    }
-    lastPixels = currentPixels;
-
-    // Compare to first frame for loop detection
-    const simToFirst = comparePixelData(currentPixels, firstPixels, totalPixels);
-
-    // Store similarity keyed by actual frame index for accurate peak tracking
-    while (simHistory.length <= frameIndex) simHistory.push(-1);
-    simHistory[frameIndex] = simToFirst;
-
-    if (verbose && frameIndex % 30 === 0) {
-      console.log(`   Compare frame ${frameIndex}: sim=${(simToFirst * 100).toFixed(1)}%`);
-    }
-
-    // Peak detection for loop detection
-    // Only track high-similarity peaks (near loop boundaries) to avoid
-    // false positives from internal oscillations within a single animation cycle.
-    // At JPEG quality 100, real loop peaks are 98-100%; internal oscillations 85-95%.
-    const MIN_LOOP_PEAK_SIM = 0.95;
-
-    if (frameIndex > 5 * COMPARE_EVERY_N) {
-      if (rising && simToFirst < prevSim - 0.002) {
-        // The peak was at the previous compared frame
-        const peakFrame = frameIndex - COMPARE_EVERY_N;
-        const peakSim = simHistory[peakFrame];
-        rising = false;
-
-        if (peakSim >= 0 && peakSim >= MIN_LOOP_PEAK_SIM) {
-          if (verbose) {
-            console.log(`   High similarity peak at frame ${peakFrame} (sim=${(peakSim * 100).toFixed(1)}%)`);
-          }
-
-          peakIndices.push(peakFrame);
-
-          if (peakIndices.length >= 2) {
-            const loopLength = peakIndices[peakIndices.length - 1] - peakIndices[peakIndices.length - 2];
-            const peakSim1 = simHistory[peakIndices[peakIndices.length - 2]];
-            const peakSim2 = simHistory[peakIndices[peakIndices.length - 1]];
-
-            const cycleStart = peakIndices[peakIndices.length - 2];
-            const cycleEnd = peakIndices[peakIndices.length - 1];
-            const cycleDuration = timestamps[cycleEnd] - timestamps[cycleStart];
-            const MIN_CYCLE_MS = 2000;
-            const meetsFrameReq = loopLength >= minFrames;
-            const meetsTimeReq = cycleDuration >= MIN_CYCLE_MS;
-
-            if ((meetsFrameReq || meetsTimeReq) && Math.abs(peakSim1 - peakSim2) < 0.03) {
-              console.log(`   Loop detected: cycle length = ${loopLength} frames`);
-              console.log(`   Cycle: frames ${cycleStart} to ${cycleEnd}`);
-              console.log(`   Peak similarities: ${(peakSim1 * 100).toFixed(1)}%, ${(peakSim2 * 100).toFixed(1)}%`);
-              console.log(`   Real cycle duration: ${cycleDuration}ms`);
-              loopDetected = true;
-              cycleStartIndex = cycleStart;
-              cycleEndIndex = cycleEnd;
-              return;
-            } else if (!meetsFrameReq && !meetsTimeReq && verbose) {
-              console.log(`   Potential loop at frame ${peakIndices[peakIndices.length - 1]} but cycle length ${loopLength} frames / ${cycleDuration}ms too short, continuing...`);
-            }
-          }
-        }
-      } else if (simToFirst > prevSim + 0.002) {
-        rising = true;
-      }
-    }
-    prevSim = simToFirst;
-  }, 20);
+  }, 5);
 
   // Wait for loop detection or timeout
   await new Promise(resolve => {
@@ -828,8 +849,7 @@ async function captureFramesScreencast(page, options) {
 
   // Stop screencast and clean up
   processingDone = true;
-  clearInterval(collectInterval);
-  clearInterval(compareInterval);
+  clearInterval(processInterval);
 
   try {
     await cdp.send('Page.stopScreencast');
@@ -844,36 +864,41 @@ async function captureFramesScreencast(page, options) {
 
   // Trim to one cycle (from first peak to second peak)
   if (cycleEndIndex > 0) {
-    const trimmedBuffers = jpegBuffers.slice(cycleStartIndex, cycleEndIndex);
+    const trimmedBuffers = frameBuffers.slice(cycleStartIndex, cycleEndIndex);
     const trimmedTimestamps = timestamps.slice(cycleStartIndex, cycleEndIndex);
-    jpegBuffers.length = 0;
-    jpegBuffers.push(...trimmedBuffers);
+    frameBuffers.length = 0;
+    frameBuffers.push(...trimmedBuffers);
     timestamps.length = 0;
     timestamps.push(...trimmedTimestamps);
-    console.log(`   Trimmed to ${jpegBuffers.length} frames (cycle ${cycleStartIndex}-${cycleEndIndex})`);
+    console.log(`   Trimmed to ${frameBuffers.length} frames (cycle ${cycleStartIndex}-${cycleEndIndex})`);
   }
 
-  // Convert JPEG frames to PNG for the processing pipeline using jpeg-js + pngjs
-  console.log(`\nConverting ${jpegBuffers.length} JPEG frames to PNG...`);
-  const pngFrames = [];
-
-  for (let i = 0; i < jpegBuffers.length; i++) {
-    try {
-      const jpegData = jpeg.decode(jpegBuffers[i], { useTArray: true });
-      const png = new PNG({ width: jpegData.width, height: jpegData.height });
-      png.data = Buffer.from(jpegData.data);
-      pngFrames.push(PNG.sync.write(png));
-    } catch (e) {
-      if (verbose) console.log(`   Warning: failed to convert frame ${i}: ${e.message}`);
+  // Convert frames to PNG for the processing pipeline
+  let pngFrames;
+  if (useJpeg) {
+    console.log(`\nConverting ${frameBuffers.length} JPEG frames to PNG...`);
+    pngFrames = [];
+    for (let i = 0; i < frameBuffers.length; i++) {
+      try {
+        const jpegData = jpeg.decode(frameBuffers[i], { useTArray: true });
+        const png = new PNG({ width: jpegData.width, height: jpegData.height });
+        png.data = Buffer.from(jpegData.data);
+        pngFrames.push(PNG.sync.write(png));
+      } catch (e) {
+        if (verbose) console.log(`   Warning: failed to convert frame ${i}: ${e.message}`);
+      }
+      if ((i + 1) % 100 === 0) {
+        console.log(`   Converted ${i + 1}/${frameBuffers.length} frames...`);
+      }
     }
-
-    if ((i + 1) % 100 === 0) {
-      console.log(`   Converted ${i + 1}/${jpegBuffers.length} frames...`);
-    }
+    console.log(`   Converted ${pngFrames.length}/${frameBuffers.length} frames to PNG`);
+  } else {
+    // Already PNG — use directly
+    pngFrames = frameBuffers;
+    console.log(`\nUsing ${pngFrames.length} lossless PNG frames directly (no conversion needed)`);
   }
-  console.log(`   Converted ${pngFrames.length}/${jpegBuffers.length} frames to PNG`);
 
-  const finalFrames = pngFrames.length > 0 ? pngFrames : jpegBuffers;
+  const finalFrames = pngFrames.length > 0 ? pngFrames : frameBuffers;
 
   if (timestamps.length >= 2) {
     const totalTime = timestamps[timestamps.length - 1] - timestamps[0];
@@ -886,6 +911,169 @@ async function captureFramesScreencast(page, options) {
   }
 
   return { frames: finalFrames, timestamps };
+}
+
+/**
+ * Capture frames using HeadlessExperimental.beginFrame for deterministic frame-perfect capture.
+ *
+ * This approach replaces Chrome's internal rendering loop with explicit frame control.
+ * Every frame is captured at exact intervals with no dropped frames or timing jitter.
+ * The animation clock advances deterministically, producing perfectly reproducible output.
+ *
+ * Requires Chrome launch args: --deterministic-mode, --enable-begin-frame-control, etc.
+ * Returns PNG frames (lossless).
+ */
+async function captureFramesBeginFrame(page, options) {
+  const { loopTimeout, minFrames, verbose, similarity } = options;
+
+  const targetFps = options.targetFps || 60;
+  const frameIntervalMs = 1000 / targetFps;
+  const maxDuration = loopTimeout * 1000;
+  const maxFrames = Math.ceil(maxDuration / frameIntervalMs);
+
+  const viewportSize = page.viewportSize();
+  const captureW = viewportSize.width;
+  const captureH = viewportSize.height;
+
+  console.log(`\nCapturing frames via HeadlessExperimental.beginFrame (deterministic, ${targetFps} FPS)...`);
+  console.log(`   Frame interval: ${frameIntervalMs.toFixed(2)}ms`);
+  console.log(`   Capture resolution: ${captureW}x${captureH}`);
+  console.log(`   Max duration: ${loopTimeout}s (${maxFrames} frames)`);
+
+  const cdp = await page.context().newCDPSession(page);
+
+  // Warm up: advance a few frames without capturing to let the page settle
+  const warmupFrames = Math.ceil(targetFps * 2); // 2 seconds warmup
+  console.log(`   Warming up (${warmupFrames} frames, ${(warmupFrames / targetFps).toFixed(1)}s)...`);
+  const baseTime = Date.now() * 1000; // microseconds
+  for (let i = 0; i < warmupFrames; i++) {
+    await cdp.send('HeadlessExperimental.beginFrame', {
+      frameTimeTicks: baseTime + i * frameIntervalMs * 1000,
+      interval: frameIntervalMs,
+      noDisplayUpdates: false,
+    });
+  }
+
+  // Capture frames with loop detection
+  const frames = [];
+  const timestamps = [];
+  const simHistory = [];
+  let firstPixels = null;
+  let lastPixels = null;
+  let totalPixels = 0;
+  let peakIndices = [];
+  let prevSim = 0;
+  let rising = true;
+  let cycleStartIndex = 0;
+  let cycleEndIndex = -1;
+  let loopDetected = false;
+
+  const captureStartTime = Date.now();
+  const captureBaseTime = baseTime + warmupFrames * frameIntervalMs * 1000;
+
+  console.log(`   Capturing frames...`);
+
+  for (let i = 0; i < maxFrames && !loopDetected; i++) {
+    const frameTick = captureBaseTime + i * frameIntervalMs * 1000;
+
+    let result;
+    try {
+      result = await cdp.send('HeadlessExperimental.beginFrame', {
+        frameTimeTicks: frameTick,
+        interval: frameIntervalMs,
+        noDisplayUpdates: false,
+        screenshot: { format: 'png' },
+      });
+    } catch (e) {
+      if (verbose) console.log(`   Frame ${i} error: ${e.message}`);
+      continue;
+    }
+
+    if (!result.screenshotData) continue;
+
+    const pngBuffer = Buffer.from(result.screenshotData, 'base64');
+    frames.push(pngBuffer);
+    timestamps.push(captureStartTime + i * frameIntervalMs);
+
+    // Decode for loop detection
+    let currentPixels;
+    try {
+      const pngData = PNG.sync.read(pngBuffer);
+      currentPixels = pngData.data;
+      if (firstPixels === null) {
+        firstPixels = currentPixels;
+        lastPixels = currentPixels;
+        totalPixels = pngData.width * pngData.height;
+        simHistory.push(1.0);
+        console.log(`   Frame 1 captured (reference frame, ${pngData.width}x${pngData.height})`);
+        continue;
+      }
+    } catch {
+      continue;
+    }
+
+    lastPixels = currentPixels;
+    const simToFirst = comparePixelData(currentPixels, firstPixels, totalPixels);
+    simHistory.push(simToFirst);
+
+    // Peak detection (same logic as screencast mode)
+    const MIN_LOOP_PEAK_SIM = 0.97; // PNG is lossless, expect very high similarity
+    const frameIndex = frames.length - 1;
+
+    if (frameIndex > 5) {
+      if (rising && simToFirst < prevSim - 0.002) {
+        const peakFrame = frameIndex - 1;
+        const peakSim = simHistory[peakFrame];
+        rising = false;
+
+        if (peakSim >= MIN_LOOP_PEAK_SIM) {
+          if (verbose) console.log(`   Peak at frame ${peakFrame} (sim=${(peakSim * 100).toFixed(1)}%)`);
+          peakIndices.push(peakFrame);
+
+          if (peakIndices.length >= 2) {
+            const loopLength = peakIndices[peakIndices.length - 1] - peakIndices[peakIndices.length - 2];
+            const peakSim1 = simHistory[peakIndices[peakIndices.length - 2]];
+            const peakSim2 = simHistory[peakIndices[peakIndices.length - 1]];
+            const cycleDuration = (peakIndices[peakIndices.length - 1] - peakIndices[peakIndices.length - 2]) * frameIntervalMs;
+
+            if ((loopLength >= minFrames || cycleDuration >= 2000) && Math.abs(peakSim1 - peakSim2) < 0.03) {
+              console.log(`   Loop detected: ${loopLength} frames (${cycleDuration.toFixed(0)}ms)`);
+              console.log(`   Peak similarities: ${(peakSim1 * 100).toFixed(1)}%, ${(peakSim2 * 100).toFixed(1)}%`);
+              loopDetected = true;
+              cycleStartIndex = peakIndices[peakIndices.length - 2];
+              cycleEndIndex = peakIndices[peakIndices.length - 1];
+            }
+          }
+        }
+      } else if (simToFirst > prevSim + 0.002) {
+        rising = true;
+      }
+    }
+    prevSim = simToFirst;
+
+    if (frameIndex > 0 && frameIndex % 60 === 0) {
+      const elapsed = (frameIndex / targetFps).toFixed(1);
+      console.log(`   Frame ${frameIndex + 1} (${elapsed}s, sim=${(simToFirst * 100).toFixed(1)}%)`);
+    }
+  }
+
+  try { await cdp.detach(); } catch {}
+
+  // Trim to one cycle
+  if (cycleEndIndex > 0) {
+    const trimmed = frames.slice(cycleStartIndex, cycleEndIndex);
+    const trimmedTs = timestamps.slice(cycleStartIndex, cycleEndIndex);
+    frames.length = 0;
+    frames.push(...trimmed);
+    timestamps.length = 0;
+    timestamps.push(...trimmedTs);
+    console.log(`   Trimmed to ${frames.length} frames (cycle ${cycleStartIndex}-${cycleEndIndex})`);
+  }
+
+  console.log(`   Total: ${frames.length} deterministic frames at ${targetFps} FPS`);
+  console.log(`   Duration: ${(frames.length / targetFps).toFixed(1)}s`);
+
+  return { frames, timestamps };
 }
 
 /**
@@ -1181,12 +1369,13 @@ async function main() {
     captureW = options.captureViewportWidth;
     captureH = options.captureViewportHeight;
     deviceScale = 1;
-  } else if (options.captureMode === 'screencast') {
-    // For screencast mode, use 1.05x the target size (just enough margin for crop padding).
-    // Screencast captures at 30-60 FPS so we don't need 2x supersampling — the high
-    // frame count compensates for slightly lower per-frame resolution. This reduces
-    // memory usage and processing time dramatically (1076x1076 vs 2150x2150).
-    const viewportSize = Math.round(options.maxSize * 1.05);
+  } else if (options.captureMode === 'screencast' || options.captureMode === 'beginframe') {
+    // For screencast/beginframe mode, use 2x the target size for high quality capture.
+    // The larger viewport ensures:
+    // 1. All content including labels (P0-P6) fits with adequate margin
+    // 2. Area-average downscale from 2x produces sharp, anti-aliased output
+    // 3. No content is clipped at edges
+    const viewportSize = Math.round(options.maxSize * 2 * 1.05);
     const size = viewportSize % 2 === 0 ? viewportSize : viewportSize + 1;
     captureW = size;
     captureH = size;
@@ -1207,6 +1396,9 @@ async function main() {
   console.log(`\nAnimation Capture Settings:`);
   console.log(`   URL: ${options.url}`);
   console.log(`   Capture mode: ${options.captureMode}`);
+  if (options.captureMode === 'screencast') {
+    console.log(`   Screencast format: ${options.screencastFormat.toUpperCase()}${options.screencastFormat === 'jpeg' ? ` (quality: ${options.jpegQuality})` : ' (lossless)'}`);
+  }
   console.log(`   Logical viewport: ${options.viewportWidth}x${options.viewportHeight}`);
   console.log(`   Source (capture) viewport: ${captureW}x${captureH} (deviceScaleFactor=${deviceScale})`);
   console.log(`   Effective source resolution: ${captureW * deviceScale}x${captureH * deviceScale}`);
@@ -1223,11 +1415,30 @@ async function main() {
   console.log(`   Format: ${options.format.toUpperCase()}`);
   console.log(`   Output: ${options.output}`);
   console.log(`   Auto-crop: ${options.crop}`);
+  if (options.preheat) {
+    console.log(`   Preheat: enabled (will capture twice, use warmer second run)`);
+  }
 
-  const browser = await chromium.launch({ headless: true });
+  // Launch browser with appropriate args
+  const launchOptions = { headless: true };
+  if (options.captureMode === 'beginframe') {
+    launchOptions.args = [
+      '--deterministic-mode',
+      '--enable-begin-frame-control',
+      '--disable-new-content-rendering-timeout',
+      '--run-all-compositor-stages-before-draw',
+      '--disable-threaded-animation',
+      '--disable-threaded-scrolling',
+      '--disable-checker-imaging',
+      '--disable-image-animation-resync',
+      '--enable-surface-synchronization',
+    ];
+  }
+
+  const browser = await chromium.launch(launchOptions);
   const context = await browser.newContext({
     viewport: { width: captureW, height: captureH },
-    deviceScaleFactor: deviceScale,  // 2x for high quality capture
+    deviceScaleFactor: deviceScale,
   });
   const page = await context.newPage();
 
@@ -1236,10 +1447,40 @@ async function main() {
     await page.goto(options.url, { waitUntil: 'networkidle' });
     await new Promise(r => setTimeout(r, 2000));
 
-    // Capture frames using selected mode
-    const captureResult = options.captureMode === 'screencast'
-      ? await captureFramesScreencast(page, options)
-      : await captureFrames(page, options);
+    // Select capture function based on mode
+    function runCapture() {
+      if (options.captureMode === 'beginframe') {
+        return captureFramesBeginFrame(page, options);
+      } else if (options.captureMode === 'screencast') {
+        return captureFramesScreencast(page, options);
+      } else {
+        return captureFrames(page, options);
+      }
+    }
+
+    // Preheat mode: capture once (warm caches), then capture again for better quality
+    let captureResult;
+    if (options.preheat) {
+      console.log('\n--- PREHEAT RUN (warming caches) ---');
+      const warmResult = await runCapture();
+      const warmFrameCount = warmResult.frames.length;
+      console.log(`   Preheat captured ${warmFrameCount} frames`);
+
+      // Reload page and wait for it to settle
+      console.log('\n--- ACTUAL CAPTURE (warmed) ---');
+      await page.goto(options.url, { waitUntil: 'networkidle' });
+      await new Promise(r => setTimeout(r, 2000));
+      captureResult = await runCapture();
+
+      const actualFrameCount = captureResult.frames.length;
+      console.log(`\n   Preheat comparison: warm=${warmFrameCount} frames, actual=${actualFrameCount} frames`);
+      if (actualFrameCount > warmFrameCount) {
+        console.log(`   Improvement: +${actualFrameCount - warmFrameCount} frames (${((actualFrameCount / warmFrameCount - 1) * 100).toFixed(1)}% more)`);
+      }
+    } else {
+      captureResult = await runCapture();
+    }
+
     const { frames: rawFrames, timestamps } = captureResult;
 
     if (rawFrames.length < 2) {

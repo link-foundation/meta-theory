@@ -926,7 +926,9 @@ async function captureFramesScreencast(page, options) {
 async function captureFramesBeginFrame(page, options) {
   const { loopTimeout, minFrames, verbose, similarity } = options;
 
-  const targetFps = options.targetFps || 60;
+  // beginFrame is synchronous — each frame takes ~100ms wall time.
+  // Default to 30 FPS (the animation clock is virtual, so this is fine).
+  const targetFps = options.targetFps || 30;
   const frameIntervalMs = 1000 / targetFps;
   const maxDuration = loopTimeout * 1000;
   const maxFrames = Math.ceil(maxDuration / frameIntervalMs);

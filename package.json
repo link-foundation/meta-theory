@@ -37,6 +37,7 @@
   "homepage": "https://github.com/link-foundation/meta-theory#readme",
   "dependencies": {
     "gif-encoder-2": "^1.0.5",
+    "jpeg-js": "^0.4.4",
     "playwright": "^1.57.0",
     "pngjs": "^7.0.0",
     "puppeteer": "^24.32.1"

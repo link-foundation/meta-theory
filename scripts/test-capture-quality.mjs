@@ -201,7 +201,7 @@ async function main() {
       console.log(`   Command: ${captureCmd}`);
       const captureLog = execSync(captureCmd, {
         cwd: ROOT_DIR,
-        timeout: 120000, // 2 minutes
+        timeout: 300000, // 5 minutes (screencast mode captures 500+ frames at ~60 FPS)
         encoding: 'utf8',
         stdio: ['pipe', 'pipe', 'pipe'],
       });

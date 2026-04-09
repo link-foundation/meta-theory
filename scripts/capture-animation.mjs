@@ -778,19 +778,17 @@ async function captureFramesScreencast(page, options) {
             const peakSim1 = simHistory[peak1.simIndex];
             const peakSim2 = simHistory[peak2.simIndex];
 
-            if (loopFrames >= 10 && Math.abs(peakSim1 - peakSim2) < 0.02) {
-              if (peak2.frameIndex < minFrames) {
-                if (verbose) {
-                  console.log(`   Potential loop at frame ${peak2.frameIndex} but need at least ${minFrames} frames, continuing...`);
-                }
-              } else {
-                const cycleDuration = timestamps[peak2.frameIndex - 1] - timestamps[0];
-                console.log(`   Loop detected: cycle length = ${loopFrames} frames (total: ${peak2.frameIndex})`);
-                console.log(`   Peak similarities: ${(peakSim1 * 100).toFixed(1)}%, ${(peakSim2 * 100).toFixed(1)}%`);
-                console.log(`   Real cycle duration: ${cycleDuration}ms`);
-                loopDetected = true;
-                cycleEndIndex = peak2.frameIndex;
-              }
+            // Require loop length to be at least minFrames to avoid false positives
+            // from minor similarity oscillations within a single animation cycle
+            if (loopFrames >= minFrames && Math.abs(peakSim1 - peakSim2) < 0.02) {
+              const cycleDuration = timestamps[peak2.frameIndex - 1] - timestamps[0];
+              console.log(`   Loop detected: cycle length = ${loopFrames} frames (total: ${peak2.frameIndex})`);
+              console.log(`   Peak similarities: ${(peakSim1 * 100).toFixed(1)}%, ${(peakSim2 * 100).toFixed(1)}%`);
+              console.log(`   Real cycle duration: ${cycleDuration}ms`);
+              loopDetected = true;
+              cycleEndIndex = peak2.frameIndex;
+            } else if (loopFrames < minFrames && verbose) {
+              console.log(`   Potential loop at frame ${peak2.frameIndex} but cycle length ${loopFrames} < ${minFrames} min frames, continuing...`);
             }
           }
         } else if (simToFirst > prevSim + 0.002) {
@@ -1163,6 +1161,16 @@ async function main() {
     // Legacy --capture-viewport option
     captureW = options.captureViewportWidth;
     captureH = options.captureViewportHeight;
+    deviceScale = 1;
+  } else if (options.captureMode === 'screencast') {
+    // For screencast mode, use 1.05x the target size (just enough margin for crop padding).
+    // Screencast captures at 30-60 FPS so we don't need 2x supersampling — the high
+    // frame count compensates for slightly lower per-frame resolution. This reduces
+    // memory usage and processing time dramatically (1076x1076 vs 2150x2150).
+    const viewportSize = Math.round(options.maxSize * 1.05);
+    const size = viewportSize % 2 === 0 ? viewportSize : viewportSize + 1;
+    captureW = size;
+    captureH = size;
     deviceScale = 1;
   } else {
     const cv = computeCaptureViewport(options.viewportWidth, options.viewportHeight, options.maxSize);

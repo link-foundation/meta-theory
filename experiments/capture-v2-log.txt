@@ -1,0 +1,47 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Max size: 1024px
+   Capture interval: 50ms
+   GIF frame delay: 50ms
+   Output: docs/animations/closed-link.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames (interval: 50ms)...
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame)
+   Frame 20 captured (3.3s elapsed)
+   Frame 40 captured (6.9s elapsed)
+   Frame 60 captured (10.4s elapsed)
+   Frame 80 captured (13.8s elapsed)
+   Frame 100 captured (17.1s elapsed)
+   Frame 120 captured (20.5s elapsed)
+   Frame 140 captured (24.0s elapsed)
+   Frame 160 captured (27.5s elapsed)
+   Frame 180 captured (30.9s elapsed)
+   Frame 200 captured (34.5s elapsed)
+   Frame 220 captured (38.3s elapsed)
+   Frame 240 captured (41.7s elapsed)
+   Frame 260 captured (45.2s elapsed)
+   Frame 280 captured (48.6s elapsed)
+   Frame 300 captured (52.1s elapsed)
+   Frame 320 captured (55.6s elapsed)
+   Frame 340 captured (59.0s elapsed)
+   Loop timeout reached (60s total)
+   Total frames captured: 346
+
+Auto-cropping to content...
+   Content bounds: 1020x1020 at (2,2)
+   Padding: 20px (equal on all sides)
+   Crop region: 1024x1024 at (0,0)
+
+Resizing to max 1024px...
+   Final frame size: 1024x1024
+
+Assembling GIF (346 frames, 50ms delay, 1024x1024)...
+   GIF saved: docs/animations/closed-link.gif (9600.8 KB)
+
+Done!

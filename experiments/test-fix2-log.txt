@@ -1,0 +1,55 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Capture mode: screencast
+   Logical viewport: 1920x1080
+   Source (capture) viewport: 270x270 (deviceScaleFactor=1)
+   Effective source resolution: 270x270
+   Target max output size: 256px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 30
+   Speed: 1x
+   Format: GIF
+   Output: experiments/test-fix2.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames via CDP screencast (JPEG quality: 100, min-frames: 30)...
+   Screencast resolution: 270x270
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 270x270)
+   First similarity peak at frame 4 (sim=91.1%)
+   Frame 51 captured (0.9s elapsed, ~59.7 FPS, sim=88.2%)
+   Frame 101 captured (1.7s elapsed, ~59.7 FPS, sim=89.8%)
+   Loop detected: cycle length = 97 frames
+   Cycle: frames 4 to 101
+   Peak similarities: 91.1%, 89.7%
+   Real cycle duration: 1600ms
+   Trimmed to 97 frames (cycle 4-101)
+
+Converting 97 JPEG frames to PNG...
+   Converted 97/97 frames to PNG
+   Total frames captured: 97
+   Real average interval: 16.7ms
+   Effective capture FPS: ~60.0
+
+Auto-cropping to content...
+   Content bounds: 266x266 at (2,2)
+   Background color: rgb(255,255,255)
+   Padding: 5px at capture res (~5px in output)
+   Actual padding: L=5 R=5 T=5 B=5
+   Crop region: 276x276 at (-3,-3)
+
+Resizing from 276x276 to max 256px (area-average)...
+   Final frame size: 256x256
+
+Timing: using real capture timestamps
+   Average real delay: 20.1ms (speed: 1x)
+   Effective FPS: ~49.8
+
+Assembling GIF (97 frames, avg 20.1ms delay, 256x256)...
+   GIF saved: experiments/test-fix2.gif (670.5 KB)
+
+Done!

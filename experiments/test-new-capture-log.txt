@@ -1,0 +1,57 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Capture mode: screencast
+   Screencast format: PNG (lossless)
+   Logical viewport: 1920x1080
+   Source (capture) viewport: 2150x2150 (deviceScaleFactor=1)
+   Effective source resolution: 2150x2150
+   Target max output size: 1024px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 120
+   Speed: 1x
+   Format: GIF
+   Output: /tmp/test-capture.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames via CDP screencast (PNG (lossless), min-frames: 120)...
+   Screencast resolution: 2150x2150
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Loop detection: comparing ALL frames (no sampling)
+   Frame 1 captured (reference frame, 2150x2150)
+   Frame 51 captured (4.0s elapsed, ~12.7 FPS, sim=98.7%)
+   High similarity peak at frame 68 (sim=98.6%)
+   Frame 101 captured (7.7s elapsed, ~13.1 FPS, sim=98.7%)
+   High similarity peak at frame 138 (sim=98.8%)
+   Loop detected: cycle length = 70 frames
+   Cycle: frames 68 to 138
+   Peak similarities: 98.6%, 98.8%
+   Real cycle duration: 5072ms
+   Trimmed to 70 frames (cycle 68-138)
+
+Using 70 lossless PNG frames directly (no conversion needed)
+   Total frames captured: 70
+   Real average interval: 73.5ms
+   Effective capture FPS: ~13.6
+
+Auto-cropping to content...
+   Content bounds: 2146x2146 at (2,2)
+   Background color: rgb(255,255,255)
+   Padding: 43px at capture res (~21px in output)
+   Actual padding: L=43 R=43 T=43 B=43
+   Crop region: 2232x2232 at (-41,-41)
+
+Resizing from 2232x2232 to max 1024px (area-average)...
+   Final frame size: 1024x1024
+
+Timing: using real capture timestamps
+   Average real delay: 85.6ms (speed: 1x)
+   Effective FPS: ~11.7
+
+Assembling GIF (70 frames, avg 85.6ms delay, 1024x1024)...
+   GIF saved: /tmp/test-capture.gif (1542.9 KB)
+
+Done!

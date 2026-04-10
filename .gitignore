@@ -156,3 +156,4 @@ lake-manifest.json
 Makefile.coq
 Makefile.coq.conf
 .Makefile.coq.d
+test-output/

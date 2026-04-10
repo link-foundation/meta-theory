@@ -1,0 +1,62 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Logical viewport: 1920x1080
+   Capture viewport: 2732x1536
+   Max output size: 1024px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 60
+   Speed: 1x
+   Format: GIF
+   Output: docs/animations/closed-link.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames (interval: 0ms, min-frames: 60)...
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 2732x1536)
+   Frame 20 captured (4.1s elapsed, sim=98.9%)
+   Frame 40 captured (8.3s elapsed, sim=99.0%)
+   Frame 60 captured (12.4s elapsed, sim=99.1%)
+   First similarity peak at frame 73 (sim=99.2%)
+   Frame 80 captured (16.6s elapsed, sim=99.1%)
+   Frame 100 captured (21.0s elapsed, sim=99.0%)
+   Frame 120 captured (25.2s elapsed, sim=99.2%)
+   Loop detected: cycle length = 46 frames (total: 119)
+   Peak similarities: 99.2%, 99.2%
+   Real cycle duration: 24812ms
+   Total frames captured: 119
+   Real average interval: 210.3ms
+   Effective capture FPS: ~4.8
+
+Auto-cropping to content...
+   Content bounds: 1545x1532 at (600,2)
+   Padding: 31px (equal on all sides)
+   Crop region: 1606x1536 at (569,0)
+
+Resizing from 1606x1536 to max 1024px (area-average)...
+   Final frame size: 1024x980
+
+Extracting key frames...
+   Key frame first (frame 0): docs/animations/closed-link-keyframes/keyframe-first-0.png
+   Key frame middle (frame 59): docs/animations/closed-link-keyframes/keyframe-middle-59.png
+   Key frame last (frame 118): docs/animations/closed-link-keyframes/keyframe-last-118.png
+
+Timing: using real capture timestamps
+   Average real delay: 210.3ms (speed: 1x)
+   Effective FPS: ~4.8
+
+Assembling GIF (119 frames, avg 210.3ms delay, 1024x980)...
+   GIF saved: docs/animations/closed-link.gif (2780.9 KB)
+
+Generating companion video formats...
+
+Assembling MP4 (119 frames, 5fps, 1024x980)...
+   MP4 saved: docs/animations/closed-link.mp4 (1698.7 KB)
+
+Assembling WEBM (119 frames, 5fps, 1024x980)...
+   WEBM saved: docs/animations/closed-link.webm (1123.6 KB)
+
+Done!

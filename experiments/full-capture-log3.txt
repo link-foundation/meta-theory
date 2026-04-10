@@ -1,0 +1,63 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Capture mode: screencast
+   Logical viewport: 1920x1080
+   Source (capture) viewport: 1076x1076 (deviceScaleFactor=1)
+   Effective source resolution: 1076x1076
+   Target max output size: 1024px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 120
+   Speed: 1x
+   Format: GIF
+   Output: docs/animations/closed-link.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames via CDP screencast (JPEG quality: 100, min-frames: 120)...
+   Screencast resolution: 1076x1076
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 1076x1076)
+   Frame 51 captured (2.9s elapsed, ~17.8 FPS, sim=96.7%)
+   High similarity peak at frame 97 (sim=96.3%)
+   Frame 101 captured (5.3s elapsed, ~18.9 FPS, sim=95.4%)
+   Frame 151 captured (7.8s elapsed, ~19.4 FPS, sim=96.7%)
+   High similarity peak at frame 199 (sim=96.3%)
+   Loop detected: cycle length = 102 frames
+   Cycle: frames 97 to 199
+   Peak similarities: 96.3%, 96.3%
+   Real cycle duration: 5004ms
+   Trimmed to 102 frames (cycle 97-199)
+
+Converting 102 JPEG frames to PNG...
+   Converted 100/102 frames...
+   Converted 102/102 frames to PNG
+   Total frames captured: 102
+   Real average interval: 49.5ms
+   Effective capture FPS: ~20.2
+
+Auto-cropping to content...
+   Content bounds: 1072x1072 at (2,2)
+   Background color: rgb(255,255,255)
+   Padding: 21px at capture res (~20px in output)
+   Actual padding: L=21 R=21 T=21 B=21
+   Crop region: 1114x1114 at (-19,-19)
+
+Resizing from 1114x1114 to max 1024px (area-average)...
+   Final frame size: 1024x1024
+
+Extracting key frames...
+   Key frame first (frame 0): docs/animations/closed-link-keyframes/keyframe-first-0.png
+   Key frame middle (frame 51): docs/animations/closed-link-keyframes/keyframe-middle-51.png
+   Key frame last (frame 101): docs/animations/closed-link-keyframes/keyframe-last-101.png
+
+Timing: using real capture timestamps
+   Average real delay: 62.3ms (speed: 1x)
+   Effective FPS: ~16.0
+
+Assembling GIF (102 frames, avg 62.3ms delay, 1024x1024)...
+   GIF saved: docs/animations/closed-link.gif (2725.9 KB)
+
+Done!

@@ -1,0 +1,159 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Capture mode: screencast
+   Logical viewport: 1920x1080
+   Source (capture) viewport: 270x270 (deviceScaleFactor=1)
+   Effective source resolution: 270x270
+   Target max output size: 256px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 30
+   Speed: 1x
+   Format: GIF
+   Output: experiments/test-fix3.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames via CDP screencast (JPEG quality: 100, min-frames: 30)...
+   Screencast resolution: 270x270
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 270x270)
+   First similarity peak at frame 4 (sim=91.1%)
+   Potential loop at frame 32 but cycle length 28 < 30 min frames, continuing...
+   Frame 51 captured (0.8s elapsed, ~60.1 FPS, sim=88.1%)
+   Frame 101 captured (1.7s elapsed, ~59.8 FPS, sim=89.8%)
+   Frame 151 captured (2.5s elapsed, ~59.9 FPS, sim=91.0%)
+   Frame 201 captured (3.4s elapsed, ~59.9 FPS, sim=90.2%)
+   Frame 251 captured (4.2s elapsed, ~59.9 FPS, sim=89.7%)
+   Frame 301 captured (5.0s elapsed, ~60.0 FPS, sim=100.0%)
+   Frame 351 captured (5.8s elapsed, ~60.0 FPS, sim=88.1%)
+   Frame 401 captured (6.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 451 captured (7.5s elapsed, ~60.0 FPS, sim=91.0%)
+   Frame 501 captured (8.3s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 551 captured (9.2s elapsed, ~59.9 FPS, sim=89.7%)
+   Frame 601 captured (10.0s elapsed, ~60.0 FPS, sim=100.0%)
+   Frame 651 captured (10.9s elapsed, ~59.9 FPS, sim=88.1%)
+   Frame 701 captured (11.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 751 captured (12.5s elapsed, ~60.0 FPS, sim=91.0%)
+   Frame 801 captured (13.4s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 851 captured (14.2s elapsed, ~60.0 FPS, sim=89.7%)
+   Frame 901 captured (15.0s elapsed, ~60.0 FPS, sim=100.0%)
+   Frame 951 captured (15.9s elapsed, ~60.0 FPS, sim=88.1%)
+   Frame 1001 captured (16.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 1051 captured (17.5s elapsed, ~60.0 FPS, sim=91.0%)
+   Frame 1101 captured (18.4s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 1151 captured (19.2s elapsed, ~60.0 FPS, sim=89.7%)
+   Frame 1201 captured (20.0s elapsed, ~60.0 FPS, sim=100.0%)
+   Frame 1251 captured (20.9s elapsed, ~60.0 FPS, sim=88.1%)
+   Frame 1301 captured (21.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 1351 captured (22.5s elapsed, ~60.0 FPS, sim=91.1%)
+   Frame 1401 captured (23.3s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 1451 captured (24.2s elapsed, ~60.0 FPS, sim=89.7%)
+   Frame 1501 captured (25.0s elapsed, ~60.0 FPS, sim=98.3%)
+   Frame 1551 captured (25.8s elapsed, ~60.0 FPS, sim=88.1%)
+   Frame 1601 captured (26.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 1651 captured (27.5s elapsed, ~60.0 FPS, sim=91.1%)
+   Frame 1701 captured (28.3s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 1751 captured (29.2s elapsed, ~60.0 FPS, sim=89.7%)
+   Frame 1801 captured (30.0s elapsed, ~60.0 FPS, sim=98.3%)
+   Frame 1851 captured (30.9s elapsed, ~60.0 FPS, sim=88.2%)
+   Frame 1901 captured (31.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 1951 captured (32.5s elapsed, ~60.0 FPS, sim=91.1%)
+   Frame 2001 captured (33.4s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 2051 captured (34.2s elapsed, ~60.0 FPS, sim=89.7%)
+   Frame 2101 captured (35.0s elapsed, ~60.0 FPS, sim=98.3%)
+   Frame 2151 captured (35.8s elapsed, ~60.0 FPS, sim=88.2%)
+   Frame 2201 captured (36.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 2251 captured (37.5s elapsed, ~60.0 FPS, sim=91.1%)
+   Frame 2301 captured (38.3s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 2351 captured (39.2s elapsed, ~60.0 FPS, sim=89.6%)
+   Frame 2401 captured (40.0s elapsed, ~60.0 FPS, sim=98.3%)
+   Frame 2451 captured (40.9s elapsed, ~60.0 FPS, sim=88.2%)
+   Frame 2501 captured (41.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 2551 captured (42.5s elapsed, ~60.0 FPS, sim=91.1%)
+   Frame 2601 captured (43.4s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 2651 captured (44.2s elapsed, ~60.0 FPS, sim=89.6%)
+   Frame 2701 captured (45.0s elapsed, ~60.0 FPS, sim=98.0%)
+   Frame 2751 captured (45.9s elapsed, ~60.0 FPS, sim=88.2%)
+   Frame 2801 captured (46.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 2851 captured (47.5s elapsed, ~60.0 FPS, sim=91.1%)
+   Frame 2901 captured (48.4s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 2951 captured (49.2s elapsed, ~60.0 FPS, sim=89.6%)
+   Frame 3001 captured (50.0s elapsed, ~60.0 FPS, sim=98.0%)
+   Frame 3051 captured (50.8s elapsed, ~60.0 FPS, sim=88.2%)
+   Frame 3101 captured (51.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 3151 captured (52.5s elapsed, ~60.0 FPS, sim=91.1%)
+   Frame 3201 captured (53.4s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 3251 captured (54.2s elapsed, ~60.0 FPS, sim=89.6%)
+   Frame 3301 captured (55.0s elapsed, ~60.0 FPS, sim=98.0%)
+   Frame 3351 captured (55.9s elapsed, ~60.0 FPS, sim=88.2%)
+   Frame 3401 captured (56.7s elapsed, ~60.0 FPS, sim=89.8%)
+   Frame 3451 captured (57.5s elapsed, ~60.0 FPS, sim=91.1%)
+   Frame 3501 captured (58.3s elapsed, ~60.0 FPS, sim=90.2%)
+   Frame 3551 captured (59.2s elapsed, ~60.0 FPS, sim=89.6%)
+   Frame 3601 captured (60.0s elapsed, ~60.0 FPS, sim=98.0%)
+   Loop timeout reached (60s total)
+   Trimmed to 3601 frames (cycle 0-3601)
+
+Converting 3601 JPEG frames to PNG...
+   Converted 100/3601 frames...
+   Converted 200/3601 frames...
+   Converted 300/3601 frames...
+   Converted 400/3601 frames...
+   Converted 500/3601 frames...
+   Converted 600/3601 frames...
+   Converted 700/3601 frames...
+   Converted 800/3601 frames...
+   Converted 900/3601 frames...
+   Converted 1000/3601 frames...
+   Converted 1100/3601 frames...
+   Converted 1200/3601 frames...
+   Converted 1300/3601 frames...
+   Converted 1400/3601 frames...
+   Converted 1500/3601 frames...
+   Converted 1600/3601 frames...
+   Converted 1700/3601 frames...
+   Converted 1800/3601 frames...
+   Converted 1900/3601 frames...
+   Converted 2000/3601 frames...
+   Converted 2100/3601 frames...
+   Converted 2200/3601 frames...
+   Converted 2300/3601 frames...
+   Converted 2400/3601 frames...
+   Converted 2500/3601 frames...
+   Converted 2600/3601 frames...
+   Converted 2700/3601 frames...
+   Converted 2800/3601 frames...
+   Converted 2900/3601 frames...
+   Converted 3000/3601 frames...
+   Converted 3100/3601 frames...
+   Converted 3200/3601 frames...
+   Converted 3300/3601 frames...
+   Converted 3400/3601 frames...
+   Converted 3500/3601 frames...
+   Converted 3600/3601 frames...
+   Converted 3601/3601 frames to PNG
+   Total frames captured: 3601
+   Real average interval: 16.7ms
+   Effective capture FPS: ~60.0
+
+Auto-cropping to content...
+   Content bounds: 266x266 at (2,2)
+   Background color: rgb(255,255,255)
+   Padding: 5px at capture res (~5px in output)
+   Actual padding: L=5 R=5 T=5 B=5
+   Crop region: 276x276 at (-3,-3)
+
+Resizing from 276x276 to max 256px (area-average)...
+   Final frame size: 256x256
+
+Timing: using real capture timestamps
+   Average real delay: 20.0ms (speed: 1x)
+   Effective FPS: ~49.9
+
+Assembling GIF (3601 frames, avg 20.0ms delay, 256x256)...
+   GIF saved: experiments/test-fix3.gif (25141.1 KB)
+
+Done!

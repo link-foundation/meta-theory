@@ -1,0 +1,71 @@
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Logical viewport: 1920x1080
+   Capture viewport: 2186x1230
+   Max output size: 1024px
+   Capture interval: 0ms (0 = max rate)
+   Min frames: 60
+   Speed: 1x
+   Format: GIF
+   Output: docs/animations/closed-link.gif
+   Auto-crop: true
+
+Loading page...
+
+Capturing frames (interval: 0ms, min-frames: 60)...
+   Loop timeout: 60s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 2186x1230)
+   Frame 20 captured (3.3s elapsed, sim=98.7%)
+   Frame 40 captured (6.1s elapsed, sim=98.8%)
+   Frame 60 captured (9.1s elapsed, sim=98.6%)
+   Frame 80 captured (12.0s elapsed, sim=98.8%)
+   Frame 100 captured (14.8s elapsed, sim=98.4%)
+   Frame 120 captured (17.6s elapsed, sim=98.9%)
+   Frame 140 captured (20.5s elapsed, sim=98.6%)
+   Frame 160 captured (23.4s elapsed, sim=98.7%)
+   Frame 180 captured (26.5s elapsed, sim=98.8%)
+   Frame 200 captured (29.2s elapsed, sim=98.6%)
+   Frame 220 captured (32.1s elapsed, sim=98.8%)
+   Frame 240 captured (34.9s elapsed, sim=98.4%)
+   First similarity peak at frame 241 (sim=98.9%)
+   Frame 260 captured (37.8s elapsed, sim=98.8%)
+   Frame 280 captured (40.7s elapsed, sim=98.6%)
+   Frame 300 captured (43.6s elapsed, sim=98.7%)
+   Loop detected: cycle length = 69 frames (total: 310)
+   Peak similarities: 98.9%, 99.1%
+   Real cycle duration: 44864ms
+   Total frames captured: 310
+   Real average interval: 145.2ms
+   Effective capture FPS: ~6.9
+
+Auto-cropping to content...
+   Content bounds: 1239x1226 at (480,2)
+   Padding: 25px (equal on all sides)
+   Crop region: 1230x1230 at (485,0)
+
+Resizing from 1230x1230 to max 1024px (area-average)...
+   Final frame size: 1024x1024
+
+Extracting key frames...
+   Key frame first (frame 0): docs/animations/closed-link-keyframes/keyframe-first-0.png
+   Key frame middle (frame 155): docs/animations/closed-link-keyframes/keyframe-middle-155.png
+   Key frame last (frame 309): docs/animations/closed-link-keyframes/keyframe-last-309.png
+
+Timing: using real capture timestamps
+   Average real delay: 145.2ms (speed: 1x)
+   Effective FPS: ~6.9
+
+Assembling GIF (310 frames, avg 145.2ms delay, 1024x1024)...
+   GIF saved: docs/animations/closed-link.gif (7904.1 KB)
+
+Generating companion video formats...
+
+Assembling MP4 (310 frames, 7fps, 1024x1024)...
+   MP4 saved: docs/animations/closed-link.mp4 (4301.9 KB)
+
+Assembling WEBM (310 frames, 7fps, 1024x1024)...
+   WEBM saved: docs/animations/closed-link.webm (3016.9 KB)
+
+Done!

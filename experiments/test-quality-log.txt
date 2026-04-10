@@ -1,0 +1,46 @@
+=== Animation Capture Quality Tests ===
+
+Step 1: Running animation capture...
+   Command: node /tmp/gh-issue-solver-1775758231779/scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output /tmp/gh-issue-solver-1775758231779/test-output/test-capture.gif --extract-keyframes --max-size 512 --min-frames 30 --loop-timeout 45 --verbose
+   Capture completed successfully.
+
+Step 2: Validating GIF output...
+  ✓ GIF output file exists
+  ✓ GIF is GIF89a format
+  ✓ GIF has valid dimensions (512x512)
+  ✓ GIF dimensions within max size (512x512)
+  ✓ GIF has sufficient frames (300 >= 15)
+  ✓ GIF file size is reasonable (3585.7 KB > 10 KB)
+  ✓ GIF aspect ratio is near square (1.00)
+
+Step 3: Validating key frames...
+  ✓ Key frames directory exists
+  ✓ At least 3 key frames extracted (3)
+  ✓ Key frame keyframe-first-0.png has content (4.3% non-background)
+  ✓ Key frame keyframe-first-0.png has valid dimensions (512x512)
+  ✓ Key frame keyframe-last-299.png has content (4.9% non-background)
+  ✓ Key frame keyframe-last-299.png has valid dimensions (512x512)
+  ✓ Key frame keyframe-middle-150.png has content (3.6% non-background)
+  ✓ Key frame keyframe-middle-150.png has valid dimensions (512x512)
+  ✓ Key frames are different (96.9% similarity)
+
+Step 4: Browser live key frame comparison...
+  ✓ Live frame 0 has content (4.0%)
+  ✓ Live frame 1 has content (3.9%)
+  ✓ Live frame 2 has content (4.3%)
+
+Step 5: Video format validation...
+   ffmpeg not available, skipping video tests
+
+Step 6: Timing and loop detection verification...
+  ✓ Uses real capture timestamps for GIF timing
+  ✓ Loop was detected (not timed out)
+  ✓ Cycle has enough frames (300 >= 15)
+  ✓ Cycle duration is reasonable (4984ms)
+  ✓ First peak similarity is high (100.0% >= 94%)
+  ✓ Second peak similarity is high (100.0% >= 94%)
+  ✓ Peak similarities are consistent (diff=0.0%)
+  ✓ Average capture interval is reasonable (16.7ms)
+  ✓ Trimmed cycle has enough frames (300)
+
+=== Results: 28 passed, 0 failed ===

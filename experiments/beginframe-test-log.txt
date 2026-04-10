@@ -1,0 +1,36 @@
+Testing HeadlessExperimental.beginFrame capture...
+
+Loading page...
+
+Attempting beginFrame capture...
+  Frame 1: 19380 bytes
+  Frame 2: 65098 bytes
+  Frame 3: 70208 bytes
+  Frame 4: 74205 bytes
+  Frame 5: 73715 bytes
+  Frame 6: 74694 bytes
+  Frame 7: 76454 bytes
+  Frame 8: 75211 bytes
+  Frame 9: 74939 bytes
+  Frame 10: 77720 bytes
+
+Total frames captured: 10
+SUCCESS: beginFrame capture works with Playwright!
+
+
+=== Testing screencast with PNG format (no compression) ===
+
+Starting screencast with PNG format...
+Captured 179 PNG frames in 3 seconds
+FPS: ~59.7
+Avg frame size: 90229 bytes
+Interval: avg=16.6ms, min=9ms, max=21ms
+
+
+=== Testing screencast with higher resolution (2x) ===
+
+Starting screencast at 2048x2048 JPEG Q100...
+Captured 86 frames in 3 seconds
+FPS: ~28.7
+Avg frame size: 215430 bytes
+Interval: avg=34.2ms, max=55ms

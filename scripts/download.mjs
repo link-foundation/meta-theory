@@ -1,25 +1,30 @@
 #!/usr/bin/env node
 
 /**
- * Generalized script to download article content and images
+ * Script to download article images and capture themed screenshots.
+ *
+ * Uses @link-assistant/web-capture for:
+ * - Figure extraction and download (extractFiguresFromUrl, downloadFigures)
+ * - Dual-themed screenshots (captureDualThemeScreenshots)
  *
  * Usage:
  *   node scripts/download.mjs [version] [--images] [--screenshot]
  *
  * Examples:
  *   node scripts/download.mjs 0.0.2 --images     # Download images for 0.0.2
- *   node scripts/download.mjs 0.0.1 --screenshot # Capture screenshot for 0.0.1
- *   node scripts/download.mjs --all --images     # Download images for all articles
+ *   node scripts/download.mjs 0.0.1 --screenshot  # Capture screenshot for 0.0.1
+ *   node scripts/download.mjs --all --images      # Download images for all articles
  */
 
-import { chromium } from 'playwright';
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import https from 'https';
-import http from 'http';
-import fs from 'fs';
 import { getArticle, getAllArticles } from './articles-config.mjs';
+
+// Import web-capture modules for figure extraction and themed screenshots
+import { extractFiguresFromUrl } from '@link-assistant/web-capture/src/figures.js';
+import { captureDualThemeScreenshots } from '@link-assistant/web-capture/src/themed-image.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -53,41 +58,7 @@ function parseArgs() {
 }
 
 /**
- * Download a file from URL
- */
-function downloadFile(url, filepath) {
-  return new Promise((resolve, reject) => {
-    const protocol = url.startsWith('https') ? https : http;
-    const file = fs.createWriteStream(filepath);
-
-    protocol.get(url, (response) => {
-      // Handle redirects
-      if (response.statusCode === 301 || response.statusCode === 302) {
-        downloadFile(response.headers.location, filepath)
-          .then(resolve)
-          .catch(reject);
-        return;
-      }
-
-      if (response.statusCode !== 200) {
-        reject(new Error(`Failed to download: ${response.statusCode}`));
-        return;
-      }
-
-      response.pipe(file);
-      file.on('finish', () => {
-        file.close();
-        resolve();
-      });
-    }).on('error', (err) => {
-      fs.unlink(filepath, () => {}); // Delete incomplete file
-      reject(err);
-    });
-  });
-}
-
-/**
- * Download figure images from an article
+ * Download figure images from an article using web-capture
  */
 async function downloadImages(article) {
   const archivePath = join(ROOT_DIR, article.archivePath);
@@ -102,84 +73,30 @@ async function downloadImages(article) {
   console.log(`   URL: ${article.url}`);
   console.log(`   Target: ${imagesDir}`);
 
-  const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
-
-  console.log('   Navigating to article...');
-  await page.goto(article.url, {
-    waitUntil: 'domcontentloaded',
-    timeout: 120000
-  });
-
-  // Wait for article body to appear
-  await page.waitForSelector('.article-formatted-body', { timeout: 30000 });
-
-  // Scroll to load all content
-  console.log('   Scrolling to load lazy images...');
-  await page.evaluate(async () => {
-    const scrollHeight = document.documentElement.scrollHeight;
-    const viewportHeight = window.innerHeight;
-    const scrollSteps = Math.ceil(scrollHeight / viewportHeight);
-    for (let i = 0; i < scrollSteps; i++) {
-      window.scrollTo(0, i * viewportHeight);
-      await new Promise(resolve => setTimeout(resolve, 100));
+  // Use web-capture to extract and download figures
+  const result = await extractFiguresFromUrl(article.url, {
+    engine: 'playwright',
+    onProgress: (figureNum, status) => {
+      console.log(`   Figure ${figureNum}: ${status}`);
     }
-    window.scrollTo(0, 0);
   });
 
-  await page.waitForTimeout(2000);
+  console.log(`   Found ${result.totalFound} figure images`);
 
-  // Extract figure images (those within <figure> elements)
-  console.log('   Extracting figure images...');
-  const figures = await page.$$eval('.article-formatted-body figure', elements =>
-    elements.map(figure => {
-      const img = figure.querySelector('img');
-      const figcaption = figure.querySelector('figcaption');
-      if (!img) return null;
-
-      // Extract figure number from caption (try multiple languages)
-      const captionText = figcaption?.innerText || '';
-      // Match "Figure X", "Рис. X", "Рисунок X"
-      const figureMatch = captionText.match(/(?:Figure|Рис\.?|Рисунок)\s*(\d+)/i);
-      const figureNum = figureMatch ? parseInt(figureMatch[1]) : null;
-
-      return {
-        figureNum,
-        src: img.src,
-        alt: img.alt,
-        caption: captionText
-      };
-    }).filter(f => f !== null && f.src && !f.src.includes('.svg'))
-  );
-
-  console.log(`   Found ${figures.length} figure images`);
-
-  await browser.close();
-
-  // Download each figure image
+  // Save each downloaded figure to disk
   const downloadedImages = [];
-  let sequentialNum = 0;
-  for (const figure of figures) {
-    sequentialNum++;
-    // Use figure number from caption if available, otherwise use sequential number
-    const figNum = figure.figureNum || sequentialNum;
-
-    const ext = figure.src.includes('.jpeg') || figure.src.includes('.jpg') ? 'jpg' : 'png';
-    const filename = `figure-${figNum}.${ext}`;
-    const filepath = join(imagesDir, filename);
-
-    console.log(`   Downloading Figure ${figNum}...`);
-
-    try {
-      await downloadFile(figure.src, filepath);
+  for (const figure of result.figures) {
+    if (figure.buffer) {
+      const filepath = join(imagesDir, figure.filename);
+      writeFileSync(filepath, figure.buffer);
       downloadedImages.push({
-        figureNum: figNum,
-        filename,
+        figureNum: figure.figureNum,
+        filename: figure.filename,
         caption: figure.caption
       });
-      console.log(`     ✓ Saved as ${filename}`);
-    } catch (err) {
-      console.error(`     ✗ Failed: ${err.message}`);
+      console.log(`     ✓ Saved as ${figure.filename}`);
+    } else if (figure.error) {
+      console.error(`     ✗ Figure ${figure.figureNum} failed: ${figure.error}`);
     }
   }
 
@@ -191,178 +108,12 @@ async function downloadImages(article) {
     );
   }
 
-  console.log(`\n   ✅ Downloaded ${downloadedImages.length} images for ${article.version}`);
+  console.log(`\n   ✅ Downloaded ${result.totalDownloaded} images for ${article.version}`);
   return downloadedImages;
 }
 
 /**
- * Close any popup overlays/modals on the page
- *
- * Handles multiple types of popups including:
- * - Google Funding Choices (FC) consent dialogs (fc-consent-root, fc-dialog)
- * - Habr cookie banners (tm-cookie-banner)
- * - Generic modals and overlays
- */
-async function closePopups(page) {
-  // Handle Playwright dialog events (browser-level alerts/confirms)
-  page.on('dialog', async dialog => {
-    try { await dialog.dismiss(); } catch (e) { /* ignore */ }
-  });
-
-  // First, try to dismiss the Google Funding Choices (FC) consent dialog
-  // by clicking the "Consent" button (this is the most reliable approach)
-  const fcConsentClicked = await page.evaluate(() => {
-    // Google FC consent dialog - click "Consent" to dismiss
-    const consentBtn = document.querySelector('.fc-cta-consent');
-    if (consentBtn) {
-      try { consentBtn.click(); return true; } catch (e) { /* ignore */ }
-    }
-    return false;
-  });
-
-  if (fcConsentClicked) {
-    await page.waitForTimeout(1000);
-  }
-
-  await page.evaluate(() => {
-    // Common popup/modal close buttons on Habr
-    const closeSelectors = [
-      // Google Funding Choices (FC) consent dialog
-      '.fc-cta-consent',         // "Consent" button
-      '.fc-close',               // FC close button
-      '.fc-dismiss-button',      // FC dismiss button
-      // Cookie consent
-      '.tm-cookie-banner__close',
-      '.cookie-banner__close',
-      '[data-test-id="cookie-banner-close"]',
-      // Consent popup buttons (accept/reject/close)
-      '.consent-popup__close',
-      '.consent__close',
-      'button[data-testid="consent-close"]',
-      'button[data-testid="consent-reject"]',
-      // Generic close buttons
-      '.tm-popup__close',
-      '.popup__close',
-      '.modal__close',
-      // Overlay close
-      '.overlay__close',
-      // Any visible close button with aria-label
-      '[aria-label="Close"]',
-      '[aria-label="Закрыть"]',
-      // Dismiss buttons
-      '.tm-base-modal__close',
-      // Notification popups
-      '.tm-notification__close',
-    ];
-
-    for (const selector of closeSelectors) {
-      const els = document.querySelectorAll(selector);
-      for (const el of els) {
-        try { el.click(); } catch (e) { /* ignore */ }
-      }
-    }
-
-    // Remove Google FC consent dialog elements entirely from DOM
-    const fcRoot = document.querySelector('.fc-consent-root');
-    if (fcRoot) {
-      try { fcRoot.remove(); } catch (e) { /* ignore */ }
-    }
-    const fcOverlay = document.querySelector('.fc-dialog-overlay');
-    if (fcOverlay) {
-      try { fcOverlay.remove(); } catch (e) { /* ignore */ }
-    }
-
-    // Hide all fixed-position overlays that cover content
-    const allEls = document.querySelectorAll('*');
-    for (const el of allEls) {
-      const style = getComputedStyle(el);
-      if (style.position === 'fixed' && el.offsetParent !== null) {
-        const rect = el.getBoundingClientRect();
-        // Skip very small elements (like tiny icons) and the main nav bar
-        if (rect.height > 200 || el.className.match(/popup|modal|overlay|banner|cookie|notification|consent|fc-/i)) {
-          el.style.display = 'none';
-        }
-      }
-    }
-  });
-
-  // Wait for popups to close
-  await page.waitForTimeout(500);
-
-  // Try to close any remaining popups by pressing Escape
-  try {
-    await page.keyboard.press('Escape');
-    await page.waitForTimeout(300);
-  } catch (e) { /* ignore */ }
-}
-
-/**
- * Load page content by scrolling through it to trigger lazy loading
- */
-async function loadPageContent(page) {
-  for (let pass = 0; pass < 3; pass++) {
-    await page.evaluate(async () => {
-      const scrollHeight = document.documentElement.scrollHeight;
-      const viewportHeight = window.innerHeight;
-      const scrollSteps = Math.ceil(scrollHeight / viewportHeight);
-      for (let i = 0; i < scrollSteps; i++) {
-        window.scrollTo(0, i * viewportHeight);
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
-      window.scrollTo(0, 0);
-    });
-    await page.waitForTimeout(1000);
-  }
-  // Wait for images to fully load
-  await page.waitForTimeout(3000);
-}
-
-/**
- * Capture a single themed screenshot of the article
- *
- * Uses a fresh browser context with colorScheme set at context level,
- * which is the reliable way to trigger Habr's prefers-color-scheme media query.
- */
-async function captureThemedScreenshot(browser, article, screenshotPath, theme) {
-  console.log(`   Creating ${theme} theme context...`);
-  const context = await browser.newContext({
-    viewport: { width: 1920, height: 1080 },
-    colorScheme: theme,
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-  });
-  const page = await context.newPage();
-
-  console.log(`   Navigating (${theme})...`);
-  await page.goto(article.url, {
-    waitUntil: 'domcontentloaded',
-    timeout: 120000
-  });
-  await page.waitForSelector('.article-formatted-body', { timeout: 30000 });
-
-  // Load all lazy content
-  await loadPageContent(page);
-
-  // Close popups
-  await closePopups(page);
-
-  // Scroll to top
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(500);
-
-  console.log(`   Taking ${theme} screenshot...`);
-  await page.screenshot({
-    path: screenshotPath,
-    fullPage: true
-  });
-
-  const stats = fs.statSync(screenshotPath);
-  console.log(`   ✅ ${theme} screenshot saved: ${(stats.size / 1024 / 1024).toFixed(1)} MB`);
-
-  await context.close();
-}
-
-/**
- * Capture screenshots of the article in both light and dark themes
+ * Capture screenshots of the article in both light and dark themes using web-capture
  */
 async function captureScreenshot(article) {
   const archivePath = join(ROOT_DIR, article.archivePath);
@@ -370,21 +121,26 @@ async function captureScreenshot(article) {
   console.log(`\n📸 Capturing screenshots for ${article.title} (${article.version})`);
   console.log(`   URL: ${article.url}`);
 
-  const browser = await chromium.launch({ headless: true });
+  // Use web-capture for dual-themed screenshots
+  const result = await captureDualThemeScreenshots(article.url, {
+    engine: 'playwright',
+    width: 1920,
+    height: 1080,
+    fullPage: true,
+    dismissPopups: true
+  });
 
-  // Capture light theme screenshot
+  // Save light theme screenshot
   const lightPath = join(archivePath, article.screenshotLightFile || 'article-light.png');
-  console.log(`   Target (light): ${lightPath}`);
-  await captureThemedScreenshot(browser, article, lightPath, 'light');
+  writeFileSync(lightPath, result.light);
+  const lightSize = result.light.length;
+  console.log(`   ✅ Light screenshot saved: ${(lightSize / 1024 / 1024).toFixed(1)} MB`);
 
-  // Capture dark theme screenshot
+  // Save dark theme screenshot
   const darkPath = join(archivePath, article.screenshotDarkFile || 'article-dark.png');
-  console.log(`   Target (dark): ${darkPath}`);
-  await captureThemedScreenshot(browser, article, darkPath, 'dark');
-
-  // Note: article.png is no longer generated as we have both light and dark themed versions
-
-  await browser.close();
+  writeFileSync(darkPath, result.dark);
+  const darkSize = result.dark.length;
+  console.log(`   ✅ Dark screenshot saved: ${(darkSize / 1024 / 1024).toFixed(1)} MB`);
 }
 
 /**
@@ -400,7 +156,7 @@ Usage: node scripts/download.mjs [version] [options]
 
 Options:
   --images      Download figure images from the article
-  --screenshot  Capture a full-page screenshot
+  --screenshot  Capture full-page themed screenshots (light + dark)
   --all         Apply to all articles
 
 Examples:
@@ -422,8 +178,8 @@ Examples:
     process.exit(1);
   }
 
-  console.log('🚀 Download Script');
-  console.log('==================');
+  console.log('🚀 Download Script (powered by @link-assistant/web-capture)');
+  console.log('============================================================');
 
   for (const article of articles) {
     try {

@@ -8,6 +8,7 @@
  */
 
 import { strict as assert } from 'assert';
+import { buildArticleDocumentHtml, buildArticleMarkdown } from './download-article.mjs';
 
 // Test web-capture module imports
 console.log('🧪 Testing web-capture integration...\n');
@@ -82,9 +83,9 @@ console.log('\n3. Post-processing module');
 await asyncTest('postProcessMarkdown import and basic usage', async () => {
   const { postProcessMarkdown } = await import('@link-assistant/web-capture/src/postprocess.js');
   assert.equal(typeof postProcessMarkdown, 'function');
-  // Test unicode normalization
+  // Published web-capture preserves explicit NBSP markers at this layer.
   const result = postProcessMarkdown('Hello\u00A0World');
-  assert.equal(result, 'Hello World');
+  assert.equal(result, 'Hello&nbsp;World');
 });
 
 await asyncTest('applyLatexSpacingFixes import', async () => {
@@ -184,6 +185,37 @@ await asyncTest('convertHtmlToMarkdownEnhanced basic usage', async () => {
   assert.ok(result.markdown);
   assert.ok(result.markdown.includes('Test Title'));
   assert.ok(result.markdown.includes('Hello world'));
+});
+
+await asyncTest('meta-theory article scoping avoids page chrome', async () => {
+  const { convertHtmlToMarkdownEnhanced } = await import('@link-assistant/web-capture/src/lib.js');
+  const scopedHtml = buildArticleDocumentHtml({
+    headHtml: '<meta name="keywords" content="alpha,beta">',
+    articleHtml: `
+      <article>
+        <header>
+          <a class="tm-user-info__username" href="/users/author/">Author</a>
+          <time datetime="2026-04-16T00:00:00.000Z">Apr 16 2026</time>
+        </header>
+        <h1>Scoped Article</h1>
+        <div class="article-formatted-body">
+          <p>Article body with <img class="formula inline" source="x^2" alt="x^2"> formula.</p>
+        </div>
+      </article>`
+  });
+  const result = convertHtmlToMarkdownEnhanced(scopedHtml, 'https://habr.com/en/articles/1/', {
+    extractLatex: true,
+    extractMetadata: true,
+    postProcess: false,
+    detectCodeLanguage: true
+  });
+  const markdown = buildArticleMarkdown(result);
+  assert.ok(markdown.startsWith('# Scoped Article'));
+  assert.ok(markdown.includes('**Author:** [Author](https://habr.com/users/author/)'));
+  assert.ok(markdown.includes('**Tags:** alpha, beta'));
+  assert.ok(markdown.includes('Article body with $x^2$ formula.'));
+  assert.ok(!markdown.includes('Habr'));
+  assert.ok(!markdown.includes('Search'));
 });
 
 // 10. Test articles-config compatibility

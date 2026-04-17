@@ -1,24 +1,15 @@
 #!/usr/bin/env node
 
 /**
- * Script to download article content from web pages and convert to markdown
+ * Script to download article content from web pages and convert to markdown.
  *
- * This script extracts article content from Habr and converts it to markdown format.
- * It handles:
- * - Title extraction
- * - Headings (h2, h3, h4)
- * - Paragraphs with inline links
- * - Code blocks with syntax highlighting (preserves newlines from <br> tags)
- * - Lists (ordered and unordered)
- * - Blockquotes
- * - Images and figures with captions
- * - Links preservation
- * - LaTeX math formulas (extracted from img.formula elements' `source` attribute)
+ * Uses @link-assistant/web-capture for:
+ * - HTML-to-Markdown conversion with LaTeX formula extraction
+ * - Article metadata extraction (author, date, hubs, tags)
+ * - Post-processing (unicode normalization, formatting fixes)
  *
- * FORMULA EXTRACTION:
- * Habr renders formulas as SVG/PNG images with class "formula". The original LaTeX
- * source code is stored in the `source` attribute of these img elements. This script
- * automatically extracts and converts them to proper LaTeX markdown format ($...$).
+ * Browser rendering (Playwright) is used to fetch fully-rendered HTML
+ * from JavaScript-heavy pages like Habr.
  *
  * Usage:
  *   node scripts/download-article.mjs [version]
@@ -31,9 +22,14 @@
 
 import { chromium } from 'playwright';
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, join } from 'path';
 import { getArticle, getAllArticles } from './articles-config.mjs';
+
+// Import web-capture modules for enhanced markdown conversion
+import { convertHtmlToMarkdownEnhanced } from '@link-assistant/web-capture/src/lib.js';
+import { formatMetadataBlock, formatFooterBlock } from '@link-assistant/web-capture/src/metadata.js';
+import { postProcessMarkdown } from '@link-assistant/web-capture/src/postprocess.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -68,10 +64,36 @@ function parseArgs() {
 }
 
 /**
- * Extract article content from web page and convert to markdown
+ * Build a minimal HTML document from a rendered article page.
+ *
+ * web-capture intentionally accepts generic HTML and does not know which
+ * part of a site is the article. Habr pages include navigation, ads, sidebars,
+ * and comments in the full document, so meta-theory scopes the rendered page
+ * to the article before handing conversion/metadata/post-processing to
+ * web-capture.
  */
-async function extractArticleContent(article, verbose = false) {
-  if (verbose) console.log('   Loading web page:', article.url);
+export function buildArticleDocumentHtml({ headHtml, articleHtml }) {
+  return [
+    '<!doctype html>',
+    '<html>',
+    '<head>',
+    '<meta charset="utf-8">',
+    headHtml || '',
+    '</head>',
+    '<body>',
+    articleHtml,
+    '</body>',
+    '</html>'
+  ].join('\n');
+}
+
+/**
+ * Fetch fully-rendered article HTML from a URL using Playwright.
+ * Habr articles require JavaScript execution for full content rendering
+ * (lazy loading, formula images, dynamic elements).
+ */
+export async function fetchRenderedArticleDocuments(url, verbose = false) {
+  if (verbose) console.log('   Loading web page with Playwright:', url);
 
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
@@ -80,966 +102,163 @@ async function extractArticleContent(article, verbose = false) {
   });
   const page = await context.newPage();
 
-  // Navigate to the page
-  await page.goto(article.url, {
-    waitUntil: 'domcontentloaded',
-    timeout: 120000
-  });
-
-  // Wait for article body to appear
-  await page.waitForSelector('.article-formatted-body', { timeout: 30000 });
-
-  // Scroll through the page to trigger lazy loading
-  await page.evaluate(async () => {
-    const scrollHeight = document.documentElement.scrollHeight;
-    const viewportHeight = window.innerHeight;
-    const scrollSteps = Math.ceil(scrollHeight / viewportHeight);
-
-    for (let i = 0; i < scrollSteps; i++) {
-      window.scrollTo(0, i * viewportHeight);
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    window.scrollTo(0, 0);
-  });
-
-  // Wait for dynamic content
-  await page.waitForTimeout(2000);
-
-  // Extract article metadata from the page header area
-  const metadata = await page.evaluate(() => {
-    const meta = {};
-
-    // Author
-    const authorEl = document.querySelector('.tm-user-info__username');
-    if (authorEl) {
-      meta.author = authorEl.innerText.trim();
-      meta.authorUrl = authorEl.href || null;
-    }
-
-    // Publication date
-    const timeEl = document.querySelector('time[datetime]');
-    if (timeEl) {
-      meta.publishDate = timeEl.getAttribute('datetime');
-      meta.publishDateText = timeEl.innerText.trim();
-    }
-
-    // Reading time
-    const readTimeEl = document.querySelector('.tm-article-reading-time__label');
-    if (readTimeEl) {
-      meta.readingTime = readTimeEl.innerText.trim();
-    }
-
-    // Difficulty level
-    const diffEl = document.querySelector('.tm-article-complexity__label');
-    if (diffEl) {
-      meta.difficulty = diffEl.innerText.trim();
-    }
-
-    // Views
-    const viewsEl = document.querySelector('.tm-icon-counter__value');
-    if (viewsEl) {
-      meta.views = viewsEl.getAttribute('title') || viewsEl.innerText.trim();
-    }
-
-    // Hubs (use specific hub link selector to avoid duplicates)
-    const hubEls = document.querySelectorAll('.tm-publication-hub__link');
-    meta.hubs = Array.from(hubEls).map(el => {
-      // Get only the first span text (hub name), not the asterisk
-      const nameSpan = el.querySelector('span:first-child');
-      return nameSpan ? nameSpan.innerText.trim() : el.innerText.trim().replace(/\s*\*\s*$/, '');
+  try {
+    await page.goto(url, {
+      waitUntil: 'domcontentloaded',
+      timeout: 120000
     });
 
-    // Tags from meta keywords
-    const keywordsMeta = document.querySelector('meta[name="keywords"]');
-    if (keywordsMeta) {
-      const content = keywordsMeta.getAttribute('content');
-      if (content) {
-        meta.tags = content.split(',').map(t => t.trim()).filter(Boolean);
+    // Wait for article body to appear
+    await page.waitForSelector('.article-formatted-body', { timeout: 30000 });
+
+    // Scroll through the page to trigger lazy loading
+    await page.evaluate(async () => {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const viewportHeight = window.innerHeight;
+      const scrollSteps = Math.ceil(scrollHeight / viewportHeight);
+
+      for (let i = 0; i < scrollSteps; i++) {
+        window.scrollTo(0, i * viewportHeight);
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
-    }
+      window.scrollTo(0, 0);
+    });
 
-    // Translation badge - detect if article is a translation
-    const translationLabelEl = document.querySelector('.tm-publication-label_variant-translation');
-    if (translationLabelEl) {
-      meta.isTranslation = true;
-      meta.translationLabel = translationLabelEl.innerText.trim();
-    }
+    // Wait for dynamic content
+    await page.waitForTimeout(2000);
 
-    // Translation / original author info and link to original article
-    const originLinkEl = document.querySelector('.tm-article-presenter__origin-link');
-    if (originLinkEl) {
-      meta.originalArticleUrl = originLinkEl.href || null;
-      // Extract just the author names from the span inside the link
-      const authorSpan = originLinkEl.querySelector('span');
-      if (authorSpan) {
-        meta.originalAuthors = authorSpan.innerText.trim();
-      }
-      // Full text includes the label like "Original author: ..."
-      meta.originalAuthorText = originLinkEl.innerText.trim();
-    }
-
-    // LD+JSON structured data for additional metadata
-    const ldJsonScript = document.querySelector('script[type="application/ld+json"]');
-    if (ldJsonScript) {
-      try {
-        const ldData = JSON.parse(ldJsonScript.textContent);
-        if (ldData.dateModified) meta.dateModified = ldData.dateModified;
-        if (ldData.author?.name) meta.authorFullName = ldData.author.name;
-      } catch (e) {
-        // ignore parse errors
-      }
-    }
-
-    // Votes (upvotes/downvotes)
-    const votesEl = document.querySelector('.tm-votes-meter__value');
-    if (votesEl) {
-      meta.votes = votesEl.innerText.trim();
-    }
-
-    // Comments count
-    const commentsEl = document.querySelector('.tm-article-comments-counter-link__value');
-    if (commentsEl) {
-      meta.comments = commentsEl.innerText.trim();
-    }
-
-    // Bookmarks count
-    const bookmarksEl = document.querySelector('.bookmarks-button__counter');
-    if (bookmarksEl) {
-      meta.bookmarks = bookmarksEl.innerText.trim();
-    }
-
-    // Author karma and rating (from author card in sidebar or inline)
-    const karmaEl = document.querySelector('.tm-karma__votes');
-    if (karmaEl) {
-      meta.authorKarma = karmaEl.innerText.trim();
-    }
-
-    // Hub URLs for linking
-    const hubLinkEls = document.querySelectorAll('.tm-publication-hub__link');
-    meta.hubUrls = Array.from(hubLinkEls).map(el => ({
-      name: (el.querySelector('span:first-child')?.innerText || el.innerText).trim().replace(/\s*\*\s*$/, ''),
-      url: el.href || null
-    }));
-
-    // Tags with URLs (from article footer)
-    const tagEls = document.querySelectorAll('.tm-article-body__tags-item a, .tm-tags-list__link');
-    if (tagEls.length > 0) {
-      meta.tagLinks = Array.from(tagEls).map(el => ({
-        name: el.innerText.trim(),
-        url: el.href || null
-      }));
-    }
-
-    return meta;
-  });
-
-  if (verbose) {
-    console.log('   Metadata extracted:', JSON.stringify(metadata, null, 2));
-  }
-
-  // Extract article content as structured data with HTML processing
-  const content = await page.evaluate(() => {
-    const articleBody = document.querySelector('.article-formatted-body');
-    if (!articleBody) return null;
-
-    // Get article title
-    const titleEl = document.querySelector('article h1');
-    const title = titleEl ? titleEl.innerText.trim() : '';
-
-    /**
-     * Convert an HTML element to markdown, preserving links and formatting
-     */
-    function nodeToMarkdown(node, context = {}) {
-      if (node.nodeType === Node.TEXT_NODE) {
-        return node.textContent;
+    // Extract only the article parts needed by web-capture.
+    const html = await page.evaluate(() => {
+      const articleEl = document.querySelector('article');
+      if (!articleEl) {
+        throw new Error('Article element not found');
       }
 
-      if (node.nodeType !== Node.ELEMENT_NODE) return '';
-
-      const tag = node.tagName.toLowerCase();
-
-      // Skip script, style, etc.
-      if (['script', 'style', 'noscript', 'svg'].includes(tag)) return '';
-
-      // Handle links
-      if (tag === 'a') {
-        const href = node.getAttribute('href');
-        const text = nodeToMarkdownChildren(node);
-        if (href && text) {
-          return `[${text}](${href})`;
-        }
-        return text;
+      const titleEl = articleEl.querySelector('h1');
+      if (!titleEl) {
+        throw new Error('Article title not found');
       }
 
-      // Handle bold
-      if (tag === 'strong' || tag === 'b') {
-        const text = nodeToMarkdownChildren(node);
-        // Trim spaces inside bold markers to prevent broken rendering
-        // e.g., "**Figure 11. **" → "**Figure 11.**"
-        return text ? `**${text.trim()}**` : '';
+      const bodyEl = articleEl.querySelector('.article-formatted-body');
+      if (!bodyEl) {
+        throw new Error('Article formatted body not found');
       }
 
-      // Handle italic
-      if (tag === 'em' || tag === 'i') {
-        const text = nodeToMarkdownChildren(node);
-        return text ? `*${text}*` : '';
-      }
+      const headSelectors = [
+        'meta[name="keywords"]',
+        'meta[name="description"]',
+        'meta[property^="og:"]',
+        'meta[name^="twitter:"]',
+        'meta[itemprop="description"]',
+        'link[rel="canonical"]',
+        'link[rel="alternate"]',
+        'script[type="application/ld+json"]'
+      ];
+      const headHtml = Array.from(document.head.querySelectorAll(headSelectors.join(',')))
+        .map(el => el.outerHTML)
+        .join('\n');
 
-      // Handle inline code
-      if (tag === 'code' && !node.closest('pre')) {
-        const text = node.textContent;
-        return text ? `\`${text}\`` : '';
-      }
+      return {
+        headHtml,
+        metadataArticleHtml: articleEl.outerHTML,
+        contentArticleHtml: `<article>${titleEl.outerHTML}\n${bodyEl.outerHTML}</article>`
+      };
+    });
 
-      // Handle line breaks
-      if (tag === 'br') {
-        return '\n';
-      }
-
-      // Handle subscript/superscript (common in math)
-      if (tag === 'sub') {
-        return `₍${node.textContent}₎`;
-      }
-      if (tag === 'sup') {
-        return `^${node.textContent}`;
-      }
-
-      // Handle formula images (Habr stores LaTeX in `source` attribute)
-      if (tag === 'img' && node.classList.contains('formula')) {
-        const source = node.getAttribute('source');
-        if (source) {
-          // Trim whitespace from LaTeX source to prevent broken rendering
-          // (e.g., "$L $" with trailing space won't render on GitHub)
-          const trimmed = source.trim();
-          // Inline formula - wrap in single $
-          return `$${trimmed}$`;
-        }
-        // Fallback to alt text
-        const alt = node.getAttribute('alt');
-        if (alt) {
-          return `$${alt.trim()}$`;
-        }
-        return '';
-      }
-
-      // Handle math elements (KaTeX/MathJax)
-      if (node.classList.contains('katex') || node.classList.contains('math') ||
-          tag === 'mjx-container' || node.classList.contains('MathJax')) {
-        const annotation = node.querySelector('annotation[encoding="application/x-tex"]');
-        if (annotation) {
-          return annotation.textContent;
-        }
-        // Try to get the LaTeX from data attributes
-        const tex = node.getAttribute('data-tex') || node.getAttribute('data-latex');
-        if (tex) return tex;
-        // Fallback to text content cleaned up
-        return node.textContent.trim();
-      }
-
-      // Handle spans (just process children)
-      if (tag === 'span') {
-        return nodeToMarkdownChildren(node);
-      }
-
-      // Default: process children
-      return nodeToMarkdownChildren(node);
-    }
-
-    function nodeToMarkdownChildren(node) {
-      let result = '';
-      for (const child of node.childNodes) {
-        result += nodeToMarkdown(child);
-      }
-      return result;
-    }
-
-    // Process all elements in order
-    const elements = [];
-    let figureIndex = 0;
-
-    const processElement = (node) => {
-      if (node.nodeType !== Node.ELEMENT_NODE) return;
-
-      const tag = node.tagName.toLowerCase();
-
-      // Skip certain elements
-      if (['script', 'style', 'noscript'].includes(tag)) return;
-
-      // Handle headings
-      if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tag)) {
-        elements.push({
-          type: 'heading',
-          level: parseInt(tag[1]),
-          content: nodeToMarkdownChildren(node).trim()
-        });
-        return;
-      }
-
-      // Handle paragraphs
-      if (tag === 'p') {
-        const content = nodeToMarkdownChildren(node).trim();
-        if (content) {
-          elements.push({
-            type: 'paragraph',
-            content: content
-          });
-        }
-        return;
-      }
-
-      // Handle code blocks
-      if (tag === 'pre') {
-        const codeEl = node.querySelector('code');
-        // Get innerHTML and convert <br> to newlines, then strip remaining HTML
-        let codeHTML = codeEl ? codeEl.innerHTML : node.innerHTML;
-        // Convert <br> and <br/> to newlines
-        let code = codeHTML.replace(/<br\s*\/?>/gi, '\n');
-        // Strip remaining HTML tags
-        const temp = document.createElement('div');
-        temp.innerHTML = code;
-        code = temp.textContent || temp.innerText;
-        // Habr uses both "language-xxx" and bare class names like "python", "matlab"
-        let language = codeEl?.className?.match(/language-(\w+)/)?.[1]
-          || codeEl?.className?.match(/^(\w+)$/)?.[1]
-          || '';
-
-        // Content-based language correction: Habr sometimes misidentifies languages
-        // Detect Coq by characteristic keywords (Habr labels it as "matlab")
-        const trimmedCode = code.trim();
-        if (language === 'matlab' && (
-          /\b(Require\s+Import|Definition|Fixpoint|Lemma|Theorem|Proof|Qed|Notation|Inductive)\b/.test(trimmedCode)
-        )) {
-          language = 'coq';
-        }
-
-        elements.push({
-          type: 'code',
-          language,
-          content: trimmedCode
-        });
-        return;
-      }
-
-      // Handle blockquotes
-      if (tag === 'blockquote') {
-        // Process child paragraphs individually to handle multi-formula blockquotes
-        // Habr often has blockquotes with multiple <p> elements, each containing a formula
-        const childParagraphs = Array.from(node.querySelectorAll(':scope > p, :scope > div > p'));
-        const childContents = childParagraphs.length > 0
-          ? childParagraphs.map(p => nodeToMarkdownChildren(p).trim()).filter(Boolean)
-          : [nodeToMarkdownChildren(node).trim()];
-
-        // Check if ALL children are formula-only (blockquote-math pattern)
-        const formulaPattern = /^\s*\$([^$]+)\$\s*$/;
-        const allFormulas = childContents.every(c => formulaPattern.test(c));
-
-        if (allFormulas && childContents.length > 0) {
-          // Group all formulas into a single blockquote-math-group element
-          // so they render as one continuous blockquote (matching original)
-          const formulas = childContents.map(c => {
-            const match = c.match(formulaPattern);
-            return match ? match[1].trim() : c;
-          });
-          elements.push({
-            type: 'blockquote-math-group',
-            formulas: formulas
-          });
-          return;
-        }
-
-        // For non-formula blockquotes, join all paragraph content with newlines
-        const content = childContents.join('\n');
-        elements.push({
-          type: 'blockquote',
-          content: content
-        });
-        return;
-      }
-
-      // Handle unordered lists
-      if (tag === 'ul') {
-        const items = Array.from(node.querySelectorAll(':scope > li')).map(li =>
-          nodeToMarkdownChildren(li).trim()
-        );
-        elements.push({
-          type: 'unordered-list',
-          items: items.filter(item => item)
-        });
-        return;
-      }
-
-      // Handle ordered lists
-      if (tag === 'ol') {
-        const items = Array.from(node.querySelectorAll(':scope > li')).map(li =>
-          nodeToMarkdownChildren(li).trim()
-        );
-        elements.push({
-          type: 'ordered-list',
-          items: items.filter(item => item)
-        });
-        return;
-      }
-
-      // Handle figures (images with captions)
-      if (tag === 'figure') {
-        figureIndex++;
-        const img = node.querySelector('img');
-        const figcaption = node.querySelector('figcaption');
-        if (img) {
-          elements.push({
-            type: 'figure',
-            index: figureIndex,
-            src: img.src,
-            alt: img.alt || '',
-            caption: figcaption ? nodeToMarkdownChildren(figcaption).trim() : ''
-          });
-        }
-        return;
-      }
-
-      // Handle standalone images (but not formula images - those are inline)
-      if (tag === 'img' && !node.closest('figure')) {
-        // Check if this is a formula image - handle as block formula if standalone
-        if (node.classList.contains('formula')) {
-          const source = node.getAttribute('source');
-          if (source) {
-            // Standalone formula - treat as block formula
-            elements.push({
-              type: 'math-block',
-              content: source.trim()
-            });
-            return;
-          }
-        }
-        // Regular image
-        elements.push({
-          type: 'image',
-          src: node.src,
-          alt: node.alt || ''
-        });
-        return;
-      }
-
-      // Handle horizontal rules
-      if (tag === 'hr') {
-        elements.push({ type: 'hr' });
-        return;
-      }
-
-      // Handle div elements that might contain math blocks
-      if (tag === 'div') {
-        // Check for math block
-        const mathEl = node.querySelector('.katex-display, .math-display, mjx-container[display="true"]');
-        if (mathEl) {
-          const annotation = mathEl.querySelector('annotation[encoding="application/x-tex"]');
-          const tex = annotation ? annotation.textContent :
-                     (mathEl.getAttribute('data-tex') || mathEl.textContent);
-          if (tex) {
-            elements.push({
-              type: 'math-block',
-              content: tex.trim()
-            });
-          }
-          return;
-        }
-
-        // For other divs, process children
-        for (const child of node.children) {
-          processElement(child);
-        }
-        return;
-      }
-
-      // For other block elements, try to process children
-      if (['section', 'article', 'main', 'aside', 'header', 'footer', 'details'].includes(tag)) {
-        for (const child of node.children) {
-          processElement(child);
-        }
-      }
+    return {
+      metadataHtml: buildArticleDocumentHtml({
+        headHtml: html.headHtml,
+        articleHtml: html.metadataArticleHtml
+      }),
+      contentHtml: buildArticleDocumentHtml({
+        headHtml: html.headHtml,
+        articleHtml: html.contentArticleHtml
+      })
     };
-
-    for (const child of articleBody.children) {
-      processElement(child);
-    }
-
-    return { title, elements };
-  });
-
-  await browser.close();
-
-  if (content) {
-    content.metadata = metadata;
+  } finally {
+    await browser.close();
   }
-
-  return content;
 }
 
 /**
- * Post-process markdown to fix formatting issues
+ * Build markdown from web-capture's enhanced conversion output.
+ *
+ * web-capture's convertHtmlToMarkdownEnhanced handles:
+ * - HTML-to-Markdown with Turndown (GFM tables, etc.)
+ * - LaTeX formula extraction (Habr img.formula, KaTeX, MathJax)
+ * - Code language detection/correction (matlab → coq)
+ * - Metadata extraction (author, date, hubs, tags, translation info)
+ * - Post-processing (unicode normalization, LaTeX spacing, bold fixes)
+ *
+ * This function assembles the final markdown with metadata header/footer.
  */
-function postProcessMarkdown(markdown) {
-  let result = markdown;
-
-  // Unicode character normalization to match article.md style
-  // Replace non-breaking spaces (U+00A0) with regular spaces.
-  // GitHub's math renderer doesn't recognize \xa0 as a word boundary for inline
-  // math $...$ delimiters, causing formulas like "text\xa0$L$" to not render.
-  result = result.replace(/\u00A0/g, ' ');
-
-  // Normalize curly quotes to straight quotes
-  result = result.replace(/['']/g, "'");
-  result = result.replace(/[""]/g, '"');
-
-  // Normalize em-dash and en-dash to regular dash with spaces
-  result = result.replace(/—/g, ' — ');  // Keep em-dash with spaces for readability
-  result = result.replace(/–/g, '-');     // Convert en-dash to hyphen
-
-  // Normalize ellipsis
-  result = result.replace(/…/g, '...');
-
-  // Fix spacing around inline LaTeX formulas using a line-by-line token-based approach.
-  // Simple regex replacements fail because they cannot distinguish opening/closing $ delimiters.
-  // Instead, we process each line, identify formula spans, and fix spacing around/inside them.
-  result = result.split('\n').map(line => {
-    // Skip block formula lines ($$...$$) and blockquote block formulas (> $$...$$)
-    const trimmedLine = line.replace(/^>\s*/, '');
-    if (trimmedLine.startsWith('$$') && trimmedLine.endsWith('$$')) return line;
-
-    // Find all inline formula spans by tracking $ delimiters
-    // We parse left to right, matching opening $ with closing $
-    const formulas = [];
-    let i = 0;
-    while (i < line.length) {
-      if (line[i] === '$' && (i === 0 || line[i - 1] !== '\\')) {
-        // Skip $$ block delimiters
-        if (line[i + 1] === '$') {
-          i += 2;
-          continue;
-        }
-        // Found opening $, find closing $
-        const start = i;
-        i++;
-        while (i < line.length && (line[i] !== '$' || line[i - 1] === '\\')) {
-          i++;
-        }
-        if (i < line.length) {
-          // Found closing $
-          formulas.push({ start, end: i });
-          i++;
-        }
-      } else {
-        i++;
-      }
-    }
-
-    if (formulas.length === 0) return line;
-
-    // Build the line with fixes applied
-    let fixed = '';
-    let pos = 0;
-    for (const f of formulas) {
-      // Add text before this formula
-      fixed += line.substring(pos, f.start);
-
-      // Extract and trim formula content (remove internal leading/trailing whitespace)
-      const rawInner = line.substring(f.start + 1, f.end);
-      const inner = rawInner.trim();
-
-      // Add space before formula if preceded by word character, comma, colon, or
-      // closing punctuation. GitHub's math renderer requires a space or line start
-      // before the opening $ for inline math to be recognized.
-      if (fixed.length > 0 && /[a-zA-Zа-яА-ЯёЁ,:;»)\]]$/.test(fixed)) {
-        fixed += ' ';
-      }
-
-      // Add the formula with trimmed content
-      fixed += `$${inner}$`;
-
-      // Check if next character after formula is a word character and add space
-      const afterPos = f.end + 1;
-      if (afterPos < line.length && /^[a-zA-Zа-яА-ЯёЁ]/.test(line[afterPos])) {
-        fixed += ' ';
-      }
-
-      pos = f.end + 1;
-    }
-    // Add remaining text
-    fixed += line.substring(pos);
-
-    return fixed;
-  }).join('\n');
-
-  // Fix percent sign in inline formulas — GitHub's KaTeX treats % as a LaTeX
-  // comment character, stripping everything after it. The workaround is to use
-  // \\% (double backslash + percent) which GitHub's markdown preprocessor converts
-  // to \% before passing to KaTeX. See: https://github.com/orgs/community/discussions/31812
-  result = result.replace(/\$(\d+)\\+%\$/g, '$$$1\\\\%$$');
-  result = result.replace(/\$(\d+)\\text\{%\}\$/g, '$$$1\\\\%$$');
-
-  // Fix bold formatting artifacts:
-  // 1. Remove empty bold markers (**** or ** ** with only inline whitespace),
-  //    preserving a space between non-whitespace chars on each side.
-  //    Use [^\S\n] (non-newline whitespace) to avoid matching across lines.
-  result = result.replace(/(\S)\*\*[^\S\n]*\*\*(\S)/g, '$1 $2');
-  result = result.replace(/\*\*[^\S\n]*\*\*/g, '');
-  // 2. Fix bold marker spacing: trim content inside **...** and ensure proper
-  //    spacing around bold pairs. Process line-by-line for correctness.
-  result = result.split('\n').map(line => {
-    // Find all **...** pairs on this line using non-greedy matching
-    // and rebuild the line with proper spacing
-    const parts = [];
-    let lastIndex = 0;
-    const boldRegex = /\*\*(.+?)\*\*/g;
-    let m;
-    while ((m = boldRegex.exec(line)) !== null) {
-      // Text before this bold pair
-      parts.push({ type: 'text', content: line.substring(lastIndex, m.index) });
-      // The bold pair with trimmed content
-      parts.push({ type: 'bold', content: m[1].trim() });
-      lastIndex = m.index + m[0].length;
-    }
-    // Remaining text
-    parts.push({ type: 'text', content: line.substring(lastIndex) });
-
-    if (parts.filter(p => p.type === 'bold').length === 0) return line;
-
-    // Rebuild line with proper spacing
-    let rebuilt = '';
-    for (let i = 0; i < parts.length; i++) {
-      const part = parts[i];
-      if (part.type === 'bold') {
-        if (!part.content) continue; // skip empty bold
-        // Check if we need space before opening **
-        if (rebuilt.length > 0 && /[a-zA-Zа-яА-ЯёЁ0-9).]$/.test(rebuilt)) {
-          rebuilt += ' ';
-        }
-        rebuilt += `**${part.content}**`;
-        // Check if we need space after closing **
-        const nextPart = parts[i + 1];
-        if (nextPart && nextPart.content && /^[a-zA-Zа-яА-ЯёЁ\[(]/.test(nextPart.content)) {
-          rebuilt += ' ';
-        }
-      } else {
-        rebuilt += part.content;
-      }
-    }
-    return rebuilt;
-  }).join('\n');
-
-  // Fix double spaces (but not in code blocks)
-  result = result.replace(/([^\n`])  +/g, (match, char) => {
-    return char + ' ';
-  });
-
-  // Clean up extra spaces around em-dashes that we may have introduced
-  result = result.replace(/\s+—\s+/g, ' — ');
-
-  // Fix stray standalone $ signs that might have been left from parsing
-  // Pattern: $\n\n$ or just a standalone $ on its own line should be removed
-  result = result.replace(/^\$\s*$/gm, '');
-
-  return result;
-}
-
-/**
- * Format metadata as a markdown block to be placed after the title
- */
-function formatMetadataBlock(metadata) {
-  if (!metadata) return [];
-
+export function buildArticleMarkdown(enhancedResult) {
+  const { markdown, metadata } = enhancedResult;
   const lines = [];
 
-  // Author line
-  if (metadata.author) {
-    const authorName = metadata.authorFullName
-      ? `${metadata.authorFullName} (${metadata.author})`
-      : metadata.author;
-    const authorLink = metadata.authorUrl
-      ? `[${authorName}](${metadata.authorUrl})`
-      : authorName;
-    lines.push(`**Author:** ${authorLink}`);
-  }
+  // Add metadata header after the title
+  if (metadata) {
+    const metadataLines = formatMetadataBlock(metadata);
+    if (metadataLines.length > 0) {
+      // Find where the title ends (first line should be # Title)
+      const allMarkdownLines = markdown.split('\n');
+      let titleEndIdx = 0;
+      let titleStartIdx = 0;
 
-  // Article type (translation)
-  if (metadata.isTranslation) {
-    lines.push(`**Type:** ${metadata.translationLabel || 'Translation'}`);
-  }
-
-  // Original article link and authors (for translations)
-  if (metadata.originalAuthors) {
-    const authorsText = metadata.originalAuthors;
-    if (metadata.originalArticleUrl) {
-      lines.push(`**Original article:** [${authorsText}](${metadata.originalArticleUrl})`);
-    } else {
-      lines.push(`**Original authors:** ${authorsText}`);
-    }
-  }
-
-  // Publication date
-  if (metadata.publishDate) {
-    const date = new Date(metadata.publishDate);
-    const formatted = date.toLocaleDateString('en-US', {
-      year: 'numeric', month: 'long', day: 'numeric'
-    });
-    let dateLine = `**Published:** ${formatted}`;
-    if (metadata.dateModified) {
-      const modDate = new Date(metadata.dateModified);
-      const modFormatted = modDate.toLocaleDateString('en-US', {
-        year: 'numeric', month: 'long', day: 'numeric'
-      });
-      if (modFormatted !== formatted) {
-        dateLine += ` (updated ${modFormatted})`;
+      // Find the title line and skip past it
+      for (let i = 0; i < allMarkdownLines.length; i++) {
+        if (allMarkdownLines[i].startsWith('# ')) {
+          titleStartIdx = i;
+          titleEndIdx = i + 1;
+          // Skip blank lines after title
+          while (titleEndIdx < allMarkdownLines.length && allMarkdownLines[titleEndIdx].trim() === '') {
+            titleEndIdx++;
+          }
+          break;
+        }
       }
-    }
-    lines.push(dateLine);
-  }
 
-  // Reading time and difficulty
-  const infoItems = [];
-  if (metadata.readingTime) infoItems.push(`Reading time: ${metadata.readingTime}`);
-  if (metadata.difficulty) infoItems.push(`Difficulty: ${metadata.difficulty}`);
-  if (metadata.views) infoItems.push(`Views: ${metadata.views}`);
-  if (infoItems.length > 0) {
-    lines.push(`**${infoItems.join(' | ')}**`);
-  }
+      // Insert metadata between title and content
+      const markdownLines = allMarkdownLines.slice(titleStartIdx);
+      titleEndIdx -= titleStartIdx;
+      const beforeContent = markdownLines.slice(0, titleEndIdx).join('\n');
+      const afterContent = markdownLines.slice(titleEndIdx).join('\n');
 
-  // Hubs
-  if (metadata.hubs && metadata.hubs.length > 0) {
-    lines.push(`**Hubs:** ${metadata.hubs.join(', ')}`);
-  }
-
-  // Tags
-  if (metadata.tags && metadata.tags.length > 0) {
-    lines.push(`**Tags:** ${metadata.tags.join(', ')}`);
-  }
-
-  return lines;
-}
-
-/**
- * Format footer metadata block to be placed at the end of the article
- * This repeats tags and hubs as they appear at the bottom of the original Habr article
- */
-function formatFooterBlock(metadata) {
-  if (!metadata) return [];
-
-  const lines = [];
-
-  lines.push('---');
-  lines.push('');
-
-  // Tags with links (matching Habr article footer)
-  if (metadata.tagLinks && metadata.tagLinks.length > 0) {
-    const tagStrings = metadata.tagLinks.map(t =>
-      t.url ? `[${t.name}](${t.url})` : t.name
-    );
-    lines.push(`**Tags:** ${tagStrings.join(', ')}`);
-    lines.push('');
-  } else if (metadata.tags && metadata.tags.length > 0) {
-    lines.push(`**Tags:** ${metadata.tags.join(', ')}`);
-    lines.push('');
-  }
-
-  // Hubs with links
-  if (metadata.hubUrls && metadata.hubUrls.length > 0) {
-    const hubStrings = metadata.hubUrls.map(h =>
-      h.url ? `[${h.name}](${h.url})` : h.name
-    );
-    lines.push(`**Hubs:** ${hubStrings.join(', ')}`);
-    lines.push('');
-  } else if (metadata.hubs && metadata.hubs.length > 0) {
-    lines.push(`**Hubs:** ${metadata.hubs.join(', ')}`);
-    lines.push('');
-  }
-
-  // Article stats
-  const stats = [];
-  if (metadata.votes) stats.push(`Votes: ${metadata.votes}`);
-  if (metadata.views) stats.push(`Views: ${metadata.views}`);
-  if (metadata.bookmarks) stats.push(`Bookmarks: ${metadata.bookmarks}`);
-  if (metadata.comments) stats.push(`Comments: ${metadata.comments}`);
-  if (stats.length > 0) {
-    lines.push(`**${stats.join(' | ')}**`);
-    lines.push('');
-  }
-
-  // Author info
-  if (metadata.author) {
-    const authorName = metadata.authorFullName
-      ? `${metadata.authorFullName} (${metadata.author})`
-      : metadata.author;
-    const authorLink = metadata.authorUrl
-      ? `[${authorName}](${metadata.authorUrl})`
-      : authorName;
-    let authorLine = `**Author:** ${authorLink}`;
-    if (metadata.authorKarma) {
-      authorLine += ` | Karma: ${metadata.authorKarma}`;
-    }
-    lines.push(authorLine);
-    lines.push('');
-  }
-
-  return lines;
-}
-
-/**
- * Convert extracted content to markdown
- */
-function contentToMarkdown(content, article) {
-  if (!content) return '';
-
-  const lines = [];
-
-  // Add title
-  if (content.title) {
-    lines.push(`# ${content.title}`);
-    lines.push('');
-  }
-
-  // Add metadata block after title
-  // Each metadata line gets its own blank line separator so GitHub renders them
-  // as separate paragraphs (consecutive lines without blanks merge into one paragraph)
-  const metadataLines = formatMetadataBlock(content.metadata);
-  if (metadataLines.length > 0) {
-    for (const line of metadataLines) {
-      lines.push(line);
+      lines.push(beforeContent);
       lines.push('');
+      for (const line of metadataLines) {
+        lines.push(line);
+        lines.push('');
+      }
+      lines.push('---');
+      lines.push('');
+      lines.push(afterContent);
+    } else {
+      lines.push(markdown);
     }
-    lines.push('---');
-    lines.push('');
-  }
 
-  let imageIndex = 1;
-
-  for (const element of content.elements) {
-    switch (element.type) {
-      case 'heading':
-        const prefix = '#'.repeat(element.level);
-        lines.push(`${prefix} ${element.content}`);
-        lines.push('');
-        break;
-
-      case 'paragraph':
-        if (element.content) {
-          lines.push(element.content);
-          lines.push('');
-        }
-        break;
-
-      case 'code':
-        lines.push('```' + (element.language || ''));
-        lines.push(element.content);
-        lines.push('```');
-        lines.push('');
-        break;
-
-      case 'blockquote':
-        const quoteLines = element.content.split('\n');
-        for (const line of quoteLines) {
-          lines.push(`> ${line}`);
-        }
-        lines.push('');
-        break;
-
-      case 'unordered-list':
-        for (const item of element.items) {
-          // Handle multi-line list items
-          const itemLines = item.split('\n');
-          lines.push(`- ${itemLines[0]}`);
-          for (let i = 1; i < itemLines.length; i++) {
-            lines.push(`  ${itemLines[i]}`);
-          }
-        }
-        lines.push('');
-        break;
-
-      case 'ordered-list':
-        element.items.forEach((item, i) => {
-          const itemLines = item.split('\n');
-          lines.push(`${i + 1}. ${itemLines[0]}`);
-          for (let j = 1; j < itemLines.length; j++) {
-            lines.push(`   ${itemLines[j]}`);
-          }
-        });
-        lines.push('');
-        break;
-
-      case 'figure':
-        // Use local image path with figure number
-        const figureMatch = element.caption.match(/(?:Figure|Рис\.?|Рисунок)\s*(\d+)/i);
-        const figNum = figureMatch ? figureMatch[1] : element.index;
-        const ext = element.src.includes('.jpeg') || element.src.includes('.jpg') ? 'jpg' : 'png';
-
-        // Simple alt text format: "Figure N" only, not the full caption
-        // This matches the article.md format
-        const simpleAltText = `Figure ${figNum}`;
-        lines.push(`![${simpleAltText}](images/figure-${figNum}.${ext})`);
-        if (element.caption) {
-          // Caption already includes bold formatting from extraction (e.g., **Figure 1.** ...)
-          // Don't wrap it again in bold, just output as-is
-          lines.push('');
-          lines.push(element.caption);
-        }
-        lines.push('');
-        break;
-
-      case 'image':
-        // Use local path format
-        const imgExt = element.src.includes('.jpeg') || element.src.includes('.jpg') ? 'jpg' : 'png';
-        lines.push(`![${element.alt}](images/image-${String(imageIndex).padStart(2, '0')}.${imgExt})`);
-        lines.push('');
-        imageIndex++;
-        break;
-
-      case 'math-block':
-        lines.push('$$' + element.content + '$$');
-        lines.push('');
-        break;
-
-      case 'blockquote-math':
-        // Single formula in a blockquote — use $\displaystyle ...$ for left-aligned rendering
-        // GitHub centers $$...$$ (block math) but $...$ (inline math) stays left-aligned
-        // \displaystyle ensures full-size rendering equivalent to block math
-        lines.push('> $\\displaystyle ' + element.content + '$');
-        lines.push('');
-        break;
-
-      case 'blockquote-math-group':
-        // Multiple formulas grouped in a single continuous blockquote
-        // Use $\displaystyle ...$ for left-aligned rendering (matching original Habr layout)
-        // Use "> " prefix on each line with ">" on blank lines to keep the blockquote connected
-        for (let fi = 0; fi < element.formulas.length; fi++) {
-          lines.push('> $\\displaystyle ' + element.formulas[fi] + '$');
-          if (fi < element.formulas.length - 1) {
-            lines.push('>');  // blank line within blockquote to separate formulas
-          }
-        }
-        lines.push('');
-        break;
-
-      case 'hr':
-        lines.push('---');
-        lines.push('');
-        break;
+    // Add footer metadata
+    const footerLines = formatFooterBlock(metadata);
+    if (footerLines.length > 0) {
+      lines.push('');
+      for (const line of footerLines) {
+        lines.push(line);
+      }
     }
-  }
-
-  // Add footer metadata (tags, hubs, author info — matching Habr article bottom)
-  const footerLines = formatFooterBlock(content.metadata);
-  if (footerLines.length > 0) {
-    for (const line of footerLines) {
-      lines.push(line);
-    }
+  } else {
+    lines.push(markdown);
   }
 
   const rawMarkdown = lines.join('\n').trim() + '\n';
+
+  // Apply post-processing (unicode normalization, LaTeX spacing, etc.)
   return postProcessMarkdown(rawMarkdown);
 }
 
 /**
  * Download article and save as markdown
  */
-async function downloadArticle(article, options) {
+export async function downloadArticle(article, options) {
   const archivePath = join(ROOT_DIR, article.archivePath);
   const outputFileName = options.outputFile || article.markdownFile;
   const markdownPath = join(archivePath, outputFileName);
@@ -1055,20 +274,44 @@ async function downloadArticle(article, options) {
     console.log(`   Created directory: ${archivePath}`);
   }
 
-  // Extract content from web page
-  console.log('   Extracting content from web page...');
-  const content = await extractArticleContent(article, options.verbose);
+  // Fetch fully rendered HTML using Playwright
+  console.log('   Fetching rendered HTML with Playwright...');
+  const { metadataHtml, contentHtml } = await fetchRenderedArticleDocuments(article.url, options.verbose);
+  const htmlSize = metadataHtml.length + contentHtml.length;
+  console.log(`   ✅ Fetched ${(htmlSize / 1024).toFixed(1)} KB of scoped article HTML`);
 
-  if (!content) {
-    console.error('   ❌ Failed to extract article content');
-    return { success: false, error: 'Failed to extract content' };
+  // Convert HTML to enhanced markdown using web-capture
+  console.log('   Converting to markdown with web-capture...');
+  const metadataResult = convertHtmlToMarkdownEnhanced(metadataHtml, article.url, {
+    extractLatex: false,
+    extractMetadata: true,
+    postProcess: false,
+    detectCodeLanguage: false
+  });
+  const contentResult = convertHtmlToMarkdownEnhanced(contentHtml, article.url, {
+    extractLatex: true,
+    extractMetadata: false,
+    postProcess: false, // We'll apply post-processing after assembling the full markdown
+    detectCodeLanguage: true
+  });
+  const enhancedResult = {
+    markdown: contentResult.markdown,
+    metadata: metadataResult.metadata
+  };
+
+  if (!enhancedResult || !enhancedResult.markdown) {
+    console.error('   ❌ Failed to convert HTML to markdown');
+    return { success: false, error: 'Failed to convert HTML' };
   }
 
-  console.log(`   ✅ Extracted ${content.elements.length} elements`);
+  if (options.verbose) {
+    console.log('   Metadata:', JSON.stringify(enhancedResult.metadata, null, 2));
+  }
 
-  // Convert to markdown
-  console.log('   Converting to markdown...');
-  const markdown = contentToMarkdown(content, article);
+  console.log(`   ✅ Converted to markdown (${enhancedResult.metadata ? 'with' : 'without'} metadata)`);
+
+  // Build final markdown with metadata header/footer
+  const markdown = buildArticleMarkdown(enhancedResult);
 
   if (options.dryRun) {
     console.log('   [DRY RUN] Would save markdown file');
@@ -1116,8 +359,8 @@ Examples:
     articles = [getArticle(options.version)];
   }
 
-  console.log('🚀 Article Download Script');
-  console.log('==========================');
+  console.log('🚀 Article Download Script (powered by @link-assistant/web-capture)');
+  console.log('===================================================================');
   if (options.dryRun) {
     console.log('⚠️  DRY RUN MODE - No files will be created\n');
   }
@@ -1151,7 +394,9 @@ Examples:
   process.exit(results.every(r => r.success) ? 0 : 1);
 }
 
-main().catch(error => {
-  console.error('❌ Error:', error);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch(error => {
+    console.error('❌ Error:', error);
+    process.exit(1);
+  });
+}

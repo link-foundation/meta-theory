@@ -47,6 +47,19 @@ node scripts/download.mjs 0.0.2 --images
 node scripts/download.mjs 0.0.1 --screenshot
 ```
 
+### Habr Article Sync
+
+Download the current read-only article state, download the edit-form state, compare them exactly, and apply a local markdown source to the Habr editor through browser automation:
+
+```bash
+npm run habr:sync -- sync \
+  --edit-url https://habr.com/ru/article/edit/1018142 \
+  --source drafts/0.0.3/article/index.md \
+  --headed
+```
+
+The sync command is dry-run by default. Pass `--write` only after reviewing the generated comparison. See [docs/habr-article-sync.md](docs/habr-article-sync.md) for the full workflow.
+
 ## Directory Structure
 
 ```
@@ -70,6 +83,7 @@ archive/
 scripts/
 ├── articles-config.mjs       # Configuration for all articles
 ├── download.mjs              # Generalized download script
+├── habr-article-sync.mjs     # Habr edit-form sync helper
 └── verify.mjs                # Generalized verification script
 
 experiments/                  # Experimental scripts

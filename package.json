@@ -23,7 +23,9 @@
     "capture:itself:mp4": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.mp4 --format mp4",
     "capture:itself:webm": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.webm --format webm",
     "test:capture": "node scripts/test-capture-quality.mjs",
-    "test:web-capture": "node scripts/test-web-capture-integration.mjs"
+    "test:web-capture": "node scripts/test-web-capture-integration.mjs",
+    "test:habr-sync": "node --test tests/habr-article-sync.test.mjs",
+    "habr:sync": "node scripts/habr-article-sync.mjs"
   },
   "repository": {
     "type": "git",
@@ -38,6 +40,7 @@
   "homepage": "https://github.com/link-foundation/meta-theory#readme",
   "dependencies": {
     "@link-assistant/web-capture": "1.7.6",
+    "browser-commander": "^0.8.0",
     "gif-encoder-2": "^1.0.5",
     "jpeg-js": "^0.4.4",
     "playwright": "^1.57.0",

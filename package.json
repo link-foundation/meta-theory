@@ -1,6 +1,6 @@
 {
   "name": "meta-theory-experiments",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "Experiments and scripts for meta-theory repository",
   "scripts": {
@@ -23,7 +23,11 @@
     "capture:itself:mp4": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.mp4 --format mp4",
     "capture:itself:webm": "node scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output docs/animations/closed-link.webm --format webm",
     "test:capture": "node scripts/test-capture-quality.mjs",
-    "test:web-capture": "node scripts/test-web-capture-integration.mjs"
+    "test:web-capture": "node scripts/test-web-capture-integration.mjs",
+    "build:pdf": "node scripts/build-pdf.mjs --all",
+    "test:pdf": "node --test scripts/test-pdf.mjs",
+    "verify:pdf": "node scripts/validate-pdfs.mjs",
+    "release:pdf": "node scripts/release-pdfs.mjs"
   },
   "repository": {
     "type": "git",
@@ -37,11 +41,20 @@
   },
   "homepage": "https://github.com/link-foundation/meta-theory#readme",
   "dependencies": {
+    "@fontsource/noto-sans-mono": "5.2.9",
+    "@fontsource/noto-serif": "5.2.9",
     "@link-assistant/web-capture": "1.7.6",
+    "fflate": "0.8.3",
     "gif-encoder-2": "^1.0.5",
     "jpeg-js": "^0.4.4",
+    "katex": "0.19.0",
+    "markdown-it": "15.0.2",
+    "markdown-it-texmath": "1.0.0",
     "playwright": "^1.57.0",
     "pngjs": "^7.0.0",
     "puppeteer": "^24.32.1"
+  },
+  "devDependencies": {
+    "pdfjs-dist": "6.4.299"
   }
 }

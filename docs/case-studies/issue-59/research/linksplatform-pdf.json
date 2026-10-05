@@ -1,0 +1,57 @@
+[
+  {
+    "path": "experiments/inspect-docfx-pdf.py",
+    "repository": {
+      "id": "MDEwOlJlcG9zaXRvcnkxOTY3MTU2MzI=",
+      "isFork": false,
+      "isPrivate": false,
+      "nameWithOwner": "linksplatform/Interfaces",
+      "url": "https://github.com/linksplatform/Interfaces"
+    },
+    "url": "https://github.com/linksplatform/Interfaces/blob/3dfbee614c1276425f216d032580c052d94da4e8/experiments/inspect-docfx-pdf.py"
+  },
+  {
+    "path": "SingleProjectRepository/generate-pdf.sh",
+    "repository": {
+      "id": "MDEwOlJlcG9zaXRvcnkyMTcyODAxMjA=",
+      "isFork": false,
+      "isPrivate": false,
+      "nameWithOwner": "linksplatform/Scripts",
+      "url": "https://github.com/linksplatform/Scripts"
+    },
+    "url": "https://github.com/linksplatform/Scripts/blob/56123b0fa19da3a0a938e386f3037b122d05638a/SingleProjectRepository/generate-pdf.sh"
+  },
+  {
+    "path": "MultiProjectRepository/generate-csharp-pdf.sh",
+    "repository": {
+      "id": "MDEwOlJlcG9zaXRvcnkyMTcyODAxMjA=",
+      "isFork": false,
+      "isPrivate": false,
+      "nameWithOwner": "linksplatform/Scripts",
+      "url": "https://github.com/linksplatform/Scripts"
+    },
+    "url": "https://github.com/linksplatform/Scripts/blob/56123b0fa19da3a0a938e386f3037b122d05638a/MultiProjectRepository/generate-csharp-pdf.sh"
+  },
+  {
+    "path": "csharp/docfx.json",
+    "repository": {
+      "id": "MDEwOlJlcG9zaXRvcnkxOTY3MTU2MzI=",
+      "isFork": false,
+      "isPrivate": false,
+      "nameWithOwner": "linksplatform/Interfaces",
+      "url": "https://github.com/linksplatform/Interfaces"
+    },
+    "url": "https://github.com/linksplatform/Interfaces/blob/3dfbee614c1276425f216d032580c052d94da4e8/csharp/docfx.json"
+  },
+  {
+    "path": "MultiProjectRepository/csharpCdWorkflow.yml",
+    "repository": {
+      "id": "MDEwOlJlcG9zaXRvcnkyMTcyODAxMjA=",
+      "isFork": false,
+      "isPrivate": false,
+      "nameWithOwner": "linksplatform/Scripts",
+      "url": "https://github.com/linksplatform/Scripts"
+    },
+    "url": "https://github.com/linksplatform/Scripts/blob/56123b0fa19da3a0a938e386f3037b122d05638a/MultiProjectRepository/csharpCdWorkflow.yml"
+  }
+]

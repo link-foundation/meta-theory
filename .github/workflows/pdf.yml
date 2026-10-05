@@ -1,0 +1,69 @@
+name: PDF Build and Release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test all PDFs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PDF_NO_SANDBOX: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Install pinned Chromium
+        run: npx puppeteer browsers install chrome
+      - name: Test PDF rendering and release planning
+        run: npm run test:pdf
+      - name: Build every theory version
+        run: npm run build:pdf -- --verbose
+      - name: Verify download checksums
+        working-directory: dist/pdf
+        run: sha256sum -c SHA256SUMS
+      - name: Verify searchable text, all sections, figures and links in the PDFs
+        run: npm run verify:pdf
+      - name: Preserve PDFs and HTML previews for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: theory-pdfs
+          path: dist/pdf/
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    name: Publish PDF revision
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: theory-pdf-release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: theory-pdfs
+          path: dist/pdf
+      - name: Publish all PDFs in one revisioned release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/release-pdfs.mjs

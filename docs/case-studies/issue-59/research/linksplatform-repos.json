@@ -1,0 +1,14 @@
+[
+  {
+    "description": "Documentation and support root repository for all LinksPlatform projects",
+    "name": "Documentation"
+  },
+  {
+    "description": "LinksPlatform's Platform.Interfaces Class Library",
+    "name": "Interfaces"
+  },
+  {
+    "description": "Automation scripts for Continuous Integration, Continuous Deploy and Code Changes",
+    "name": "Scripts"
+  }
+]

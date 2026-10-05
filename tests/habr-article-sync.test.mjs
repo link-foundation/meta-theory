@@ -10,7 +10,7 @@ import {
 } from '../scripts/habr-article-sync.mjs';
 
 async function withPage(fn) {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true, channel: process.env.HABR_TEST_CHANNEL });
   const page = await browser.newPage();
   try {
     await fn(page);
@@ -135,7 +135,7 @@ test('applyMarkdownToHabrEditorPage supports dry-run and write modes', async () 
       minMarkdownEditorChars: 1
     });
     assert.equal(write.written, true);
-    assert.equal(write.postWriteComparison.exactEqual, true);
+    assert.equal(write.postWriteMarkdown, source);
 
     state = await extractHabrEditorStateFromPage(page, {
       minMarkdownEditorChars: 1

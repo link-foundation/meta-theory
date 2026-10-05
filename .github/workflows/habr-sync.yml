@@ -1,0 +1,31 @@
+name: Habr Article Sync Tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/habr-*.mjs'
+      - 'scripts/download-article.mjs'
+      - 'tests/habr*.test.mjs'
+      - 'docs/case-studies/issue-57/data/habr-article-editor-page.html'
+      - 'package*.json'
+      - '.github/workflows/habr-sync.yml'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  habr-sync:
+    name: Habr Sync Regression Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:habr-sync
+      - run: npm run test:web-capture

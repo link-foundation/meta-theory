@@ -11,9 +11,13 @@
 import { createHash } from 'crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { dirname, join, resolve } from 'path';
+import { createInterface } from 'node:readline/promises';
 import { fileURLToPath, pathToFileURL } from 'url';
 
 import { launchBrowser, makeBrowserCommander } from 'browser-commander';
+import { extractHabrEditorStateFromPage, replaceHabrEditorMarkdown, installReadOnlyNetworkGuard } from './habr-editor.mjs';
+import { createMarkdownDiff, loadMarkdownSource } from './habr-markdown.mjs';
+export { extractHabrEditorStateFromPage, installReadOnlyNetworkGuard, createMarkdownDiff, loadMarkdownSource };
 import { convertHtmlToMarkdownEnhanced } from '@link-assistant/web-capture/src/lib.js';
 import { postProcessMarkdown } from '@link-assistant/web-capture/src/postprocess.js';
 
@@ -27,7 +31,7 @@ const __dirname = dirname(__filename);
 const ROOT_DIR = join(__dirname, '..');
 
 const DEFAULT_PROFILE_DIR = join(ROOT_DIR, '.browser', 'habr');
-const DEFAULT_MIN_MARKDOWN_EDITOR_CHARS = 500;
+const DEFAULT_MIN_MARKDOWN_EDITOR_CHARS = 0;
 const DEFAULT_NAVIGATION_TIMEOUT_MS = 120000;
 const DEFAULT_EDITOR_WAIT_MS = 30000;
 
@@ -119,283 +123,18 @@ export function deriveReadOnlyUrlFromEditUrl(editUrl) {
   return url.toString();
 }
 
-async function getEditorDomState(page, options) {
-  return page.evaluate((analysisOptions) => {
-    const analyzeEditorDom = (function editorDomAnalyzerInPage() {
-      function readCodeMirrorMarkdownFromElement(element) {
-        const lines = Array.from(element.querySelectorAll('.cm-line'));
-
-        if (lines.length === 0) {
-          return `${(element.innerText || element.textContent || '').replace(/\r\n?/g, '\n').trimEnd()}\n`;
-        }
-
-        return `${lines.map(line => {
-          const text = line.textContent || '';
-          return text.replace(/\u00a0/g, ' ');
-        }).join('\n').trimEnd()}\n`;
-      }
-
-      return function analyzeEditorDom(optionsInPage) {
-        const { minMarkdownEditorChars } = optionsInPage;
-        const ignoredCodeMirrorAncestorSelectors = [
-          '.node_formula',
-          '.formula-form',
-          '.node_code',
-          '.node_embed',
-          '.abbr-form',
-          '.bubble-menu',
-          '[data-tippy-root]'
-        ].join(',');
-        const codeMirrorElements = Array.from(
-          document.querySelectorAll('.cm-content[contenteditable="true"], .cm-content')
-        );
-        const markdownCandidates = codeMirrorElements
-          .map((element, index) => {
-            const markdown = readCodeMirrorMarkdownFromElement(element);
-            const ignored = Boolean(element.closest(ignoredCodeMirrorAncestorSelectors));
-            return {
-              index,
-              ignored,
-              markdown,
-              textLength: markdown.trim().length
-            };
-          })
-          .filter(candidate => !candidate.ignored)
-          .filter(candidate => candidate.textLength >= minMarkdownEditorChars)
-          .sort((a, b) => b.textLength - a.textLength);
-        const editorElement =
-          document.querySelector('.editor__content') ||
-          document.querySelector('.ProseMirror');
-        const titleElement =
-          document.querySelector('.editor__content h1.title') ||
-          document.querySelector('.ProseMirror h1.title') ||
-          document.querySelector('h1.title') ||
-          document.querySelector('h1');
-
-        let wysiwygHtml = '';
-        if (editorElement) {
-          const clone = editorElement.cloneNode(true);
-          clone.querySelectorAll([
-            '[contenteditable="false"]',
-            '.right-menu__container',
-            '.block-menu',
-            '.bubble-menu',
-            '[data-tippy-root]',
-            '.node__error',
-            '.embed__placeholder',
-            'button',
-            'input[type="file"]'
-          ].join(',')).forEach(element => element.remove());
-          wysiwygHtml = clone.outerHTML;
-        }
-
-        return {
-          title: (titleElement?.innerText || titleElement?.textContent || '').trim(),
-          markdownCandidates,
-          wysiwygHtml,
-          codeMirrorCount: codeMirrorElements.length,
-          proseMirrorCount: document.querySelectorAll('.ProseMirror').length,
-          editorContentCount: document.querySelectorAll('.editor__content').length
-        };
-      };
-    })();
-
-    return analyzeEditorDom(analysisOptions);
-  }, options);
-}
-
-function buildMarkdownFromEditorHtml(html, url = 'https://habr.com/') {
-  const documentHtml = buildArticleDocumentHtml({
-    headHtml: '',
-    articleHtml: `<article>${html}</article>`
-  });
-  const result = convertHtmlToMarkdownEnhanced(documentHtml, url, {
-    extractLatex: true,
-    extractMetadata: false,
-    postProcess: false,
-    detectCodeLanguage: true
-  });
-
-  return postProcessMarkdown(`${result.markdown.trim()}\n`);
-}
-
-export async function extractHabrEditorStateFromPage(page, options = {}) {
-  const {
-    minMarkdownEditorChars = DEFAULT_MIN_MARKDOWN_EDITOR_CHARS,
-    url = page.url()
-  } = options;
-
-  const domState = await getEditorDomState(page, {
-    minMarkdownEditorChars
-  });
-
-  if (domState.markdownCandidates.length > 0) {
-    const selected = domState.markdownCandidates[0];
-    return {
-      mode: 'markdown',
-      markdown: selected.markdown,
-      title: domState.title,
-      source: 'codemirror',
-      markdownEditorCount: domState.markdownCandidates.length,
-      codeMirrorCount: domState.codeMirrorCount,
-      proseMirrorCount: domState.proseMirrorCount,
-      editorContentCount: domState.editorContentCount
-    };
-  }
-
-  if (domState.wysiwygHtml) {
-    return {
-      mode: 'wysiwyg',
-      markdown: buildMarkdownFromEditorHtml(domState.wysiwygHtml, url),
-      title: domState.title,
-      source: 'prosemirror-html',
-      markdownEditorCount: 0,
-      codeMirrorCount: domState.codeMirrorCount,
-      proseMirrorCount: domState.proseMirrorCount,
-      editorContentCount: domState.editorContentCount
-    };
-  }
-
-  throw new Error('Could not find a Habr editor body in the current page.');
-}
-
-async function markMainMarkdownEditor(page, options = {}) {
-  const {
-    minMarkdownEditorChars = DEFAULT_MIN_MARKDOWN_EDITOR_CHARS
-  } = options;
-
-  return page.evaluate((analysisOptions) => {
-    document
-      .querySelectorAll('[data-habr-sync-target="true"]')
-      .forEach(element => element.removeAttribute('data-habr-sync-target'));
-
-    function readCodeMirrorMarkdownFromElement(element) {
-      const lines = Array.from(element.querySelectorAll('.cm-line'));
-
-      if (lines.length === 0) {
-        return `${(element.innerText || element.textContent || '').replace(/\r\n?/g, '\n').trimEnd()}\n`;
-      }
-
-      return `${lines.map(line => {
-        const text = line.textContent || '';
-        return text.replace(/\u00a0/g, ' ');
-      }).join('\n').trimEnd()}\n`;
-    }
-
-    const ignoredCodeMirrorAncestorSelectors = [
-      '.node_formula',
-      '.formula-form',
-      '.node_code',
-      '.node_embed',
-      '.abbr-form',
-      '.bubble-menu',
-      '[data-tippy-root]'
-    ].join(',');
-    const codeMirrorElements = Array.from(
-      document.querySelectorAll('.cm-content[contenteditable="true"], .cm-content')
-    );
-    const markdownCandidates = codeMirrorElements
-      .map((element, index) => {
-        const markdown = readCodeMirrorMarkdownFromElement(element);
-        const ignored = Boolean(element.closest(ignoredCodeMirrorAncestorSelectors));
-        return {
-          element,
-          index,
-          ignored,
-          markdown,
-          textLength: markdown.trim().length
-        };
-      })
-      .filter(candidate => !candidate.ignored)
-      .filter(candidate => candidate.textLength >= analysisOptions.minMarkdownEditorChars)
-      .sort((a, b) => b.textLength - a.textLength);
-
-    const selected = markdownCandidates[0];
-    if (!selected) {
-      return {
-        found: false,
-        markdownEditorCount: 0,
-        codeMirrorCount: codeMirrorElements.length
-      };
-    }
-
-    selected.element.setAttribute('data-habr-sync-target', 'true');
-    return {
-      found: true,
-      markdownEditorCount: markdownCandidates.length,
-      codeMirrorCount: codeMirrorElements.length,
-      currentMarkdown: selected.markdown
-    };
-  }, {
-    minMarkdownEditorChars
-  });
-}
-
 export async function applyMarkdownToHabrEditorPage(page, markdown, options = {}) {
-  const {
-    dryRun = true,
-    minMarkdownEditorChars = DEFAULT_MIN_MARKDOWN_EDITOR_CHARS,
-    allowWysiwygPaste = false
-  } = options;
-
-  if (typeof markdown !== 'string' || markdown.length === 0) {
-    throw new Error('Source markdown must be a non-empty string.');
-  }
-
-  const currentState = await extractHabrEditorStateFromPage(page, {
-    minMarkdownEditorChars
-  });
-  const comparison = compareMarkdownTexts(currentState.markdown, markdown);
-
-  if (dryRun) {
-    return {
-      dryRun: true,
-      written: false,
-      targetMode: currentState.mode,
-      comparison
-    };
-  }
-
-  const marked = await markMainMarkdownEditor(page, {
-    minMarkdownEditorChars
-  });
-
-  if (!marked.found) {
-    if (!allowWysiwygPaste) {
-      throw new Error(
-        'No full-page Markdown CodeMirror editor was found. Switch Habr to Markdown mode or pass allowWysiwygPaste.'
-      );
-    }
-
-    const wysiwyg = page.locator('.ProseMirror[contenteditable="true"], .ProseMirror').first();
-    await wysiwyg.click();
-    await page.keyboard.press('Control+A');
-    await page.keyboard.insertText(markdown);
-    return {
-      dryRun: false,
-      written: true,
-      targetMode: 'wysiwyg',
-      comparison
-    };
-  }
-
-  const target = page.locator('[data-habr-sync-target="true"]').first();
-  await target.click();
-  await page.keyboard.press('Control+A');
-  await page.keyboard.insertText(markdown);
-  await page.waitForTimeout(250);
-
-  const writtenState = await extractHabrEditorStateFromPage(page, {
-    minMarkdownEditorChars
-  });
-
-  return {
-    dryRun: false,
-    written: true,
-    targetMode: 'markdown',
-    comparison,
-    postWriteComparison: compareMarkdownTexts(writtenState.markdown, markdown)
-  };
+  if (typeof markdown !== 'string' || !markdown.trim()) throw new Error('Source markdown must be a non-empty string.');
+  const current = await extractHabrEditorStateFromPage(page, options);
+  const comparison = compareMarkdownTexts(current.markdown, markdown);
+  const result = { dryRun: options.dryRun !== false, written: false, targetMode: current.mode,
+    comparison, warnings: current.warnings || [], diff: createMarkdownDiff(current.markdown, markdown), currentMarkdown: current.markdown };
+  if (result.dryRun || comparison.exactEqual) return result;
+  const written = await replaceHabrEditorMarkdown(page, markdown, options);
+  return { ...result, dryRun: false, written: true,
+    postWriteComparison: compareMarkdownTexts(written.markdown, markdown),
+    postWriteDiff: createMarkdownDiff(written.markdown, markdown, 'editor-after.md', 'source.md'),
+    postWriteMarkdown: written.markdown };
 }
 
 async function scrollToLoadLazyContent(page) {
@@ -468,7 +207,7 @@ export async function extractReadOnlyArticleDocumentsFromPage(page) {
   };
 }
 
-export function buildReadOnlyArticleMarkdown({ metadataHtml, contentHtml, url }) {
+export function buildReadOnlyArticleMarkdown({ metadataHtml, contentHtml, url, includeMetadata = false }) {
   const metadataResult = convertHtmlToMarkdownEnhanced(metadataHtml, url, {
     extractLatex: false,
     extractMetadata: true,
@@ -482,6 +221,7 @@ export function buildReadOnlyArticleMarkdown({ metadataHtml, contentHtml, url })
     detectCodeLanguage: true
   });
 
+  if (!includeMetadata) return postProcessMarkdown(contentResult.markdown.trim() + '\n');
   return buildArticleMarkdown({
     markdown: contentResult.markdown,
     metadata: metadataResult.metadata
@@ -493,30 +233,48 @@ export async function createBrowserSession(options = {}) {
     headless = true,
     profileDir = DEFAULT_PROFILE_DIR,
     slowMo = 0,
-    verbose = false
+    verbose = false,
+    launch = 'engine',
+    executablePath,
+    noSandbox = false,
+    allowRemoteWrites = false
   } = options;
 
   const { browser, page } = await launchBrowser({
     engine: 'playwright',
+    launch,
+    executablePath,
+    args: noSandbox ? ['--no-sandbox'] : [],
     headless,
     userDataDir: profileDir,
     slowMo,
-    verbose
-  });
-  const commander = makeBrowserCommander({
-    page,
     verbose,
-    enableNetworkTracking: false,
-    enableNavigationManager: false
+    serviceWorkers: 'block'
   });
+  let guard, commander;
+  try {
+    // Install before navigation: Habr autosaves on input, blur and close.
+    guard = allowRemoteWrites ? null : await installReadOnlyNetworkGuard(page, { verbose });
+    if (!allowRemoteWrites) {
+      const cdp = await page.context().newCDPSession(page);
+      await cdp.send('Network.setBypassServiceWorker', { bypass: true });
+      await cdp.detach();
+    }
+    commander = makeBrowserCommander({
+      page,
+      verbose,
+      enableNetworkTracking: false,
+      enableNavigationManager: false
+    });
+  } catch (error) { await browser.close(); throw error; }
 
   return {
     browser,
     page,
     commander,
+    guard,
     close: async () => {
-      await commander.destroy();
-      await browser.close();
+      try { await commander.destroy(); } finally { await browser.close(); }
     }
   };
 }
@@ -545,18 +303,30 @@ async function gotoWithCommander(commander, url, options = {}) {
 async function withBrowserSession(options, fn) {
   const session = await createBrowserSession(options);
   try {
-    return await fn(session);
+    const result = await fn(session);
+    if (options.allowRemoteWrites && options.autosaveWaitMs) {
+      await session.page.waitForTimeout(options.autosaveWaitMs);
+    }
+    if (options.keepOpen) {
+      console.error('Browser is open for review. Press Enter to close it.');
+      const input = createInterface({ input: process.stdin, output: process.stderr });
+      try { await input.question(''); } finally { input.close(); }
+    }
+    return result;
   } finally {
     await session.close();
   }
 }
 
-function parseArgs(argv) {
+export function parseArgs(argv) {
   const [command, ...rest] = argv;
   const options = {
     command,
     positional: []
   };
+  const flags = new Set(['write', 'headed', 'verbose', 'force', 'allow-wysiwyg-paste', 'keep-open', 'json', 'include-metadata', 'no-sandbox']);
+  const values = new Set(['url', 'output', 'left', 'right', 'source', 'draft', 'edit-url', 'readonly-url', 'work-dir',
+    'profile', 'slow-mo', 'min-markdown-chars', 'diff-output', 'launch', 'executable-path', 'wait-ms', 'asset-base-url', 'autosave-wait-ms']);
 
   for (let i = 0; i < rest.length; i++) {
     const arg = rest[i];
@@ -567,20 +337,37 @@ function parseArgs(argv) {
 
     const eqIndex = arg.indexOf('=');
     if (eqIndex !== -1) {
-      options[arg.slice(2, eqIndex)] = arg.slice(eqIndex + 1);
+      const name = arg.slice(2, eqIndex);
+      if (flags.has(name)) throw new Error(`--${name} is a boolean flag and does not accept a value.`);
+      if (!values.has(name)) throw new Error(`Unknown option: --${name}`);
+      if (!arg.slice(eqIndex + 1)) throw new Error(`Missing value for --${name}`);
+      options[name] = arg.slice(eqIndex + 1);
       continue;
     }
 
     const name = arg.slice(2);
+    if (flags.has(name)) { options[name] = true; continue; }
+    if (!values.has(name)) throw new Error(`Unknown option: --${name}`);
     const next = rest[i + 1];
     if (next && !next.startsWith('--')) {
       options[name] = next;
       i++;
     } else {
-      options[name] = true;
+      throw new Error(`Missing value for --${name}`);
     }
   }
 
+  if (options.positional.length) throw new Error(`Unexpected argument: ${options.positional[0]}`);
+  if (options.launch && !['real', 'engine'].includes(options.launch)) throw new Error('--launch must be real or engine.');
+  if (options.write && !['apply', 'prefill', 'sync'].includes(command)) throw new Error('--write is only supported by apply, prefill and sync.');
+  if (options['keep-open'] && (!options.headed || !process.stdin.isTTY)) {
+    throw new Error('--keep-open requires --headed and an interactive terminal.');
+  }
+  for (const name of ['slow-mo', 'min-markdown-chars', 'wait-ms', 'autosave-wait-ms']) {
+    if (options[name] !== undefined && (!Number.isFinite(Number(options[name])) || Number(options[name]) < 0)) {
+      throw new Error(`--${name} must be a non-negative number.`);
+    }
+  }
   return options;
 }
 
@@ -597,7 +384,13 @@ function browserOptionsFromCli(options) {
     headless: !options.headed,
     profileDir: options.profile ? resolve(options.profile) : DEFAULT_PROFILE_DIR,
     slowMo: options['slow-mo'] ? Number(options['slow-mo']) : 0,
-    verbose: Boolean(options.verbose)
+    verbose: Boolean(options.verbose),
+    launch: options.launch || 'engine',
+    executablePath: options['executable-path'],
+    noSandbox: Boolean(options['no-sandbox']),
+    keepOpen: Boolean(options['keep-open']),
+    allowRemoteWrites: Boolean(options.write),
+    autosaveWaitMs: options['autosave-wait-ms'] !== undefined ? Number(options['autosave-wait-ms']) : 3000
   };
 }
 
@@ -611,6 +404,18 @@ function printJson(value) {
   console.log(JSON.stringify(value, null, 2));
 }
 
+function reportDiff(options, diff) {
+  if (options['diff-output']) {
+    ensureDirForFile(options['diff-output']);
+    writeFileSync(options['diff-output'], diff, 'utf8');
+  }
+  if (!options.json && diff) process.stdout.write(diff);
+}
+
+function editorNavigationOptions(options) {
+  return { waitSelector: EDITOR_WAIT_SELECTOR, waitTimeout: options['wait-ms'] ? Number(options['wait-ms']) : DEFAULT_EDITOR_WAIT_MS };
+}
+
 async function commandDownloadReadonly(options) {
   const url = requireOption(options, 'url');
   const output = requireOption(options, 'output');
@@ -622,7 +427,8 @@ async function commandDownloadReadonly(options) {
     const documents = await extractReadOnlyArticleDocumentsFromPage(page);
     const markdown = buildReadOnlyArticleMarkdown({
       ...documents,
-      url
+      url,
+      includeMetadata: Boolean(options['include-metadata'])
     });
     ensureDirForFile(output);
     writeFileSync(output, markdown, 'utf8');
@@ -640,23 +446,29 @@ async function commandDownloadEdit(options) {
   const url = requireOption(options, 'url');
   const output = requireOption(options, 'output');
   const minMarkdownEditorChars = minMarkdownEditorCharsFromCli(options);
+  const source = options.source || options.draft ? loadMarkdownSource(options) : null;
+  if (options['diff-output'] && !source) throw new Error('download-edit --diff-output requires --source or --draft.');
 
   return withBrowserSession(browserOptionsFromCli(options), async ({ commander, page }) => {
-    await gotoWithCommander(commander, url, {
-      waitSelector: EDITOR_WAIT_SELECTOR
-    });
+    await gotoWithCommander(commander, url, editorNavigationOptions(options));
     const state = await extractHabrEditorStateFromPage(page, {
       minMarkdownEditorChars,
       url
     });
     ensureDirForFile(output);
     writeFileSync(output, state.markdown, 'utf8');
+    const comparison = source ? compareMarkdownTexts(state.markdown, source.markdown) : null;
+    const diff = source ? createMarkdownDiff(state.markdown, source.markdown, output, source.path) : '';
+    if (source) reportDiff(options, diff);
     printJson({
       command: 'download-edit',
       url,
       output,
       mode: state.mode,
       source: state.source,
+      warnings: state.warnings || [],
+      comparison,
+      ...(options.json ? { diff } : {}),
       sha256: sha256(state.markdown),
       bytes: Buffer.byteLength(state.markdown, 'utf8')
     });
@@ -669,49 +481,67 @@ async function commandCompare(options) {
   const left = readFileSync(leftPath, 'utf8');
   const right = readFileSync(rightPath, 'utf8');
   const comparison = compareMarkdownTexts(left, right);
+  const diff = createMarkdownDiff(left, right, leftPath, rightPath);
+  reportDiff(options, diff);
   printJson({
     command: 'compare',
     left: leftPath,
     right: rightPath,
-    ...comparison
+    ...comparison,
+    ...(options.json ? { diff } : {})
   });
   process.exitCode = comparison.exactEqual ? 0 : 1;
 }
 
 async function commandApply(options) {
   const url = requireOption(options, 'url');
-  const sourcePath = requireOption(options, 'source');
-  const markdown = readFileSync(sourcePath, 'utf8');
-  const dryRun = !options.write;
+  const source = loadMarkdownSource(options);
+  const markdown = source.markdown;
+  const dryRun = options.command !== 'prefill' && !options.write;
   const minMarkdownEditorChars = minMarkdownEditorCharsFromCli(options);
 
   return withBrowserSession(browserOptionsFromCli(options), async ({ commander, page }) => {
-    await gotoWithCommander(commander, url, {
-      waitSelector: EDITOR_WAIT_SELECTOR
-    });
+    await gotoWithCommander(commander, url, editorNavigationOptions(options));
     const result = await applyMarkdownToHabrEditorPage(page, markdown, {
       dryRun,
       minMarkdownEditorChars,
       allowWysiwygPaste: Boolean(options['allow-wysiwyg-paste'])
     });
+    reportDiff(options, result.diff);
+    const workDir = resolve(options['work-dir'] || join(ROOT_DIR, '.browser', 'habr-sync', 'runs'));
+    mkdirSync(workDir, { recursive: true });
+    writeFileSync(join(workDir, 'edit-before.md'), result.currentMarkdown);
+    writeFileSync(join(workDir, 'source.md'), markdown);
+    if (result.postWriteMarkdown !== undefined) {
+      writeFileSync(join(workDir, 'edit-after.md'), result.postWriteMarkdown);
+      writeFileSync(join(workDir, 'after-source.diff'), result.postWriteDiff);
+    }
+    const { currentMarkdown, postWriteMarkdown, diff, postWriteDiff, ...summary } = result;
+    const mismatch = result.postWriteComparison && !result.postWriteComparison.exactEqual;
+    if (mismatch) process.exitCode = 1;
     printJson({
-      command: 'apply',
+      command: options.command,
+      status: mismatch ? 'verification-mismatch' : dryRun ? 'dry-run' : !result.written ? 'unchanged' : options.write ? 'written' : 'prefilled',
       url,
-      source: sourcePath,
+      source: source.path,
+      sourceFiles: source.files,
+      workDir,
+      remoteWritesEnabled: Boolean(options.write),
       dryRun,
-      ...result
+      ...summary,
+      ...(options.json ? { diff, postWriteDiff } : {})
     });
   });
 }
 
 async function commandSync(options) {
   const editUrl = requireOption(options, 'edit-url');
-  const sourcePath = requireOption(options, 'source');
-  const workDir = resolve(options['work-dir'] || join(ROOT_DIR, 'docs', 'case-studies', 'issue-57', 'runs'));
+  const source = loadMarkdownSource(options);
+  const workDir = resolve(options['work-dir'] || join(ROOT_DIR, '.browser', 'habr-sync', 'runs'));
   const readOnlyUrl = options['readonly-url'] || deriveReadOnlyUrlFromEditUrl(editUrl);
   const readonlyPath = join(workDir, 'readonly.md');
   const editPath = join(workDir, 'edit.md');
-  const sourceMarkdown = readFileSync(sourcePath, 'utf8');
+  const sourceMarkdown = source.markdown;
   const dryRun = !options.write;
   const minMarkdownEditorChars = minMarkdownEditorCharsFromCli(options);
 
@@ -728,9 +558,7 @@ async function commandSync(options) {
     });
     writeFileSync(readonlyPath, readonlyMarkdown, 'utf8');
 
-    await gotoWithCommander(commander, editUrl, {
-      waitSelector: EDITOR_WAIT_SELECTOR
-    });
+    await gotoWithCommander(commander, editUrl, editorNavigationOptions(options));
     const editState = await extractHabrEditorStateFromPage(page, {
       minMarkdownEditorChars,
       url: editUrl
@@ -738,6 +566,13 @@ async function commandSync(options) {
     writeFileSync(editPath, editState.markdown, 'utf8');
 
     const currentComparison = compareMarkdownTexts(readonlyMarkdown, editState.markdown);
+    const currentDiff = createMarkdownDiff(readonlyMarkdown, editState.markdown, readonlyPath, editPath);
+    const sourceDiff = createMarkdownDiff(editState.markdown, sourceMarkdown, editPath, source.path);
+    writeFileSync(join(workDir, 'readonly-edit.diff'), currentDiff);
+    writeFileSync(join(workDir, 'edit-source.diff'), sourceDiff);
+    writeFileSync(join(workDir, 'source.md'), sourceMarkdown);
+    if (!options.json && currentDiff) process.stdout.write(currentDiff);
+    reportDiff(options, sourceDiff);
     if (!currentComparison.exactEqual && !options.force) {
       printJson({
         command: 'sync',
@@ -745,7 +580,9 @@ async function commandSync(options) {
         reason: 'read-only and edit-form markdown are not byte-identical',
         readonlyPath,
         editPath,
-        currentComparison
+        currentComparison,
+        sourceComparison: compareMarkdownTexts(editState.markdown, sourceMarkdown),
+        ...(options.json ? { currentDiff, sourceDiff } : {})
       });
       process.exitCode = 1;
       return;
@@ -757,18 +594,46 @@ async function commandSync(options) {
       allowWysiwygPaste: Boolean(options['allow-wysiwyg-paste'])
     });
 
+    if (applyResult.postWriteMarkdown !== undefined) {
+      writeFileSync(join(workDir, 'edit-after.md'), applyResult.postWriteMarkdown);
+      writeFileSync(join(workDir, 'after-source.diff'), applyResult.postWriteDiff);
+    }
+    const { currentMarkdown, postWriteMarkdown, diff, postWriteDiff, ...summary } = applyResult;
+    const mismatch = applyResult.postWriteComparison && !applyResult.postWriteComparison.exactEqual;
+    if (mismatch) process.exitCode = 1;
     printJson({
       command: 'sync',
-      status: dryRun ? 'dry-run' : 'written',
+      status: mismatch ? 'verification-mismatch' : dryRun ? 'dry-run' : applyResult.written ? 'written' : 'unchanged',
       readonlyUrl: readOnlyUrl,
       editUrl,
       readonlyPath,
       editPath,
       editMode: editState.mode,
       currentComparison,
-      applyResult
+      remoteWritesEnabled: Boolean(options.write),
+      applyResult: summary,
+      ...(options.json ? { currentDiff, sourceDiff, postWriteDiff } : {})
     });
   });
+}
+
+async function commandLogin(options) {
+  if (!options.headed || !process.stdin.isTTY) throw new Error('login requires --headed and an interactive terminal.');
+  const url = requireOption(options, 'url');
+  const session = await createBrowserSession({ ...browserOptionsFromCli(options), allowRemoteWrites: true });
+  const input = createInterface({ input: process.stdin, output: process.stderr });
+  try {
+    await gotoWithCommander(session.commander, url);
+    await input.question('Log in manually, then press Enter here to close and retain the profile. ');
+  } finally { input.close(); await session.close(); }
+}
+
+function commandPrepare(options) {
+  const output = requireOption(options, 'output');
+  const source = loadMarkdownSource(options);
+  ensureDirForFile(output);
+  writeFileSync(output, source.markdown);
+  printJson({ command: 'prepare', output, sourceFiles: source.files, sha256: sha256(source.markdown) });
 }
 
 function printHelp() {
@@ -776,11 +641,14 @@ function printHelp() {
 Usage: node scripts/habr-article-sync.mjs <command> [options]
 
 Commands:
+  login             --url <edit-url> --headed
+  prepare           --draft <version/latest> --output <file>
   download-readonly --url <article-url> --output <file>
   download-edit     --url <edit-url> --output <file>
   compare           --left <file> --right <file>
-  apply             --url <edit-url> --source <markdown-file> [--write]
-  sync              --edit-url <edit-url> --source <markdown-file> [--readonly-url <url>] [--write]
+  apply             --url <edit-url> (--source <file/dir> | --draft <version/latest>) [--write]
+  prefill           --url <edit-url> (--source <file/dir> | --draft <version/latest>) [--write]
+  sync              --edit-url <edit-url> (--source <file/dir> | --draft <version/latest>) [--write]
 
 Shared browser options:
   --profile <dir>              Persistent browser profile. Default: .browser/habr
@@ -788,16 +656,30 @@ Shared browser options:
   --slow-mo <ms>               Slow browser actions
   --verbose                    Enable browser-commander logs
   --min-markdown-chars <n>     Minimum CodeMirror text length for full Markdown mode detection
+  --launch <engine/real>        Bundled Chromium (default) or installed Chrome
+  --executable-path <path>      Explicit browser executable
+  --no-sandbox                  Explicit opt-in for containers without Chromium sandbox support
+  --wait-ms <ms>                Wait for the editor (default 30000)
+  --autosave-wait-ms <ms>        Give opt-in draft autosaves time before closing (default 3000)
+  --keep-open                   Keep a headed browser open until Enter is pressed
+  --diff-output <file>          Export a unified diff (also printed by default)
+  --json                        Output JSON with diff strings, without terminal patches
+  --asset-base-url <url>        Base for repository-relative images in an assembled draft
+  --include-metadata            Include public metadata in download-readonly (default: title/body)
 
 Safety options:
-  --write                      Actually paste source markdown into the edit form
+  --write                      Allow editor changes and remote draft autosaves
   --force                      Allow sync to continue when current read-only/edit snapshots differ
-  --allow-wysiwyg-paste        Paste into ProseMirror if Markdown mode is not detected
+  --allow-wysiwyg-paste        Use Habr's Markdown clipboard parser in the visual editor
+
+apply/sync are dry-run by default. prefill changes the local browser buffer but
+blocks non-read HTTP requests and WebSockets unless --write is passed.
+These commands never click save, submit, settings or publish buttons.
 
 Examples:
   node scripts/habr-article-sync.mjs download-edit --url https://habr.com/ru/article/edit/1018142 --output docs/case-studies/issue-57/edit.md --headed
-  node scripts/habr-article-sync.mjs sync --edit-url https://habr.com/ru/article/edit/1018142 --source drafts/0.0.3/article/index.md --headed
-  node scripts/habr-article-sync.mjs sync --edit-url https://habr.com/ru/article/edit/1018142 --source drafts/0.0.3/article/index.md --headed --write
+  node scripts/habr-article-sync.mjs download-edit --url https://habr.com/ru/article/edit/1018142 --output .browser/edit.md --draft latest --diff-output .browser/editor.diff
+  node scripts/habr-article-sync.mjs prefill --url https://habr.com/ru/article/edit/1018142 --draft latest --headed --keep-open --allow-wysiwyg-paste
 `);
 }
 
@@ -810,6 +692,12 @@ async function main() {
   }
 
   switch (options.command) {
+    case 'login':
+      await commandLogin(options);
+      break;
+    case 'prepare':
+      commandPrepare(options);
+      break;
     case 'download-readonly':
       await commandDownloadReadonly(options);
       break;
@@ -820,6 +708,7 @@ async function main() {
       await commandCompare(options);
       break;
     case 'apply':
+    case 'prefill':
       await commandApply(options);
       break;
     case 'sync':

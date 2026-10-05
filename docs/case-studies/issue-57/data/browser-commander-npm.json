@@ -1,9 +1,12 @@
 {
-  "version": "0.8.1",
-  "description": "Universal browser automation library that supports both Playwright and Puppeteer with a unified API",
-  "license": "UNLICENSE",
+  "version": "0.23.0",
+  "dist.tarball": "https://registry.npmjs.org/browser-commander/-/browser-commander-0.23.0.tgz",
+  "dist.integrity": "sha512-LaLTGDfmkPaS5DRT/AE3KSr9Zh4u3PIg+gMdpKB8JMa/iAJScv4nrTi/S5JaX1kvozmiJGQsHObSfZPyoUwgLg==",
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/link-foundation/browser-commander.git"
+    "url": "git+https://github.com/link-foundation/browser-commander.git",
+    "type": "git"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

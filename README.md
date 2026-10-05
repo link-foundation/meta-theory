@@ -54,11 +54,11 @@ Download the current read-only article state, download the edit-form state, comp
 ```bash
 npm run habr:sync -- sync \
   --edit-url https://habr.com/ru/article/edit/1018142 \
-  --source drafts/0.0.3/article/index.md \
+  --draft latest \
   --headed
 ```
 
-The sync command is dry-run by default. Pass `--write` only after reviewing the generated comparison. See [docs/habr-article-sync.md](docs/habr-article-sync.md) for the full workflow.
+The sync command is dry-run by default and prints full unified diffs. Use `prefill --headed --keep-open` to review changes with outgoing writes blocked. Pass `--write` to enable remote draft autosaves after reviewing the comparison. See [docs/habr-article-sync.md](docs/habr-article-sync.md) for the full workflow.
 
 ## Directory Structure
 

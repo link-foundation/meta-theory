@@ -65,8 +65,10 @@ test('CLI downloads viewer and editor, exports diff, and dry-runs sync without a
     const viewer = join(directory, 'viewer.md'), editor = join(directory, 'editor.md');
     const source = join(directory, 'source.md'), diff = join(directory, 'editor.diff');
     writeFileSync(source, '# Title\n\nNew body.\n');
-    let result = await cli(['download-readonly', '--url', url + '/viewer', '--output', viewer], directory);
+    let result = await cli(['download-readonly', '--url', url + '/viewer', '--output', viewer, '--verbose'], directory);
     assert.equal(result.status, 0, result.stderr);
+    assert.equal(JSON.parse(result.stdout).command, 'download-readonly');
+    assert.match(result.stderr, /habr-sync|[Ll]aunch|[Bb]rowser/);
     result = await cli(['download-edit', '--url', url + '/editor', '--output', editor,
       '--source', source, '--diff-output', diff], directory);
     assert.equal(result.status, 0, result.stderr);

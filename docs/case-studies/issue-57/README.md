@@ -152,8 +152,9 @@ All assets exist. Each revision, plus `latest`, is applied and read back byte-fo
 | New tabs bypass guard | A second tab could POST because interception belonged only to the initial page | Install HTTP/WebSocket interception on the browser context; the finite two-tab probe now records zero writes |
 | Service worker option ignored | `serviceWorkers: 'block'` was not forwarded by browser-commander's launcher | Exclude existing registrations from the copied profile, disable page registration before navigation, and retain initial-page CDP bypass |
 | Recovery files missing after failed paste | Original/source snapshots were written only after editor code returned | Save snapshots first; test a visual editor with no clipboard handler |
+| Verbose JSON output invalid | Upstream launch diagnostics preceded the JSON report on stdout | Send diagnostics to stderr in JSON mode; strengthen the real CLI download test to parse the report with tracing enabled |
 
-The baseline source tests in `experiments/issue-57/draft-audit-before.tap` failed before implementation. `service-worker-before.tap` records the registration API remaining available, and `new-tab-guard-before.json` records a successful POST from the second tab. `cli-before.tap` isolates the previous CLI's two failures: unsent localStorage changes leaking into another session, and missing `edit-before.md` after failed parsing. Reproduce those two baseline failures without modifying tracked files:
+The baseline source tests in `experiments/issue-57/draft-audit-before.tap` failed before implementation. `service-worker-before.tap` records the registration API remaining available, and `new-tab-guard-before.json` records a successful POST from the second tab. `json-verbose-before.tap` records the JSON parse error caused by launch diagnostics. `cli-before.tap` isolates the previous CLI's two failures: unsent localStorage changes leaking into another session, and missing `edit-before.md` after failed parsing. Reproduce those two baseline failures without modifying tracked files:
 
 ```bash
 node experiments/issue-57/reproduce-cli-baseline.mjs

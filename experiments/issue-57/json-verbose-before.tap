@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: CLI downloads viewer and editor, exports diff, and dry-runs sync without autosaves
+not ok 1 - CLI downloads viewer and editor, exports diff, and dry-runs sync without autosaves
+  ---
+  duration_ms: 10688.405411
+  type: 'test'
+  location: '/tmp/gh-issue-solver-1791278934073/tests/habr-cli.test.mjs:63:1'
+  failureType: 'testCodeFailure'
+  error: `Unexpected token '\ud83d', "🚀 Launchi"... is not valid JSON`
+  code: 'ERR_TEST_FAILURE'
+  name: 'SyntaxError'
+  stack: |-
+    JSON.parse (<anonymous>)
+    file:///tmp/gh-issue-solver-1791278934073/tests/habr-cli.test.mjs:70:23
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async withServer (file:///tmp/gh-issue-solver-1791278934073/tests/habr-cli.test.mjs:46:9)
+    async TestContext.<anonymous> (file:///tmp/gh-issue-solver-1791278934073/tests/habr-cli.test.mjs:64:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12561.183803

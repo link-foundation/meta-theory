@@ -54,7 +54,7 @@ npm run habr:sync -- compare \
   --diff-output .browser/viewer-editor.diff
 ```
 
-`compare` prints a unified diff and an exact/normalized equality report with SHA-256 hashes. It returns 0 for byte-identical files and 1 for differences. Patches retain whitespace, line-ending differences, and missing final newlines. `--json` produces a JSON report containing diff strings instead of printing terminal patches.
+`compare` prints a unified diff and an exact/normalized equality report with SHA-256 hashes. It returns 0 for byte-identical files and 1 for differences. Patches retain whitespace, line-ending differences, and missing final newlines. `--json` produces a JSON report containing diff strings instead of printing terminal patches. When combined with `--verbose`, browser diagnostics go to stderr so stdout remains valid JSON.
 
 Public snapshots contain the title and body by default, matching the scope of editor extraction. `download-readonly --include-metadata` restores the enriched public snapshot format with author/publication metadata. This optional format is useful for archival work but will usually differ from the editor buffer.
 

@@ -88,5 +88,10 @@
     "Full-revision visual extraction tests use local MarkdownIt/KaTeX rendering, not Habr clipboard normalization.",
     "Authenticated Habr prefill and durable server autosave remain manual verification requiring a local account/profile.",
     "No authenticated live article writes were performed."
-  ]
+  ],
+  "cliOutput": {
+    "jsonWithVerboseTracing": "valid JSON on stdout; browser diagnostics on stderr",
+    "regression": "CLI downloads viewer and editor, exports diff, and dry-runs sync without autosaves",
+    "beforeEvidence": "experiments/issue-57/json-verbose-before.tap"
+  }
 }

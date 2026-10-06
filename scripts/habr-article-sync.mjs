@@ -423,7 +423,7 @@ function minMarkdownEditorCharsFromCli(options) {
 }
 
 function printJson(value) {
-  console.log(JSON.stringify(value, null, 2));
+  process.stdout.write(JSON.stringify(value, null, 2) + '\n');
 }
 
 function reportDiff(options, diff) {
@@ -721,6 +721,10 @@ async function main() {
     printHelp();
     return;
   }
+
+  // Upstream verbose launch/navigation diagnostics use console.log. Keep the
+  // CLI's machine-readable report on stdout and retain tracing on stderr.
+  if (options.json) console.log = console.error.bind(console);
 
   switch (options.command) {
     case 'login':

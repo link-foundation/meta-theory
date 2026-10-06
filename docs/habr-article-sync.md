@@ -1,10 +1,10 @@
 # Habr article sync
 
-Use `npm run habr:sync -- <command>` to download the public article or its authenticated editor, review complete unified diffs, and prefill a selected Markdown draft. The tool uses **browser-commander 0.23.0** and Playwright. `apply` and `sync` are dry runs by default. `prefill` changes the browser buffer while blocking outgoing writes. Only `--write` enables remote draft autosaves.
+Use `npm run habr:sync -- <command>` to download the public article or its authenticated editor, review complete unified diffs, and prefill a selected Markdown draft. The tool uses **browser-commander 0.25.0** and Playwright 1.63.0. `apply` and `sync` are dry runs by default. `prefill` changes the browser buffer while blocking outgoing writes. Only `--write` enables remote draft autosaves.
 
 ## Setup and login
 
-Use Node.js 22, which is supported by the repository's web-capture dependency:
+Use Node.js 22.12 or later in the Node.js 22 series, supported by browser-commander and the repository's web-capture dependency:
 
 ```bash
 npm ci
@@ -13,7 +13,7 @@ npm run habr:sync -- login \
   --url https://habr.com/ru/article/edit/1018142 --headed
 ```
 
-Log in manually, then press Enter in the terminal. Authentication remains in the git-ignored `.browser/habr` profile. `login` allows authentication requests and performs no automated article edits. Subsequent commands reuse that profile. Use `--profile <directory>` for another account/profile.
+Log in manually, then press Enter in the terminal. Authentication remains in the git-ignored `.browser/habr` profile. `login` allows authentication requests and performs no automated article edits. Guarded commands copy its cookies and existing local draft storage into a disposable profile; `login` and commands with `--write` use the persistent profile directly. Use `--profile <directory>` for another account/profile, and close other browsers using it before running a command.
 
 The script explicitly selects browser-commander's `--launch engine` mode for bundled Chromium. To use installed Chrome, add `--launch real`; alternatively supply `--executable-path /path/to/chrome`. Use the same browser/profile for login and subsequent operations.
 
@@ -25,11 +25,11 @@ In a container where Chromium cannot initialize its sandbox, explicitly add `--n
 npm run habr:sync -- prepare --draft latest --output .browser/source.md
 ```
 
-`--draft latest` chooses the highest numeric `major.minor.patch` version under `drafts/`. `--draft 0.0.3` selects that version. A sectioned article directory, or its `index.md`, assembles all numbered `NN-*.md` files in numeric order. In this repository, `index.md` is a table of contents; it is not the article body. The assembled source includes all ten sections of 0.0.3.
+`--draft latest` chooses the highest numeric `major.minor.patch` directory under `drafts/`. `--draft 0.0.3` selects that version. Versions absent from `drafts/` are resolved under `archive/`, so `--draft 0.0.0`, `0.0.1`, and `0.0.2` select their archived articles. Both a flat `article.md` and numbered sections under `article/` are supported. A sectioned article directory, or its `index.md`, assembles all numbered `NN-*.md` files in numeric order. In this repository, `index.md` is a table of contents; it is not the article body. The assembled source includes all ten sections of 0.0.3.
 
-You can also use `--source drafts/0.0.3/article`, `--source drafts/0.0.3/article/index.md`, or an individual Markdown file such as `--source archive/0.0.2/article.md`. A standalone file retains its exact text. Choose either `--draft` or `--source`.
+You can also use `--source drafts/0.0.3`, `--source drafts/0.0.3/article`, `--source drafts/0.0.3/article/index.md`, or `--source archive/0.0.2`. An individual Markdown file such as `--source archive/0.0.2/article.md` retains its exact text. Choose either `--draft` or `--source`.
 
-Assembled sections resolve relative image paths against their source files and replace them with public repository URLs under `https://raw.githubusercontent.com/link-foundation/meta-theory/main/`. This avoids broken images resolving against `habr.com`. Override the root with `--asset-base-url https://raw.githubusercontent.com/link-foundation/meta-theory/issue-57-bdfa795fee8c/` for assets on this branch. An explicit asset base also rewrites relative images in standalone files. Compare against the generated `source.md` to review these intentional URL changes.
+Draft selections and directory sources resolve relative Markdown image paths against their source files and replace them with public repository URLs under `https://raw.githubusercontent.com/link-foundation/meta-theory/main/`. This avoids broken images resolving against `habr.com`. Image destinations and reference definitions are edited without changing code examples, titles, or surrounding formatting; filenames with parentheses and spaces are supported. Override the root with `--asset-base-url https://raw.githubusercontent.com/link-foundation/meta-theory/issue-57-bdfa795fee8c/` for assets on this branch. An explicit asset base also rewrites relative images in standalone files. Compare against the generated `source.md` to review these intentional URL changes.
 
 ## Download and review diffs
 
@@ -67,7 +67,7 @@ npm run habr:sync -- prefill \
   --diff-output .browser/prefill.diff
 ```
 
-`prefill` changes only the local browser buffer by default. Before navigation, the tool blocks non-read HTTP methods and WebSocket connections and bypasses service workers. Keep the browser open to inspect and adjust the draft; press Enter to close it. Closing this guarded session discards unsent changes. Start a separate command with `--write` when you want to enable Habr's remote autosaves.
+`prefill` changes only the local browser buffer by default. Before navigation, the tool blocks non-read HTTP methods and WebSocket connections across the entire browser context, including new tabs. The disposable profile excludes existing service workers, and page scripts cannot register new ones. Keep the browser open to inspect and adjust the draft; press Enter to close it. Closing this guarded session removes its profile, including unsent localStorage autosaves. Start a separate command with `--write` when you want to enable Habr's remote autosaves.
 
 CodeMirror writes replace the complete document state, including offscreen lines and final whitespace. Embedded code/formula editors are excluded. In Habr's visual editor, `--allow-wysiwyg-paste` dispatches a Markdown clipboard paste through the editor's own parser; it does not insert Markdown as plain text. This conversion can normalize formatting. The tool re-extracts the result and saves any remaining differences for manual review.
 
@@ -99,7 +99,7 @@ These commands never click save, settings, submit, or publish buttons. `--write`
 
 ## Artifacts, options, and extraction limits
 
-`apply`, `prefill`, and `sync` put snapshots and patches in git-ignored `.browser/habr-sync/runs`, or `--work-dir <directory>`. `sync` writes `readonly.md`, `edit.md`, `source.md`, `readonly-edit.diff`, and `edit-source.diff`. Applied changes additionally produce `edit-after.md` and `after-source.diff`; editor-only commands use `edit-before.md` for the initial state. These files contain article content, so choose a private output directory for private drafts.
+`apply`, `prefill`, and `sync` put snapshots and patches in git-ignored `.browser/habr-sync/runs`, or `--work-dir <directory>`. `sync` writes `readonly.md`, `edit.md`, `source.md`, `readonly-edit.diff`, and `edit-source.diff`. Applied changes additionally produce `edit-after.md` and `after-source.diff`; editor-only commands use `edit-before.md` for the initial state. Original/source snapshots are saved before invoking editor code, so they remain available if clipboard parsing fails. Use a separate work directory to retain each run. These files contain article content, so choose a private output directory for private drafts.
 
 Other options:
 
@@ -110,9 +110,9 @@ Other options:
 - `--min-markdown-chars <n>`: optional threshold for static CodeMirror DOM fallback; live document state supports short and empty drafts.
 - `--keep-open`: requires `--headed` and an interactive terminal.
 
-CodeMirror state extraction is byte-exact. Static DOM fallback reconstructs rendered lines and refuses visibly virtualized buffers without accessible state. Multiple article editors are treated as an ambiguous target and rejected. WYSIWYG HTML conversion cannot reconstruct every original Markdown formatting choice. Formula sources come from annotations, live ProseMirror nodes, or MathJax state when available; otherwise their rendered HTML is preserved and reported in `warnings`. Exact equality is never inferred from normalized equality.
+CodeMirror state extraction is byte-exact. Static DOM fallback joins rendered lines without inventing a final newline and refuses visibly virtualized buffers without accessible state. Multiple article editors are treated as an ambiguous target and rejected. WYSIWYG HTML conversion cannot reconstruct every original Markdown formatting choice. Formula sources come from annotations, live ProseMirror nodes, or MathJax state when available; otherwise their rendered HTML is preserved and reported in `warnings`. Exact equality is never inferred from normalized equality.
 
-Tests use the supplied Habr editor capture, real CodeMirror instances, and a local HTTP editor with autosaves. Public article extraction was also verified against the live article. Authenticated live editing requires the user's local login and remains a manual verification step.
+All 27 tests use the supplied Habr editor capture, real CodeMirror instances, and a local HTTP editor with autosaves. Every repository revision round-trips exactly through a virtualized Markdown editor. Local visual conversion retains every figure, code block, and formula across all four revisions, including the latest draft's 13 figures, 26 code blocks, and 159 formulas. Public article extraction was also verified against the live article. Authenticated live editing and Habr's own clipboard normalization require the user's local login and remain manual verification steps.
 
 ```bash
 npm run test:habr-sync

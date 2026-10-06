@@ -1,6 +1,6 @@
 # Case study: Habr article synchronization, issue #57
 
-[Issue #57](https://github.com/link-foundation/meta-theory/issues/57) requests browser automation for downloading and comparing the public article and authenticated editor, then applying local Markdown. [PR #58](https://github.com/link-foundation/meta-theory/pull/58) implements that workflow. The [October 5 review](https://github.com/link-foundation/meta-theory/pull/58#issuecomment-5995102556) additionally requires the latest browser-commander, complete terminal/exported diffs, selected/latest draft prefill, and explicit CLI authorization before sending changes.
+[Issue #57](https://github.com/link-foundation/meta-theory/issues/57) requests browser automation for downloading and comparing the public article and authenticated editor, then applying local Markdown. [PR #58](https://github.com/link-foundation/meta-theory/pull/58) implements that workflow. The [October 5 review](https://github.com/link-foundation/meta-theory/pull/58#issuecomment-5995102556) additionally requires the latest browser-commander, complete terminal/exported diffs, selected/latest draft prefill, and explicit CLI authorization before sending changes. The [subsequent review](https://github.com/link-foundation/meta-theory/pull/58#issuecomment-5998114580) asks for a complete audit covering every repository draft, including the latest.
 
 ## Evidence and scope
 
@@ -16,6 +16,11 @@ Research combines the issue's captured editor, current package documentation, th
 | `habr-article-editor-page.html` | Original editor HTML supplied through the issue's authenticated gist |
 | `editor-dom-summary.json` | Original inspection of the captured editor's structure |
 | `validation-2026-10-05.json` | Reproduction results, verification counts, and public-download fingerprint |
+| `pr-comments-2026-10-06.json` | All PR conversation comments, including the request to audit every draft |
+| `browser-commander-npm-2026-10-06.json` | Updated npm release metadata and Node.js requirement |
+| `draft-audit-2026-10-06.json` | Every revision's source files, hashes, bytes, figures, code blocks, formulas, and asset checks |
+| `validation-2026-10-06.json` | Current test outcomes, safety probes, PDF compatibility, and remaining limits |
+| `capture-quality-2026-10-06.txt` | Existing animation-test failure reproduced after the dependency upgrade |
 
 The capture has one `.ProseMirror`, one `.editor__content`, and two `.cm-content` fields. It is a visual editor; those CodeMirror fields belong to embedded widgets. It also contains 61 rendered formulas whose original TeX is unavailable in the static HTML. The public article currently exposes formula sources. These representations must not be treated as byte-identical without comparison.
 
@@ -37,7 +42,7 @@ Reproduce and verify these cases with `npm run test:habr-sync`. The new tests li
 
 ## Research and implementation choices
 
-The latest npm release found on October 5 was **browser-commander 0.23.0**. Its [JavaScript API](https://github.com/link-foundation/browser-commander/blob/main/js/README.md) distinguishes installed Chrome (`launch: real`, the upstream default) from bundled Playwright browsers (`launch: engine`). The script explicitly selects engine mode to retain a reproducible Playwright setup, supports installed Chrome and custom executables, and keeps a persistent login profile.
+The latest npm release found on October 5 was **browser-commander 0.23.0**; the October 6 audit upgrades to **0.25.0**, with its required Playwright 1.63.0 and Puppeteer 25.12.0 peers. The [package metadata](https://registry.npmjs.org/browser-commander/0.25.0) requires Node.js 22.12 or later. Its [JavaScript API](https://github.com/link-foundation/browser-commander/blob/main/js/README.md) distinguishes installed Chrome (`launch: real`, the upstream default) from bundled Playwright browsers (`launch: engine`). The script explicitly selects engine mode to retain a reproducible Playwright setup, supports installed Chrome and custom executables, and keeps a persistent login profile.
 
 The [CodeMirror guide](https://codemirror.net/docs/guide/) explains that document state and rendered DOM are different: long documents are virtualized. Reading `state.doc.toString()` therefore supplies the complete source, while collecting rendered lines cannot generally do so. If state is inaccessible and visible DOM gaps indicate virtualization, extraction fails instead of claiming a complete snapshot. Multiple candidate article editors also fail as an ambiguous target.
 
@@ -104,7 +109,7 @@ Run the same command with `--write` only when remote changes are intended. Add `
 
 Generated content is stored in git-ignored `.browser/habr-sync/runs`, or an explicitly chosen `--work-dir`. Before/after snapshots and patches are available for review. Post-write equality describes the editor buffer, not confirmation of durable server storage; the default three-second autosave wait and manual saved-status inspection address a separate concern.
 
-## Verification and investigation results
+## October 5 verification and investigation results
 
 - The original implementation passed five tests and failed all seven new reproductions before the changes.
 - All **16 Habr tests** pass after the changes, using bundled Chromium and Node.js 22. Coverage includes complete CodeMirror state, captured HTML, full diffs, draft assembly, CLI downloads/sync, clipboard parsing, and write authorization.
@@ -117,3 +122,71 @@ Generated content is stored in git-ignored `.browser/habr-sync/runs`, or an expl
 The autosave investigation exposed two environment problems in the test setup. Mismatched CodeMirror state versions suppressed the update listener; aligning the fixture's state dependency with the view dependency restored the POST. Bundled Chromium could not initialize its sandbox in this container; `--no-sandbox` is an explicit container option, while normal sessions retain their sandbox. The reusable `experiments/habr-sync-autosave-probe.mjs` logs document events, page errors, requests, and browser-commander navigation. Set `HABR_PROBE_NO_SANDBOX=1` where necessary, or `HABR_PROBE_EXECUTABLE` for an installed browser.
 
 Authenticated live prefill and remote draft persistence remain manual checks requiring a local Habr account/profile. The captured-page and synthetic clipboard tests verify extraction and dispatch behavior, but do not claim to prove every live Habr parser normalization rule or successful server persistence.
+
+## October 6 audit: every revision and guarded session
+
+The continuation first merged current `main`, resolving the package manifest/lock conflicts while retaining the newly merged PDF scripts, dependencies, workflows, and release behavior. No animation, PDF, archived article, or draft content was removed. The latest review was then translated into concrete source and browser regressions, rather than assuming that a single short clipboard fixture proved support for the latest article.
+
+### Source coverage
+
+`node experiments/issue-57/audit-draft-sources.mjs` discovers repository revisions, prepares their actual upload source, hashes it, counts Markdown tokens, and checks that every repository image destination exists. The complete output is retained in `data/draft-audit-2026-10-06.json`.
+
+| Version | Layout | Prepared UTF-8 bytes | Figures | Fenced code blocks | Formulas |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 0.0.0 | Archived `article.md` | 8,962 | 12 | 2 | 0 |
+| 0.0.1 | Archived `article.md` | 73,543 | 10 | 7 | 84 |
+| 0.0.2 | Archived `article.md` | 60,643 | 13 | 7 | 83 |
+| 0.0.3 / latest | Ten numbered sections | 153,542 | 13 | 26 | 159 |
+
+All assets exist. Each revision, plus `latest`, is applied and read back byte-for-byte through a real CodeMirror editor with a viewport shorter than the document. A separate browser test renders each revision with MarkdownIt/KaTeX, extracts it through the visual-editor converter, and verifies all figure/code/formula counts with no opaque formulas. This local rendering exercises the entire current content; it does not reproduce Habr's proprietary clipboard parser. The original captured Habr editor separately verifies preservation of all 61 formulas whose sources are unavailable.
+
+### Confirmed gaps and reproductions
+
+| Confirmed gap | Before | Implementation and regression |
+| --- | --- | --- |
+| Flat drafts and archived versions | `--draft` assumed a section directory and could not select the three archived revisions | Resolve version directories to `article.md` or `article/`; test every actual revision and numeric version ordering |
+| Version-directory `--source` | A path such as `drafts/0.0.3` was not an article input | Resolve both flat and sectioned version directories; compare their prepared output with `--draft` |
+| Image rewriting | A regular expression rewrote image examples inside code and truncated destinations containing parentheses | Reuse MarkdownIt's image/destination parser, edit original spans, and test code, references, titles, spaces, parentheses, and exact standalone text |
+| Static CodeMirror newline | Extraction invented a newline absent from the buffer | Join rendered lines exactly; retain complete live state as the preferred path |
+| Local autosave survives guarded prefill | No POST occurred, but Habr-style localStorage caused the next session to load the unsent replacement | Copy the login profile for guarded commands and delete the copy on close; verify the next session still loads the original buffer |
+| New tabs bypass guard | A second tab could POST because interception belonged only to the initial page | Install HTTP/WebSocket interception on the browser context; the finite two-tab probe now records zero writes |
+| Service worker option ignored | `serviceWorkers: 'block'` was not forwarded by browser-commander's launcher | Exclude existing registrations from the copied profile, disable page registration before navigation, and retain initial-page CDP bypass |
+| Recovery files missing after failed paste | Original/source snapshots were written only after editor code returned | Save snapshots first; test a visual editor with no clipboard handler |
+
+The baseline source tests in `experiments/issue-57/draft-audit-before.tap` failed before implementation. `service-worker-before.tap` records the registration API remaining available, and `new-tab-guard-before.json` records a successful POST from the second tab. `cli-before.tap` isolates the previous CLI's two failures: unsent localStorage changes leaking into another session, and missing `edit-before.md` after failed parsing. Reproduce those two baseline failures without modifying tracked files:
+
+```bash
+node experiments/issue-57/reproduce-cli-baseline.mjs
+node experiments/issue-57/new-tab-guard-probe.mjs --baseline
+node experiments/issue-57/new-tab-guard-probe.mjs
+npm run test:habr-sync
+```
+
+The CLI baseline intentionally uses the old CLI and current extraction helpers so that these two reproductions isolate profile handling and snapshot ordering. Each browser probe uses finite local fixtures; none sends changes to Habr.
+
+### Research and requirement execution
+
+[Habr's Markdown help](https://habr.com/ru/docs/help/markdown/) says browser draft storage survives closing the page. This explains why HTTP interception alone did not fulfill the promise to discard a guarded prefill. A disposable profile retains existing login cookies/local drafts while isolating new browser storage; tests verify both authentication retention and discard behavior. [Playwright's routing documentation](https://playwright.dev/docs/api/class-browsercontext#browser-context-route) identifies service workers as an interception limitation. Inspecting the actual upstream launcher showed that its custom options do not automatically become Playwright context options, motivating explicit worker handling rather than an ineffective argument.
+
+| Requirement from issue/reviews | Selected solution and execution | Evidence |
+| --- | --- | --- |
+| Automate precise article upload using browser-commander | Launch/navigate with the current upstream library; use CodeMirror transactions or opt-in Habr clipboard parsing | CLI and real-editor tests; pinned dependency metadata |
+| Download public and edit-form states | Reuse public conversion helpers and select the complete article editor, excluding embedded widgets | Live public hash, original HTML capture, CLI downloads |
+| Double-check exact matches before applying source | Keep byte equality, full patches, source hashes, and the public/editor gate; never infer exactness from normalization | Diff regressions and blocked/forced sync CLI tests |
+| Handle any selected draft and latest | Support flat archives, version directories, standalone files, indexes, and all numbered sections; rewrite actual Markdown assets | All four revision audits and full-document round trips |
+| Save time and minimize manual changes | Assemble the latest ten sections; preserve semantic figures, code, and formulas; export remaining normalization differences | Per-revision content counts and post-write patches |
+| Read editor Markdown and provide useful diffs | Export snapshots and complete terminal/file patches; retain before/source recovery artifacts even on failed conversion | CLI download, compare, and failed-paste tests |
+| Send changes only with explicit CLI authorization | Keep `apply`/`sync` dry by default and guarded `prefill`; only `--write` opens autosave traffic | Zero unauthorized requests, persistent-profile isolation, explicit POST test |
+| Nice usage documentation | Update setup, all source layouts, guarded sessions, recovery artifacts, command examples, and extraction limits | `docs/habr-article-sync.md` |
+| Deep case study with data, online facts, alternatives, and plans | Retain original/current metadata and captures; investigate each gap, compare existing components, reproduce before fixing, and map every requirement | This case study, linked primary sources, reusable experiments |
+| Complete everything in one PR | Merge current main, preserve commit history, run local checks, update PR 58, and verify CI for the final head | PR history and GitHub Actions checks |
+
+### Current validation and limits
+
+- All **27 Habr tests**, **19 web-capture integration checks**, and **8 PDF tests** pass with Node.js 22.23.3 and the updated browser dependencies.
+- `npm test` passes all live article checks: 35 for 0.0.0, 92 for 0.0.1, and 95 for 0.0.2. The file-size check also passes.
+- Building and validating all four PDFs succeeds, including the latest 52-page article, after upgrading the shared browser dependencies.
+- The live public CLI download remains 54,384 bytes with SHA-256 `505d8848946be94c715e0b60a3a380733f8cd2fe3e035a322daf1b3c58c481c7`.
+- `npm run test:capture` reports 23 passing checks and one existing diagnostic-string failure at `scripts/test-capture-quality.mjs:355`. The capture succeeds, but the assertion expects the literal log phrase `using real capture timestamps`, which the unchanged script does not print. The same failure is already recorded in [issue 59's main-branch baseline](../issue-59/capture-baseline.txt). Current output is retained in `data/capture-quality-2026-10-06.txt`; this is not a newly introduced failure. Video checks were skipped because ffmpeg is unavailable locally.
+
+Exact Markdown round trips are established for all repository revisions in CodeMirror. Visual-editor conversion preserves tested semantic content but may change Markdown formatting. Live authenticated prefill, Habr clipboard normalization for the full article, and durable remote autosave confirmation still require the user's local account/profile; no authenticated live writes were performed during this audit. Remaining differences always stay visible in the generated patch and return a nonzero post-write status.

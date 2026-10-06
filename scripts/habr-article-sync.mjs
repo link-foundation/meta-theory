@@ -9,8 +9,9 @@
  */
 
 import { createHash } from 'crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { dirname, join, resolve } from 'path';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { basename, dirname, join, resolve } from 'path';
+import { tmpdir } from 'node:os';
 import { createInterface } from 'node:readline/promises';
 import { fileURLToPath, pathToFileURL } from 'url';
 
@@ -240,17 +241,29 @@ export async function createBrowserSession(options = {}) {
     allowRemoteWrites = false
   } = options;
 
-  const { browser, page } = await launchBrowser({
-    engine: 'playwright',
-    launch,
-    executablePath,
-    args: noSandbox ? ['--no-sandbox'] : [],
-    headless,
-    userDataDir: profileDir,
-    slowMo,
-    verbose,
-    serviceWorkers: 'block'
-  });
+  // Habr also autosaves to localStorage. A guarded session uses a disposable
+  // profile copy so closing prefill really discards unsent changes. Cookies
+  // and existing local draft state are retained, but worker registrations,
+  // restored tabs and browser caches cannot bypass the new network guard.
+  const temporaryProfile = allowRemoteWrites ? null : mkdtempSync(join(tmpdir(), 'habr-sync-profile-'));
+  const skipped = new Set(['Service Worker', 'Sessions', 'Cache', 'Code Cache', 'GPUCache',
+    'SingletonLock', 'SingletonSocket', 'SingletonCookie', 'lockfile']);
+  let browser, page;
+  try {
+    if (temporaryProfile && existsSync(profileDir)) {
+      cpSync(profileDir, temporaryProfile, { recursive: true, filter: path => !skipped.has(basename(path)) });
+    }
+    if (verbose && temporaryProfile) console.error('[habr-sync] using disposable copy of the login profile');
+    ({ browser, page } = await launchBrowser({
+      engine: 'playwright', launch, executablePath,
+      args: noSandbox ? ['--no-sandbox'] : [],
+      restrictions: allowRemoteWrites ? [] : ['no-extensions', 'no-sync', 'no-background-networking'],
+      headless, userDataDir: temporaryProfile || profileDir, slowMo, verbose
+    }));
+  } catch (error) {
+    if (temporaryProfile) rmSync(temporaryProfile, { recursive: true, force: true });
+    throw error;
+  }
   let guard, commander;
   try {
     // Install before navigation: Habr autosaves on input, blur and close.
@@ -266,7 +279,12 @@ export async function createBrowserSession(options = {}) {
       enableNetworkTracking: false,
       enableNavigationManager: false
     });
-  } catch (error) { await browser.close(); throw error; }
+  } catch (error) {
+    try { await browser.close(); } finally {
+      if (temporaryProfile) rmSync(temporaryProfile, { recursive: true, force: true });
+    }
+    throw error;
+  }
 
   return {
     browser,
@@ -274,7 +292,11 @@ export async function createBrowserSession(options = {}) {
     commander,
     guard,
     close: async () => {
-      try { await commander.destroy(); } finally { await browser.close(); }
+      try { await commander.destroy(); } finally {
+        try { await browser.close(); } finally {
+          if (temporaryProfile) rmSync(temporaryProfile, { recursive: true, force: true });
+        }
+      }
     }
   };
 }
@@ -502,16 +524,19 @@ async function commandApply(options) {
 
   return withBrowserSession(browserOptionsFromCli(options), async ({ commander, page }) => {
     await gotoWithCommander(commander, url, editorNavigationOptions(options));
+    const workDir = resolve(options['work-dir'] || join(ROOT_DIR, '.browser', 'habr-sync', 'runs'));
+    mkdirSync(workDir, { recursive: true });
+    const before = await extractHabrEditorStateFromPage(page, { minMarkdownEditorChars, url });
+    writeFileSync(join(workDir, 'edit-before.md'), before.markdown);
+    writeFileSync(join(workDir, 'source.md'), markdown);
+    // Persist recovery artifacts before invoking editor code, including when
+    // a clipboard parser fails after partially changing the document.
     const result = await applyMarkdownToHabrEditorPage(page, markdown, {
       dryRun,
       minMarkdownEditorChars,
       allowWysiwygPaste: Boolean(options['allow-wysiwyg-paste'])
     });
     reportDiff(options, result.diff);
-    const workDir = resolve(options['work-dir'] || join(ROOT_DIR, '.browser', 'habr-sync', 'runs'));
-    mkdirSync(workDir, { recursive: true });
-    writeFileSync(join(workDir, 'edit-before.md'), result.currentMarkdown);
-    writeFileSync(join(workDir, 'source.md'), markdown);
     if (result.postWriteMarkdown !== undefined) {
       writeFileSync(join(workDir, 'edit-after.md'), result.postWriteMarkdown);
       writeFileSync(join(workDir, 'after-source.diff'), result.postWriteDiff);
@@ -667,6 +692,11 @@ Shared browser options:
   --asset-base-url <url>        Base for repository-relative images in an assembled draft
   --include-metadata            Include public metadata in download-readonly (default: title/body)
 
+Source selection:
+  --draft <version/latest>      Draft version, archived version, or highest numeric draft
+  --source <file/dir>           Markdown file, version directory, or numbered section directory
+  --work-dir <dir>              Snapshot/diff directory (default: .browser/habr-sync/runs)
+
 Safety options:
   --write                      Allow editor changes and remote draft autosaves
   --force                      Allow sync to continue when current read-only/edit snapshots differ
@@ -674,6 +704,7 @@ Safety options:
 
 apply/sync are dry-run by default. prefill changes the local browser buffer but
 blocks non-read HTTP requests and WebSockets unless --write is passed.
+Guarded sessions use disposable copies of the login profile and discard local autosaves.
 These commands never click save, submit, settings or publish buttons.
 
 Examples:

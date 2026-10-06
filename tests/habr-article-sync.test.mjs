@@ -64,6 +64,7 @@ test('extractHabrEditorStateFromPage prefers the full markdown editor over formu
               <div class="cm-line"># Markdown title</div>
               <div class="cm-line"><br></div>
               <div class="cm-line">Body from markdown mode.</div>
+              <div class="cm-line"><br></div>
             </div>
           </div>
         </section>
@@ -112,6 +113,7 @@ test('applyMarkdownToHabrEditorPage supports dry-run and write modes', async () 
             <div class="cm-line"># Old title</div>
             <div class="cm-line"><br></div>
             <div class="cm-line">Old body.</div>
+            <div class="cm-line"><br></div>
           </div>
         </div>
       </main>

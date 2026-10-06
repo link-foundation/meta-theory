@@ -17,7 +17,7 @@ function analyzeEditor({ minMarkdownEditorChars = 0, replacement = null }) {
     const lines = [...element.querySelectorAll('.cm-line')];
     const text = lines.map(line => line.textContent || '').join('\n');
     return {
-      markdown: lines.length ? text + (text.endsWith('\n') ? '' : '\n') : element.textContent || '',
+      markdown: lines.length ? text : element.textContent || '',
       source: 'codemirror-dom', view: null
     };
   }
@@ -160,12 +160,18 @@ export async function replaceHabrEditorMarkdown(page, markdown, options = {}) {
 
 export async function installReadOnlyNetworkGuard(page, { verbose = false } = {}) {
   let blockedRequests = 0;
-  await page.route('**/*', async route => {
+  const context = page.context();
+  // The launcher does not forward Playwright's serviceWorkers option. Disable
+  // registration before page scripts run; guarded profiles omit existing SWs.
+  await context.addInitScript(() => {
+    Object.defineProperty(navigator, 'serviceWorker', { value: undefined, configurable: false });
+  });
+  await context.route('**/*', async route => {
     if (['GET', 'HEAD', 'OPTIONS'].includes(route.request().method())) return route.continue();
     blockedRequests++;
     if (verbose) console.error(`[habr-sync] blocked ${route.request().method()} ${new URL(route.request().url()).pathname}`);
     await route.abort('blockedbyclient');
   });
-  await page.routeWebSocket('**/*', socket => { blockedRequests++; socket.close(); });
+  await context.routeWebSocket('**/*', socket => { blockedRequests++; socket.close(); });
   return { get blockedRequests() { return blockedRequests; } };
 }

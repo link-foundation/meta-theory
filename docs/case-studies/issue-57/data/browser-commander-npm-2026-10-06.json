@@ -1,0 +1,32 @@
+{
+  "version": "0.25.0",
+  "dist": {
+    "shasum": "6b7502f55c0c1dd8368bbd440af1070b00b90f23",
+    "tarball": "https://registry.npmjs.org/browser-commander/-/browser-commander-0.25.0.tgz",
+    "fileCount": 372,
+    "integrity": "sha512-JXSw4FpWrIrg9R2fmEOpv3v9fJc5yCoCKsQ+wISDbqKYZ/lTQ3eFLY/oTJoBkfWA4GBjcNY+j5BJl+p/UCAUBw==",
+    "signatures": [
+      {
+        "sig": "MEUCIDY7C7kDTkDCQsRsRaO+gE1I14xw6bRHsyJVXO2fG5VCAiEA1P0Gg49lqrD2qXpWz1lw8X3/vULZyyCKo2v/gm6lcLg=",
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+      },
+      {
+        "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+        "sig": "MEUCIQCV7tfVOkn1ULyFfH77NIibqXtls20IgTGBf0xYvIFwyAIgM0HhR+W4ZG90EIS7Pk6EIaZtPV2sNQNfs8zAcl3hydo="
+      }
+    ],
+    "attestations": {
+      "url": "https://registry.npmjs.org/-/npm/v1/attestations/browser-commander@0.25.0",
+      "provenance": {
+        "predicateType": "https://slsa.dev/provenance/v1"
+      }
+    },
+    "unpackedSize": 2539170
+  },
+  "dist-tags": {
+    "latest": "0.25.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

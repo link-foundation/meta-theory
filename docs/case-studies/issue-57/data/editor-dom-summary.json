@@ -1,0 +1,402 @@
+{
+  "title": "Редактирование статьи / Хабр",
+  "lang": "ru",
+  "counts": {
+    "cmEditors": 2,
+    "cmContents": 2,
+    "editableCmContents": 2,
+    "proseMirror": 1,
+    "editorContent": 1,
+    "publicationButtons": 1
+  },
+  "cmContents": [
+    {
+      "tag": "div",
+      "id": null,
+      "className": "cm-content",
+      "text": "R = { 1 , 2 } R × R = { (1, 1), (1, 2), (2, 1), (2, 2), }",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": "true"
+    },
+    {
+      "tag": "div",
+      "id": null,
+      "className": "cm-content",
+      "text": "R = { 1 , 2 } R × R = { (1, 1), (1, 2), (2, 1), (2, 2), } R × R × R = { (1, 1, 1), (1, 1, 2), (1, 2, 1), (1, 2, 2), (2, 1, 1), (2, 1, 2), (2, 2, 1), (2, 2, 2), }",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": "true"
+    }
+  ],
+  "editorContent": [
+    {
+      "tag": "div",
+      "id": null,
+      "className": "editor__content",
+      "text": "Мета-теория связей 0.0.3 В прошлое первое апреля, как вы могли догадаться, мы пошутили. Пора это исправить, и теперь всё серьёзно. TL;DR (too long; didn't read) В этой статье много",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": null
+    }
+  ],
+  "proseMirror": [
+    {
+      "tag": "div",
+      "id": null,
+      "className": "tiptap ProseMirror",
+      "text": "Мета-теория связей 0.0.3 В прошлое первое апреля, как вы могли догадаться, мы пошутили. Пора это исправить, и теперь всё серьёзно. TL;DR (too long; didn't read) В этой статье много",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": "true"
+    }
+  ],
+  "titleCandidates": [
+    {
+      "tag": "div",
+      "id": null,
+      "className": "tiptap ProseMirror",
+      "text": "Мета-теория связей 0.0.3 В прошлое первое апреля, как вы могли догадаться, мы пошутили. Пора это исправить, и теперь всё серьёзно. TL;DR (too long; didn't read) В этой статье много",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": "true"
+    },
+    {
+      "tag": "h1",
+      "id": null,
+      "className": "title",
+      "text": "Мета-теория связей 0.0.3",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": null
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "div",
+      "id": null,
+      "className": "cm-content",
+      "text": "R = { 1 , 2 } R × R = { (1, 1), (1, 2), (2, 1), (2, 2), }",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": "true"
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "div",
+      "id": null,
+      "className": "cm-content",
+      "text": "R = { 1 , 2 } R × R = { (1, 1), (1, 2), (2, 1), (2, 2), } R × R × R = { (1, 1, 1), (1, 1, 2), (1, 2, 1), (1, 2, 2), (2, 1, 1), (2, 1, 2), (2, 2, 1), (2, 2, 2), }",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": "true"
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    },
+    {
+      "tag": "input",
+      "id": null,
+      "className": "",
+      "text": "",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "file",
+      "contenteditable": null
+    }
+  ],
+  "bottomButtons": [
+    {
+      "tag": "button",
+      "id": null,
+      "className": "btn btn_transparent btn_small tm-button_color-horizon tm-publication__button",
+      "text": "Далее к настройкам",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": "button",
+      "contenteditable": null
+    }
+  ],
+  "sidebar": [
+    {
+      "tag": "div",
+      "id": null,
+      "className": "tm-publication-sidebar__beta",
+      "text": "Редактор публикаций может работать в режимах WYSIWYG и Markdown. Переключение осуществляется с помощью иконки в правом верхнем углу. Подробнее о работе редактора можно узнать в это",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": null
+    },
+    {
+      "tag": "div",
+      "id": null,
+      "className": "tm-publication-sidebar__advice",
+      "text": "Соблюдайте правила сайта",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": null
+    },
+    {
+      "tag": "div",
+      "id": null,
+      "className": "tm-publication-sidebar__advice",
+      "text": "Следуйте советам и заботливо оформляйте публикации",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": null
+    },
+    {
+      "tag": "div",
+      "id": null,
+      "className": "tm-publication-sidebar__advice",
+      "text": "Используйте хаб «Я пиарюсь» для рекламных публикаций",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": null
+    },
+    {
+      "tag": "div",
+      "id": null,
+      "className": "tm-publication-sidebar__advice",
+      "text": "Загружайте картинки меньше 8МБ для тела публикации и меньше 1МБ для обложки публикации",
+      "placeholder": null,
+      "ariaLabel": null,
+      "title": null,
+      "type": null,
+      "contenteditable": null
+    }
+  ],
+  "buttonTexts": [
+    "Редактировать",
+    "Наверх",
+    "WYSIWYG",
+    "Параграф",
+    "Цитата",
+    "Удалить",
+    "Загрузить новую",
+    "Список",
+    "Нумерованный список",
+    "Далее к настройкам",
+    "Настройка языка"
+  ],
+  "inputs": [
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    },
+    {
+      "tag": "input",
+      "type": "file",
+      "name": null,
+      "placeholder": null,
+      "value": "",
+      "className": null
+    }
+  ]
+}

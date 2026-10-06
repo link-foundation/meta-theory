@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: failed visual prefill retains original and source recovery snapshots
+not ok 1 - failed visual prefill retains original and source recovery snapshots
+  ---
+  duration_ms: 12162.151013
+  type: 'test'
+  location: '/tmp/gh-issue-solver-1791278934073/tests/habr-cli.test.mjs:101:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/tmp/habr-cli-VE6qRd/run/edit-before.md'"
+  code: 'ENOENT'
+  stack: |-
+    readFileSync (node:fs:440:20)
+    file:///tmp/gh-issue-solver-1791278934073/tests/habr-cli.test.mjs:109:18
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async withServer (file:///tmp/gh-issue-solver-1791278934073/tests/habr-cli.test.mjs:46:9)
+    async TestContext.<anonymous> (file:///tmp/gh-issue-solver-1791278934073/tests/habr-cli.test.mjs:102:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16086.122242

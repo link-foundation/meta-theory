@@ -1,0 +1,159 @@
+TAP version 13
+# Subtest: draft selection supports flat articles and numeric versions, ignoring non-directories
+not ok 1 - draft selection supports flat articles and numeric versions, ignoring non-directories
+  ---
+  duration_ms: 8.315353
+  type: 'test'
+  location: '/tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:20:1'
+  failureType: 'testCodeFailure'
+  error: "ENOTDIR: not a directory, stat '/tmp/habr-drafts-6R5Snx/drafts/0.0.99/article'"
+  code: 'ENOTDIR'
+  stack: |-
+    statSync (node:fs:1746:25)
+    loadMarkdownSource (file:///tmp/gh-issue-solver-1791278934073/scripts/habr-markdown.mjs:32:21)
+    TestContext.<anonymous> (file:///tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:25:18)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: version directories and archived revisions are selectable article sources
+not ok 2 - version directories and archived revisions are selectable article sources
+  ---
+  duration_ms: 22.987598
+  type: 'test'
+  location: '/tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: 'No numbered Markdown sections found in /tmp/gh-issue-solver-1791278934073/drafts/0.0.3'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    loadMarkdownSource (file:///tmp/gh-issue-solver-1791278934073/scripts/habr-markdown.mjs:37:47)
+    TestContext.<anonymous> (file:///tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:33:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: image rewriting preserves code examples and complete Markdown destinations
+not ok 3 - image rewriting preserves code examples and complete Markdown destinations
+  ---
+  duration_ms: 6.230446
+  type: 'test'
+  location: '/tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:41:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /main\/drafts\/0\.0\.3\/images\/space%20name\.png/. Input:
+    
+    '# Title\n' +
+      '\n' +
+      '![Real](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/images/plot(v2).png "Figure title")\n' +
+      '\n' +
+      '![Space](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/article/%3C../images/space name.png>)\n' +
+      '\n' +
+      '`![Inline example](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/images/example.png)`\n' +
+      '\n' +
+      '```markdown\n' +
+      '![Block example](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/images/example.png)\n' +
+      '```\n' +
+      '\n' +
+      '    ![Indented example](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/images/example.png)\n' +
+      '\n' +
+      '![Reference][plot]\n' +
+      '\n' +
+      '[plot]: ../images/reference.png "Reference title"\n' +
+      '\n' +
+      '![Remote](https://example.com/a.png)\n'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    # Title
+    
+    ![Real](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/images/plot(v2).png "Figure title")
+    
+    ![Space](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/article/%3C../images/space name.png>)
+    
+    `![Inline example](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/images/example.png)`
+    
+    ```markdown
+    ![Block example](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/images/example.png)
+    ```
+    
+        ![Indented example](https://raw.githubusercontent.com/link-foundation/meta-theory/main/drafts/0.0.3/images/example.png)
+    
+    ![Reference][plot]
+    
+    [plot]: ../images/reference.png "Reference title"
+    
+    ![Remote](https://example.com/a.png)
+    
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:54:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: standalone files remain byte-exact unless asset rewriting is requested
+ok 4 - standalone files remain byte-exact unless asset rewriting is requested
+  ---
+  duration_ms: 5.95927
+  type: 'test'
+  ...
+# Subtest: static CodeMirror extraction does not invent a final newline
+not ok 5 - static CodeMirror extraction does not invent a final newline
+  ---
+  duration_ms: 1223.983971
+  type: 'test'
+  location: '/tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:71:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Body  \n'
+    - 'Body  '
+             ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Body  '
+  actual: |-
+    Body  
+    
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:76:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: every repository revision round-trips through a real virtualized article editor
+not ok 6 - every repository revision round-trips through a real virtualized article editor
+  ---
+  duration_ms: 1424.171522
+  type: 'test'
+  location: '/tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:80:1'
+  failureType: 'testCodeFailure'
+  error: 'Unknown draft: 0.0.0'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    loadMarkdownSource (file:///tmp/gh-issue-solver-1791278934073/scripts/habr-markdown.mjs:25:44)
+    TestContext.<anonymous> (file:///tmp/gh-issue-solver-1791278934073/tests/habr-drafts.test.mjs:92:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4013.673633

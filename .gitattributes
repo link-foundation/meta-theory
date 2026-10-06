@@ -1,0 +1,3 @@
+# Preserve archived TAP diagnostics, including deliberately indented blank lines
+# and the trailing spaces that reproduce exact Markdown comparisons.
+experiments/issue-57/*.tap whitespace=-blank-at-eol

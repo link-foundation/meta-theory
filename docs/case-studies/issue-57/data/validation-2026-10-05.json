@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-05",
+  "baselineCommit": "c55c532768a6501705469aac8143e26742eb164f",
+  "environment": {
+    "node": "22.23.3",
+    "browser": "Playwright bundled Chromium",
+    "containerSandboxOptIn": "--no-sandbox"
+  },
+  "baseline": {
+    "originalTestsPassing": 5,
+    "newRegressionTestsFailing": 7
+  },
+  "verification": [
+    {
+      "command": "npm run test:habr-sync",
+      "passed": 16,
+      "failed": 0
+    },
+    {
+      "command": "node --test --test-name-pattern='network guard' tests/habr-cli.test.mjs",
+      "passed": 1,
+      "failed": 0,
+      "note": "Strengthened assertion verifies all five blocked request types including WebSocket closure."
+    },
+    {
+      "command": "npm run test:web-capture",
+      "passed": 19,
+      "failed": 0
+    },
+    {
+      "command": "npm test",
+      "verifiedArticles": [
+        "0.0.0",
+        "0.0.1",
+        "0.0.2"
+      ],
+      "failed": 0
+    },
+    {
+      "command": "node scripts/check-file-size.mjs",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    }
+  ],
+  "liveReadonly": {
+    "url": "https://habr.com/ru/articles/1018142/",
+    "command": "npm run habr:sync -- download-readonly --url https://habr.com/ru/articles/1018142/ --output .browser/live-article.md --json --no-sandbox",
+    "bytes": 54384,
+    "sha256": "505d8848946be94c715e0b60a3a380733f8cd2fe3e035a322daf1b3c58c481c7",
+    "title": "# Мета-теория связей 0.0.3"
+  },
+  "capturedEditor": {
+    "formulaCount": 61,
+    "mode": "wysiwyg",
+    "formulaFallback": "rendered HTML with warning"
+  },
+  "authenticatedLiveEditingVerified": false,
+  "limitations": [
+    "Local clipboard fixture validates dispatch and conversion, not all live Habr parser rules.",
+    "Post-write checks prove the browser buffer, not durable server persistence.",
+    "Authenticated live editor verification requires a local user profile."
+  ]
+}

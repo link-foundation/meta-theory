@@ -142,6 +142,9 @@ scripts/article_content.json
 # Playwright MCP working directory
 .playwright-mcp/
 
+# Persistent browser profiles for local article-editor automation
+.browser/
+
 # Lean 4 build artifacts
 .lake/
 lake-manifest.json

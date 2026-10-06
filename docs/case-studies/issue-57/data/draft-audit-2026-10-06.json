@@ -1,0 +1,66 @@
+{
+  "latest": "drafts/0.0.3/article",
+  "revisions": [
+    {
+      "category": "archive",
+      "version": "0.0.0",
+      "sourceFiles": [
+        "archive/0.0.0/article.md"
+      ],
+      "bytes": 8962,
+      "sha256": "02c3e662429f11c24530cb5c324b0488e785774dd660d7c3ae13657997943c10",
+      "figures": 12,
+      "codeBlocks": 2,
+      "formulas": 0,
+      "missingAssets": []
+    },
+    {
+      "category": "archive",
+      "version": "0.0.1",
+      "sourceFiles": [
+        "archive/0.0.1/article.md"
+      ],
+      "bytes": 73543,
+      "sha256": "5b7e2b6eb21943013ef31c556ab67b04f9cab82826203d7b3bb5ec531703b228",
+      "figures": 10,
+      "codeBlocks": 7,
+      "formulas": 84,
+      "missingAssets": []
+    },
+    {
+      "category": "archive",
+      "version": "0.0.2",
+      "sourceFiles": [
+        "archive/0.0.2/article.md"
+      ],
+      "bytes": 60643,
+      "sha256": "a0978de86f935e28e39ddd8882ed9d6554b51d93674ef8347eb4853cb98ba49b",
+      "figures": 13,
+      "codeBlocks": 7,
+      "formulas": 83,
+      "missingAssets": []
+    },
+    {
+      "category": "drafts",
+      "version": "0.0.3",
+      "sourceFiles": [
+        "drafts/0.0.3/article/01-header.md",
+        "drafts/0.0.3/article/02-overview.md",
+        "drafts/0.0.3/article/03-theory-comparison.md",
+        "drafts/0.0.3/article/04-mathematical-introduction.md",
+        "drafts/0.0.3/article/05-type-theory-projection.md",
+        "drafts/0.0.3/article/06-sequences-and-sets.md",
+        "drafts/0.0.3/article/07-meta-theory.md",
+        "drafts/0.0.3/article/08-practical-implementation.md",
+        "drafts/0.0.3/article/09-conclusion.md",
+        "drafts/0.0.3/article/10-changelog.md"
+      ],
+      "bytes": 153542,
+      "sha256": "9bbd3811ad25029bc158da7983f6060635d622ad08fd97454c65f98fad37563c",
+      "figures": 13,
+      "codeBlocks": 26,
+      "formulas": 159,
+      "missingAssets": []
+    }
+  ]
+}

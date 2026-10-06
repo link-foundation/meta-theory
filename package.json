@@ -1,6 +1,6 @@
 {
   "name": "meta-theory-experiments",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "Experiments and scripts for meta-theory repository",
   "scripts": {
@@ -25,7 +25,11 @@
     "test:capture": "node scripts/test-capture-quality.mjs",
     "test:web-capture": "node scripts/test-web-capture-integration.mjs",
     "test:habr-sync": "node --test tests/habr*.test.mjs",
-    "habr:sync": "node scripts/habr-article-sync.mjs"
+    "habr:sync": "node scripts/habr-article-sync.mjs",
+    "build:pdf": "node scripts/build-pdf.mjs --all",
+    "test:pdf": "node --test scripts/test-pdf.mjs",
+    "verify:pdf": "node scripts/validate-pdfs.mjs",
+    "release:pdf": "node scripts/release-pdfs.mjs"
   },
   "repository": {
     "type": "git",
@@ -46,11 +50,18 @@
     "jpeg-js": "^0.4.4",
     "playwright": "^1.57.0",
     "pngjs": "^7.0.0",
-    "puppeteer": "^24.32.1"
+    "puppeteer": "^24.32.1",
+    "@fontsource/noto-sans-mono": "5.2.9",
+    "@fontsource/noto-serif": "5.2.9",
+    "fflate": "0.8.3",
+    "katex": "0.19.0",
+    "markdown-it": "15.0.2",
+    "markdown-it-texmath": "1.0.0"
   },
   "devDependencies": {
     "@codemirror/state": "6.7.6",
     "@codemirror/view": "6.40.0",
-    "esbuild": "0.25.12"
+    "esbuild": "0.25.12",
+    "pdfjs-dist": "6.4.299"
   }
 }

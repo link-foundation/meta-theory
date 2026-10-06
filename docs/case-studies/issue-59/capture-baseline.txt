@@ -1,0 +1,142 @@
+Local animation-test baseline evidence, 2026-10-05
+
+Baseline main commit: 087f4515d0652925eecc54bcade724445c3978f1
+scripts/capture-animation.mjs and scripts/test-capture-quality.mjs are unchanged.
+Locked @link-assistant/web-capture remains 1.7.6 with the same integrity hash.
+The existing assertion at scripts/test-capture-quality.mjs:355 expects
+the literal phrase "using real capture timestamps".
+
+Command: npm run test:capture -- --output test-output/issue-59-capture
+
+
+> meta-theory-experiments@1.1.0 test:capture
+> node scripts/test-capture-quality.mjs --output test-output/issue-59-capture
+
+=== Animation Capture Quality Tests ===
+
+Step 1: Running animation capture...
+   Command: node /tmp/gh-issue-solver-1791212393406/scripts/capture-animation.mjs https://linksplatform.github.io/itself.html --output test-output/issue-59-capture/test-capture.gif --extract-keyframes --max-size 512 --min-frames 30 --loop-timeout 45 --verbose
+   Capture completed successfully.
+
+Step 2: Validating GIF output...
+  ✓ GIF output file exists
+  ✓ GIF is GIF89a format
+  ✓ GIF has valid dimensions (512x512)
+  ✓ GIF dimensions within max size (512x512)
+  ✓ GIF has sufficient frames (162 >= 15)
+  ✓ GIF file size is reasonable (1950.1 KB > 10 KB)
+  ✓ GIF aspect ratio is near square (1.00)
+
+Step 3: Validating key frames...
+  ✓ Key frames directory exists
+  ✓ At least 3 key frames extracted (3)
+  ✓ Key frame keyframe-first-0.png has content (3.6% non-background)
+  ✓ Key frame keyframe-first-0.png has valid dimensions (512x512)
+  ✓ Key frame keyframe-last-161.png has content (4.1% non-background)
+  ✓ Key frame keyframe-last-161.png has valid dimensions (512x512)
+  ✓ Key frame keyframe-middle-81.png has content (3.5% non-background)
+  ✓ Key frame keyframe-middle-81.png has valid dimensions (512x512)
+  ✓ Key frames are different (97.9% similarity)
+
+Step 4: Browser live key frame comparison...
+  ✓ Live frame 0 has content (4.0%)
+  ✓ Live frame 1 has content (3.9%)
+  ✓ Live frame 2 has content (4.5%)
+
+Step 5: Video format validation...
+   ffmpeg not available, skipping video tests
+
+Step 6: Timing and loop detection verification...
+  ✗ Uses real capture timestamps for GIF timing
+  ✓ Loop was detected (not timed out)
+  ✓ Cycle has enough frames (162 >= 15)
+  ✓ Cycle duration is reasonable (5010ms)
+  ✓ Trimmed cycle has enough frames (162)
+
+=== Results: 23 passed, 1 failed ===
+
+Command: node experiments/issue-59/baseline-capture-quality.mjs test-output/issue-59-capture
+
+=== Animation Capture Quality Tests ===
+
+Step 2: Validating GIF output...
+  ✓ GIF output file exists
+  ✓ GIF is GIF89a format
+  ✓ GIF has valid dimensions (512x512)
+  ✓ GIF dimensions within max size (512x512)
+  ✓ GIF has sufficient frames (162 >= 15)
+  ✓ GIF file size is reasonable (1950.1 KB > 10 KB)
+  ✓ GIF aspect ratio is near square (1.00)
+
+Step 3: Validating key frames...
+  ✓ Key frames directory exists
+  ✓ At least 3 key frames extracted (3)
+  ✓ Key frame keyframe-first-0.png has content (3.6% non-background)
+  ✓ Key frame keyframe-first-0.png has valid dimensions (512x512)
+  ✓ Key frame keyframe-last-161.png has content (4.1% non-background)
+  ✓ Key frame keyframe-last-161.png has valid dimensions (512x512)
+  ✓ Key frame keyframe-middle-81.png has content (3.5% non-background)
+  ✓ Key frame keyframe-middle-81.png has valid dimensions (512x512)
+  ✓ Key frames are different (97.9% similarity)
+
+Step 4: Browser live key frame comparison...
+
+Step 5: Video format validation...
+   ffmpeg not available, skipping video tests
+
+Step 6: Timing and loop detection verification...
+  ✗ Uses real capture timestamps for GIF timing
+  ✓ Loop was detected (not timed out)
+  ✓ Cycle has enough frames (162 >= 15)
+  ✓ Cycle duration is reasonable (5010ms)
+  ✓ Trimmed cycle has enough frames (162)
+
+=== Results: 20 passed, 1 failed ===
+
+Command: Actual capture log from both checks
+
+
+Animation Capture Settings:
+   URL: https://linksplatform.github.io/itself.html
+   Capture mode: screencast
+   Target max output size: 512px
+   Format: GIF
+   Output: test-output/issue-59-capture/test-capture.gif
+
+Loading page...
+
+Capturing frames via CDP screencast (PNG (lossless), min-frames: 30)...
+   Screencast stream: 564x564
+   Loop timeout: 45s | Static timeout: 60s
+   Similarity threshold: 0.99
+   Frame 1 captured (reference frame, 564x564)
+   Frame 51 captured (1.8s, ~29.1 FPS, sim=96.0%)
+   Frame 101 captured (3.5s, ~29.2 FPS, sim=96.4%)
+   Frame 151 captured (5.0s, ~29.9 FPS, sim=95.4%)
+   Frame 201 captured (6.8s, ~29.8 FPS, sim=96.1%)
+   Frame 251 captured (8.2s, ~30.6 FPS, sim=96.5%)
+   Frame 301 captured (9.8s, ~30.8 FPS, sim=95.5%)
+   Loop detected: cycle length = 162 frames
+   Real cycle duration: 5010ms
+   Trimmed to 162 frames
+   Effective capture FPS: ~32.1
+
+Auto-cropping to content...
+   Content bounds: 562x562 at (1,1)
+   Background color: rgb(255,255,255)
+   Padding: 11px at capture res (~10px in output)
+   Actual padding: L=11 R=11 T=11 B=11
+   Crop region: 584x584 at (-10,-10)
+
+Resizing from 584x584 to max 512px...
+   Final frame size: 512x512
+
+Extracting key frames...
+   Key frame first (frame 0): test-output/issue-59-capture/test-capture-keyframes/keyframe-first-0.png
+   Key frame middle (frame 81): test-output/issue-59-capture/test-capture-keyframes/keyframe-middle-81.png
+   Key frame last (frame 161): test-output/issue-59-capture/test-capture-keyframes/keyframe-last-161.png
+
+Assembling GIF (162 frames, avg 34.5ms delay, 512x512)...
+   GIF saved: test-output/issue-59-capture/test-capture.gif (1950.1 KB)
+
+Done!
